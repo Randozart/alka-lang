@@ -1,47 +1,48 @@
 const std = @import("std");
-const parser = @import("parser/parser.zig");
-const compiler = @import("compiler/compiler.zig");
-const codegen = @import("codegen/codegen.zig");
-
-extern "c" var __argc: c_int;
-extern "c" var __argv: [*c][*:0]u8;
+const alka_bin = @import("codegen/alka_bin.zig");
+const alkac = @import("compiler/alkac.zig");
 
 pub fn main() !void {
-    const argc = @as(usize, @intCast(__argc));
-    const argv: [][*:0]u8 = @as([*][*:0]u8, @ptrCast(__argv))[0..argc];
+    var arena = std.heap.ArenaAllocator.init(std.heap.page_allocator);
+    defer arena.deinit();
+    const allocator = arena.allocator();
 
-    if (argc < 3) {
-        std.debug.print("Alka Compiler v0.1.0\n", .{});
-        std.debug.print("Usage: alkac <source.alka> <vial.alkavl>\n", .{});
-        std.debug.print("Output: <source>.alkab (Metrod binary)\n", .{});
+    const args = try std.process.argsAlloc(allocator);
+    defer std.process.argsFree(allocator, args);
+
+    if (args.len < 3) {
+        std.debug.print("Alka Compiler v1.0\n", .{});
+        std.debug.print("Usage: alka <source.alka> <vial.alkavl> [-o output.alkab]\n", .{});
         return;
     }
 
-    const source_path = std.mem.sliceTo(argv[1], 0);
-    const vial_path = std.mem.sliceTo(argv[2], 0);
+    const source_path = args[1];
+    const vial_path = args[2];
 
-    std.debug.print("Compiling: {s} with {s}\n", .{ source_path, vial_path });
+    std.debug.print("Compiling: {s} + {s}\n", .{ source_path, vial_path });
 
-    const source = try std.fs.cwd().readFileAlloc(std.heap.page_allocator, source_path, std.math.maxInt(usize));
-    defer std.heap.page_allocator.free(source);
+    const source = try std.fs.cwd().readFileAlloc(allocator, source_path, std.math.maxInt(usize));
+    defer allocator.free(source);
 
-    const vial_data = try std.fs.cwd().readFileAlloc(std.heap.page_allocator, vial_path, std.math.maxInt(usize));
-    defer std.heap.page_allocator.free(vial_data);
+    const vial_data = try std.fs.cwd().readFileAlloc(allocator, vial_path, std.math.maxInt(usize));
+    defer allocator.free(vial_data);
 
-    var arena = std.heap.ArenaAllocator.init(std.heap.page_allocator);
-    defer arena.deinit();
+    const program = try alkac.parseProgram(source, allocator);
+    const vial = try alkac.parseVial(vial_data, allocator);
 
-    const parsed_program = try parser.parseAlka(source, &arena);
-    const parsed_vial = try parser.parseVial(vial_data, &arena);
+    try alkac.analyzeWithTools(program, vial, allocator);
 
-    try compiler.validate(parsed_program, parsed_vial);
+    var binary = std.ArrayList(u8).init(allocator);
+    try alkac.compile(program, vial, &binary);
 
-    const binary = try codegen.emitMetrod(parsed_program, parsed_vial, &arena);
+    const out_path = try std.fmt.allocPrint(allocator, "{s}.alkas", .{ source_path });
+    defer allocator.free(out_path);
 
-    const out_path = try std.fmt.allocPrint(std.heap.page_allocator, "{s}.alkab", .{ source_path });
-    defer std.heap.page_allocator.free(out_path);
+    try std.fs.cwd().writeFile(.{ .sub_path = out_path, .data = binary.items });
 
-    try std.fs.cwd().writeFile(out_path, binary);
-
-    std.debug.print("Emitted: {s} ({} bytes)\n", .{ out_path, binary.len });
+    std.debug.print("Emitted: {s} ({} bytes, {} packets)\n", .{
+        out_path,
+        binary.items.len,
+        binary.items.len / @sizeOf(alka_bin.MetrodPacket),
+    });
 }
