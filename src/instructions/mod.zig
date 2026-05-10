@@ -102,6 +102,7 @@ pub const OpCode = enum(u8) {
     RESONATE = 0x37,
     OSCILLATE = 0x38,
     IMC_HIJACK = 0x39,
+    OCCUPY = 0x3A,
 };
 
 pub const Category = enum {
@@ -203,21 +204,23 @@ pub const instruction_set: []const Instruction = &[_]Instruction{
     .{ .op_code = .RESONATE, .name = "RESONATE", .category = .PULSE, .description = "Coordinate reset for pure execution window" },
     .{ .op_code = .OSCILLATE, .name = "OSCILLATE", .category = .PULSE, .description = "Dual-bank refresh coordination" },
     .{ .op_code = .IMC_HIJACK, .name = "IMC_HIJACK", .category = .DISSOLUTION, .description = "Direct memory controller access" },
+    // CHRONOS (0x3A)
+    .{ .op_code = .OCCUPY, .name = "OCCUPY", .category = .CORE, .description = "Seize PCIe device, sever OS access" },
 };
 
 pub fn getInstructionByName(name: []const u8) ?*const Instruction {
-    for (instruction_set) |instr| {
+    for (instruction_set, 0..) |*instr, i| {
         if (std.mem.eql(u8, instr.name, name)) {
-            return &instr;
+            return &instruction_set[i];
         }
     }
     return null;
 }
 
 pub fn getInstructionByCode(code: OpCode) ?*const Instruction {
-    for (instruction_set) |instr| {
+    for (instruction_set, 0..) |*instr, i| {
         if (instr.op_code == code) {
-            return &instr;
+            return &instruction_set[i];
         }
     }
     return null;

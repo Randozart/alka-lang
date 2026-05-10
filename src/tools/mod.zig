@@ -31,6 +31,7 @@ pub const still = @import("substrate/still.zig");
 pub const resonate = @import("substrate/resonate.zig");
 pub const oscillate = @import("substrate/oscillate.zig");
 pub const imc_hijack = @import("substrate/imc_hijack.zig");
+pub const occupy = @import("substrate/occupy.zig");
 
 pub const Tool = struct {
     pub const Context = @import("interface.zig").ToolInterface.Context;
@@ -69,6 +70,7 @@ pub fn getTool(op_code: u8) ?Tool {
         0x37 => Tool{ .name = "RESONATE", .description = "Coordinate reset for pure window", .validate = resonate.RESONATE.validate, .execute = resonate.RESONATE.execute },
         0x38 => Tool{ .name = "OSCILLATE", .description = "Dual-bank refresh coordination", .validate = oscillate.OSCILLATE.validate, .execute = oscillate.OSCILLATE.execute },
         0x39 => Tool{ .name = "IMC_HIJACK", .description = "Direct memory controller access", .validate = imc_hijack.IMC_HIJACK.validate, .execute = imc_hijack.IMC_HIJACK.execute },
+        0x3A => Tool{ .name = "OCCUPY", .description = "Seize PCIe device - sever all OS access", .validate = occupy.OCCUPY.validate, .execute = occupy.OCCUPY.execute },
         else => null,
     };
 }

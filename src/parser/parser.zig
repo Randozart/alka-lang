@@ -118,6 +118,7 @@ pub const Tag = enum {
     keyword_resonate,
     keyword_oscillate,
     keyword_imc_hijack,
+    keyword_occupy,
 };
 
 const KeywordMap = std.ComptimeStringMap(Tag, .{
@@ -191,6 +192,7 @@ const KeywordMap = std.ComptimeStringMap(Tag, .{
     .{ "RESONATE", .keyword_resonate },
     .{ "OSCILLATE", .keyword_oscillate },
     .{ "IMC_HIJACK", .keyword_imc_hijack },
+    .{ "OCCUPY", .keyword_occupy },
 });
 
 pub const Lexer = struct {
