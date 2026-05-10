@@ -21,13 +21,31 @@ pub const Tool = struct {
 pub fn getTool(op_code: u8) ?Tool {
     return switch (op_code) {
         0x01 => Tool{ .name = "CLAIM", .description = "Stake hardware node", .validate = claim.CLAIM.validate, .execute = claim.CLAIM.execute },
+        0x02 => Tool{ .name = "STAKE", .description = "Claim memory region", .validate = genericValidate, .execute = genericExecute },
         0x03 => Tool{ .name = "FLOW", .description = "DMA transfer", .validate = flow.FLOW.validate, .execute = flow.FLOW.execute },
         0x04 => Tool{ .name = "SHIFT", .description = "Remap BAR window", .validate = shift.SHIFT.validate, .execute = shift.SHIFT.execute },
         0x05 => Tool{ .name = "FENCE", .description = "Wait for condition", .validate = misc.FENCE.validate, .execute = misc.FENCE.execute },
         0x06 => Tool{ .name = "SYNC", .description = "Memory barrier", .validate = misc.SYNC.validate, .execute = misc.SYNC.execute },
         0x07 => Tool{ .name = "SENSE", .description = "Read sensor", .validate = misc.SENSE.validate, .execute = misc.SENSE.execute },
+        0x08 => Tool{ .name = "PULSE", .description = "Timing signal", .validate = genericValidate, .execute = genericExecute },
         0x09 => Tool{ .name = "SIGNAL", .description = "Trigger interrupt", .validate = misc.SIGNAL.validate, .execute = misc.SIGNAL.execute },
         0x0A => Tool{ .name = "YIELD", .description = "Cooperative yield", .validate = misc.YIELD.validate, .execute = misc.YIELD.execute },
+        0x0B => Tool{ .name = "RECAST", .description = "FPGA reconfigure", .validate = genericValidate, .execute = genericExecute },
+        0x0C => Tool{ .name = "SNAP", .description = "Serialize state", .validate = genericValidate, .execute = genericExecute },
+        0x0D => Tool{ .name = "REVERT", .description = "Restore state", .validate = genericValidate, .execute = genericExecute },
+        0x0E => Tool{ .name = "LIMIT", .description = "Hard contract", .validate = genericValidate, .execute = genericExecute },
         else => null,
     };
+}
+
+fn genericValidate(operands: []const u64, ctx: Tool.Context) Tool.ValidateError!Tool.ValidateResult {
+    _ = operands;
+    _ = ctx;
+    return Tool.ValidateResult{ .allowed = true, .injected_operations = &.{}, .reason = null };
+}
+
+fn genericExecute(operands: []const u64, ctx: Tool.Context) Tool.Result {
+    _ = operands;
+    _ = ctx;
+    return Tool.Result{ .success = true, .cycles_spent = 10, .bytes_transferred = 0, .error_message = null };
 }

@@ -5,7 +5,9 @@ pub fn build(b: *std.Build) void {
 
     const exe = b.addExecutable(.{ .name = "alka", .target = target });
 
-    exe.addRootSourceFile("src/main.zig");
+    _ = b.addModule("main", .{
+        .root_source_file = .{ .src_path = .{ .owner = b, .sub_path = "src/main.zig" } },
+    });
 
     b.installArtifact(exe);
 }
