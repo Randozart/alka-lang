@@ -55,7 +55,7 @@ pub fn main() !void {
     try alkac.analyzeWithTools(program, vial, allocator);
 
     var binary = std.ArrayList(u8).init(allocator);
-    try alkac.compile(program, vial, &binary);
+    try alkac.compile(program, vial, &binary, allocator);
 
     const out_path = try std.fmt.allocPrint(allocator, "{s}.alkas", .{ source_path });
     defer allocator.free(out_path);

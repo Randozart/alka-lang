@@ -75,6 +75,49 @@ pub const Tag = enum {
     keyword_dma_capable,
     keyword_isolated,
     keyword_real_time,
+    keyword_veil,
+    keyword_delegate,
+    keyword_rhythm,
+    keyword_distill,
+    keyword_enqueue,
+    keyword_molt,
+    keyword_vouch,
+    keyword_probe_bus,
+    keyword_echo,
+    keyword_stasis,
+    keyword_transverse,
+    keyword_search,
+    keyword_fossilize,
+    keyword_strike,
+    keyword_quench,
+    keyword_forge,
+    keyword_void,
+    keyword_abduct,
+    keyword_snoop,
+    keyword_scatter,
+    keyword_whisper,
+    keyword_ghost,
+    keyword_hijack,
+    keyword_drift,
+    keyword_clone,
+    keyword_crystallize,
+    keyword_overclock,
+    keyword_flux,
+    keyword_audit,
+    keyword_dry_run,
+    keyword_mock,
+    keyword_prove,
+    keyword_watch,
+    keyword_trace,
+    keyword_guard,
+    keyword_isolate,
+    keyword_verify,
+    keyword_ossify,
+    keyword_bond,
+    keyword_still,
+    keyword_resonate,
+    keyword_oscillate,
+    keyword_imc_hijack,
 };
 
 const KeywordMap = std.ComptimeStringMap(Tag, .{
@@ -105,6 +148,49 @@ const KeywordMap = std.ComptimeStringMap(Tag, .{
     .{ "DMA_CAPABLE", .keyword_dma_capable },
     .{ "ISOLATED", .keyword_isolated },
     .{ "REAL_TIME", .keyword_real_time },
+    .{ "VEIL", .keyword_veil },
+    .{ "DELEGATE", .keyword_delegate },
+    .{ "RHYTHM", .keyword_rhythm },
+    .{ "DISTILL", .keyword_distill },
+    .{ "ENQUEUE", .keyword_enqueue },
+    .{ "MOLT", .keyword_molt },
+    .{ "VOUCH", .keyword_vouch },
+    .{ "PROBE_BUS", .keyword_probe_bus },
+    .{ "ECHO", .keyword_echo },
+    .{ "STASIS", .keyword_stasis },
+    .{ "TRANSVERSE", .keyword_transverse },
+    .{ "SEARCH", .keyword_search },
+    .{ "FOSSILIZE", .keyword_fossilize },
+    .{ "STRIKE", .keyword_strike },
+    .{ "QUENCH", .keyword_quench },
+    .{ "FORGE", .keyword_forge },
+    .{ "VOID", .keyword_void },
+    .{ "ABDUCT", .keyword_abduct },
+    .{ "SNOOP", .keyword_snoop },
+    .{ "SCATTER", .keyword_scatter },
+    .{ "WHISPER", .keyword_whisper },
+    .{ "GHOST", .keyword_ghost },
+    .{ "HIJACK", .keyword_hijack },
+    .{ "DRIFT", .keyword_drift },
+    .{ "CLONE", .keyword_clone },
+    .{ "CRYSTALLIZE", .keyword_crystallize },
+    .{ "OVERCLOCK", .keyword_overclock },
+    .{ "FLUX", .keyword_flux },
+    .{ "AUDIT", .keyword_audit },
+    .{ "DRY_RUN", .keyword_dry_run },
+    .{ "MOCK", .keyword_mock },
+    .{ "PROVE", .keyword_prove },
+    .{ "WATCH", .keyword_watch },
+    .{ "TRACE", .keyword_trace },
+    .{ "GUARD", .keyword_guard },
+    .{ "ISOLATE", .keyword_isolate },
+    .{ "VERIFY", .keyword_verify },
+    .{ "OSSIFY", .keyword_ossify },
+    .{ "BOND", .keyword_bond },
+    .{ "STILL", .keyword_still },
+    .{ "RESONATE", .keyword_resonate },
+    .{ "OSCILLATE", .keyword_oscillate },
+    .{ "IMC_HIJACK", .keyword_imc_hijack },
 });
 
 pub const Lexer = struct {
@@ -262,6 +348,7 @@ pub const Instr = union(enum) {
     revert: struct { vessel: []const u8, to: []const u8 },
     limit: struct { vessel: []const u8, property: []const u8, value: Expression },
     require: struct { vial: []const u8 },
+    generic: struct { name: []const u8, operands: std.ArrayList(Expression) },
 };
 
 pub const Expression = union(enum) {
@@ -448,7 +535,16 @@ pub fn parseAlka(source: []const u8, arena: *std.heap.ArenaAllocator) !Program {
                 const to = tokens.items[pos];
                 try program.instructions.append(.{ .revert = .{ .vessel = vessel.text, .to = to.text } });
             },
-            else => {},
+            else => {
+                const instr_name = tokens.items[pos].text;
+                var operands = std.ArrayList(Expression).init(arena);
+                while (pos.* + 1 < tokens.len and (tokens.items[pos.* + 1].tag == .number or tokens.items[pos.* + 1].tag == .ident)) {
+                    pos.* += 1;
+                    const expr = try parseExpr(tokens, pos, arena);
+                    try operands.append(expr);
+                }
+                try program.instructions.append(.{ .generic = .{ .name = instr_name, .operands = operands } });
+            },
         }
         pos += 1;
     }

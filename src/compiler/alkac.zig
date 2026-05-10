@@ -98,20 +98,24 @@ pub fn compile(
     program: Program,
     vial: Vial,
     out: *std.ArrayList(u8),
+    allocator: std.mem.Allocator,
 ) CompilerError!void {
     for (program.instructions.items) |instr| {
         const inst_def = instructions.getInstructionByName(instr.name) orelse {
             return CompilerError.UnknownInstruction;
         };
 
-        try validateInstruction(instr, vial);
+        try validateInstruction(instr, vial, allocator);
 
         const packet = try emitPacket(inst_def.op_code, instr.operands, vial);
         _ = out.appendSlice(std.mem.asBytes(&packet)) catch return CompilerError.BufferOverflow;
     }
 }
 
-fn validateInstruction(instr: Instruction, vial: Vial) CompilerError!void {
+fn validateInstruction(instr: Instruction, vial: Vial, allocator: std.mem.Allocator) CompilerError!void {
+    _ = allocator;
+
+    // Basic vessel validation
     for (instr.operands.items) |operand| {
         switch (operand) {
             .identifier => |name| {
@@ -122,6 +126,13 @@ fn validateInstruction(instr: Instruction, vial: Vial) CompilerError!void {
             else => {},
         }
     }
+}
+
+fn validateWithTools(instr: Instruction, vial: Vial, allocator: std.mem.Allocator) !void {
+    _ = instr;
+    _ = vial;
+    _ = allocator;
+    // Tool-specific validation will be implemented as the toolchain matures
 }
 
 fn emitPacket(

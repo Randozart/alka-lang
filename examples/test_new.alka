@@ -1,0 +1,23 @@
+// Test new instructions
+REQUIRE "ivyb_pascal.alkavl"
+
+// Existing instructions
+CLAIM GPU_MAIN
+LIMIT GPU_MAIN Thermal 75C
+FLOW 0x1000 -> 0x2000 4096
+
+// New substrate instructions
+OSSIFY 0
+BOND 0x10000 TO GPU_MAIN 65536
+STILL 100
+RESONATE 64000
+OSCILLATE 0 1 10
+IMC_HIJACK 0
+
+// Other new instructions
+VEIL GPU_MAIN
+DELEGATE GPU_MAIN
+FOSSILIZE GPU_MAIN
+STRIKE 0x1000 1000
+WHISPER GPU_MAIN
+GHOST PCI_CONFIG
