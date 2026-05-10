@@ -1,0 +1,135 @@
+{
+  "name": "Alka Officina Dark",
+  "type": "dark",
+  "colors": {
+    "editor.background": "#0D1117",
+    "editor.foreground": "#E0E0E0",
+    "editor.lineHighlightBackground": "#161B22",
+    "editor.selectionBackground": "#3B5070",
+    "editorCursor.foreground": "#DFFF00",
+    "editorLineNumber.foreground": "#484F58",
+    "editorLineNumber.activeForeground": "#8B949E",
+    "activityBar.background": "#161B22",
+    "activityBar.foreground": "#DFFF00",
+    "sideBar.background": "#0D1117",
+    "sideBar.foreground": "#C9D1D9",
+    "statusBar.background": "#21262D",
+    "statusBar.foreground": "#C9D1D9",
+    "titleBar.activeBackground": "#161B22",
+    "titleBar.activeForeground": "#C9D1D9"
+  },
+  "tokenColors": [
+    {
+      "scope": "keyword.control.alka",
+      "settings": {
+        "foreground": "#DFFF00",
+        "fontStyle": "bold"
+      }
+    },
+    {
+      "scope": "keyword.sovereignty.alka",
+      "settings": {
+        "foreground": "#FFD700",
+        "fontStyle": "bold"
+      }
+    },
+    {
+      "scope": "keyword.solvent.alka",
+      "settings": {
+        "foreground": "#00FFFF"
+      }
+    },
+    {
+      "scope": "keyword.dissolution.alka",
+      "settings": {
+        "foreground": "#FF00FF"
+      }
+    },
+    {
+      "scope": "keyword.pulse.alka",
+      "settings": {
+        "foreground": "#1F51FF"
+      }
+    },
+    {
+      "scope": "keyword.antidote.alka",
+      "settings": {
+        "foreground": "#FF5F1F"
+      }
+    },
+    {
+      "scope": "keyword.forging.alka",
+      "settings": {
+        "foreground": "#FF6B35"
+      }
+    },
+    {
+      "scope": "keyword.safety.alka",
+      "settings": {
+        "foreground": "#39FF14"
+      }
+    },
+    {
+      "scope": "variable.alka",
+      "settings": {
+        "foreground": "#FF79C6"
+      }
+    },
+    {
+      "scope": "string.alka",
+      "settings": {
+        "foreground": "#F1FA8C"
+      }
+    },
+    {
+      "scope": "number.alka",
+      "settings": {
+        "foreground": "#BD93F9"
+      }
+    },
+    {
+      "scope": "comment.alka",
+      "settings": {
+        "foreground": "#6A737D",
+        "fontStyle": "italic"
+      }
+    },
+    {
+      "scope": "operator.alka",
+      "settings": {
+        "foreground": "#FF79C6"
+      }
+    },
+    {
+      "scope": "punctuation.alka",
+      "settings": {
+        "foreground": "#8B949E"
+      }
+    }
+  ],
+  "semanticTokenColors": {
+    "alka.keyword.control": {
+      "foreground": "#DFFF00",
+      "fontStyle": "bold"
+    },
+    "alka.keyword.sovereignty": {
+      "foreground": "#FFD700",
+      "fontStyle": "bold"
+    },
+    "alka.keyword.solvent": {
+      "foreground": "#00FFFF"
+    },
+    "alka.keyword.dissolution": {
+      "foreground": "#FF00FF"
+    },
+    "alka.keyword.pulse": {
+      "foreground": "#1F51FF"
+    },
+    "alka.keyword.antidote": {
+      "foreground": "#FF5F1F"
+    },
+    "alka.variable": {
+      "foreground": "#FF79C6"
+    }
+  }
+}

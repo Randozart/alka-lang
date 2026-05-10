@@ -1,0 +1,55 @@
+{
+  "name": "alka-lang",
+  "displayName": "Alka Language",
+  "description": "The Officina - Alka hardware instruction set for sovereign silicon manipulation",
+  "version": "0.1.0",
+  "publisher": "alka-lang",
+  "engines": {
+    "vscode": "^1.75.0"
+  },
+  "categories": [
+    "Programming Languages",
+    "Themes"
+  ],
+  "contributes": {
+    "languages": [
+      {
+        "id": "alka",
+        "aliases": ["Alka", "alka"],
+        "extensions": [".alka", ".alkavl", ".alkas", ".azoth"],
+        "configuration": "./alka.configuration.json"
+      }
+    ],
+    "grammars": [
+      {
+        "language": "alka",
+        "scopeName": "source.alka",
+        "path": "./syntaxes/alka.tmLanguage.json"
+      }
+    ],
+    "themes": [
+      {
+        "label": "Alka Officina",
+        "uiTheme": "vs-dark",
+        "path": "./themes/officina-dark.json"
+      }
+    ],
+    "tokenColors": [
+      {
+        "scope": "source.alka",
+        "settings": {
+          "foreground": "#E0E0E0"
+        }
+      }
+    ]
+  },
+  "scripts": {
+    "package": "vsce package"
+  },
+  "dependencies": {
+    "vscode": "^1.75.0"
+  },
+  "devDependencies": {
+    "@vscode/vsce": "^0.8.0"
+  }
+}

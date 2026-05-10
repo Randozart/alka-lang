@@ -1,0 +1,67 @@
+{
+  "scopeName": "source.alka",
+  "patterns": [
+    {
+      "name": "comment.line.alka",
+      "match": "//.*$"
+    },
+    {
+      "name": "comment.block.alka",
+      "begin": "/\\*",
+      "end": "\\*/"
+    },
+    {
+      "name": "keyword.control.alka",
+      "match": "\\b(LET|IF|ELSE|FOR|WHILE|IN|SEQUENCE|ON|AT)\\b"
+    },
+    {
+      "name": "keyword.sovereignty.alka",
+      "match": "\\b(CLAIM|STAKE|VOUCH|DELEGATE|LIMIT)\\b"
+    },
+    {
+      "name": "keyword.solvent.alka",
+      "match": "\\b(FLOW|SHIFT|TRANSVERSE|SCATTER|DISTILL|MOLT)\\b"
+    },
+    {
+      "name": "keyword.dissolution.alka",
+      "match": "\\b(STRIKE|GHOST|HIJACK|VEIL|WHISPER|IMC_HIJACK)\\b"
+    },
+    {
+      "name": "keyword.pulse.alka",
+      "match": "\\b(PULSE|RHYTHM|STASIS|DRIFT|RESONATE|OSCILLATE)\\b"
+    },
+    {
+      "name": "keyword.antidote.alka",
+      "match": "\\b(SNAP|REVERT|AUDIT|VERIFY|GUARD)\\b"
+    },
+    {
+      "name": "keyword.forging.alka",
+      "match": "\\b(RECAST|FORGE|CRYSTALLIZE|OVERCLOCK|ABDUCT|SNOOP)\\b"
+    },
+    {
+      "name": "keyword.safety.alka",
+      "match": "\\b(OSSIFY|BOND|STILL|ISOLATE|FENCE|SYNC|YIELD)\\b"
+    },
+    {
+      "name": "variable.alka",
+      "match": "\\b([A-Z_][A-Z0-9_]*)\\b"
+    },
+    {
+      "name": "number.alka",
+      "match": "\\b(0x[0-9A-Fa-f]+|\\d+)\\b"
+    },
+    {
+      "name": "string.alka",
+      "begin": "\"",
+      "end": "\""
+    },
+    {
+      "name": "operator.alka",
+      "match": "[=<>!+\\-*/&|%^]+"
+    },
+    {
+      "name": "punctuation.alka",
+      "match": "[(){}\\[\\],;:]"
+    }
+  ]
+}

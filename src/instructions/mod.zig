@@ -52,6 +52,12 @@ pub const OpCode = enum(u8) {
     GUARD = 0x31,
     ISOLATE = 0x32,
     VERIFY = 0x33,
+    OSSIFY = 0x34,
+    BOND = 0x35,
+    STILL = 0x36,
+    RESONATE = 0x37,
+    OSCILLATE = 0x38,
+    IMC_HIJACK = 0x39,
 };
 
 pub const Category = enum {
@@ -145,6 +151,14 @@ pub const instruction_set: []const Instruction = &[_]Instruction{
     .{ .op_code = .GUARD, .name = "GUARD", .category = .SAFETY, .description = "Runtime safety sentinel" },
     .{ .op_code = .ISOLATE, .name = "ISOLATE", .category = .SAFETY, .description = "Complete hardware isolation" },
     .{ .op_code = .VERIFY, .name = "VERIFY", .category = .SAFETY, .description = "Cryptographic state verification" },
+
+    // SUBSTRATE ORCHESTRATION (0x34-0x39)
+    .{ .op_code = .OSSIFY, .name = "OSSIFY", .category = .CORE, .description = "Pin CPU core to Alka, bypass scheduler" },
+    .{ .op_code = .BOND, .name = "BOND", .category = .CORE, .description = "Create RAM-to-GPU direct tunnel" },
+    .{ .op_code = .STILL, .name = "STILL", .category = .CORE, .description = "Manual DRAM refresh control" },
+    .{ .op_code = .RESONATE, .name = "RESONATE", .category = .PULSE, .description = "Coordinate reset for pure execution window" },
+    .{ .op_code = .OSCILLATE, .name = "OSCILLATE", .category = .PULSE, .description = "Dual-bank refresh coordination" },
+    .{ .op_code = .IMC_HIJACK, .name = "IMC_HIJACK", .category = .DISSOLUTION, .description = "Direct memory controller access" },
 };
 
 pub fn getInstructionByName(name: []const u8) ?*const Instruction {
