@@ -36,10 +36,9 @@ pub const BOND = struct {
 
     pub fn execute(
         operands: []const u64,
-        ctx: interface.ToolInterface.Context,
+        _: interface.ToolInterface.Context,
     ) interface.ToolInterface.Result {
         const size = if (operands.len >= 3) operands[2] else 0;
-        _ = ctx;
 
         return interface.ToolInterface.Result{
             .success = true,

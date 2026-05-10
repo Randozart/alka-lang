@@ -10,10 +10,9 @@ pub const RESONATE = struct {
 
     pub fn validate(
         operands: []const u64,
-        ctx: interface.ToolInterface.Context,
+        _: interface.ToolInterface.Context,
     ) interface.ToolInterface.ValidateError!interface.ToolInterface.ValidateResult {
         _ = operands;
-        _ = ctx;
 
         return interface.ToolInterface.ValidateResult{
             .allowed = true,
@@ -24,10 +23,9 @@ pub const RESONATE = struct {
 
     pub fn execute(
         operands: []const u64,
-        ctx: interface.ToolInterface.Context,
+        _: interface.ToolInterface.Context,
     ) interface.ToolInterface.Result {
         const window_ns = if (operands.len > 0) operands[0] else 64000;
-        _ = ctx;
 
         return interface.ToolInterface.Result{
             .success = true,

@@ -2,6 +2,13 @@ pub const claim = @import("core/claim.zig");
 pub const flow = @import("core/flow.zig");
 pub const shift = @import("core/shift.zig");
 pub const misc = @import("core/misc.zig");
+pub const substrate = @import("substrate/");
+pub const ossify = @import("substrate/ossify.zig");
+pub const bond = @import("substrate/bond.zig");
+pub const still = @import("substrate/still.zig");
+pub const resonate = @import("substrate/resonate.zig");
+pub const oscillate = @import("substrate/oscillate.zig");
+pub const imc_hijack = @import("substrate/imc_hijack.zig");
 
 pub const Tool = struct {
     pub const Context = @import("interface.zig").ToolInterface.Context;
@@ -34,6 +41,12 @@ pub fn getTool(op_code: u8) ?Tool {
         0x0C => Tool{ .name = "SNAP", .description = "Serialize state", .validate = genericValidate, .execute = genericExecute },
         0x0D => Tool{ .name = "REVERT", .description = "Restore state", .validate = genericValidate, .execute = genericExecute },
         0x0E => Tool{ .name = "LIMIT", .description = "Hard contract", .validate = genericValidate, .execute = genericExecute },
+        0x34 => Tool{ .name = "OSSIFY", .description = "Pin CPU core to Alka", .validate = ossify.OSSIFY.validate, .execute = ossify.OSSIFY.execute },
+        0x35 => Tool{ .name = "BOND", .description = "RAM-to-GPU direct tunnel", .validate = bond.BOND.validate, .execute = bond.BOND.execute },
+        0x36 => Tool{ .name = "STILL", .description = "Manual DRAM refresh control", .validate = still.STILL.validate, .execute = still.STILL.execute },
+        0x37 => Tool{ .name = "RESONATE", .description = "Coordinate reset for pure window", .validate = resonate.RESONATE.validate, .execute = resonate.RESONATE.execute },
+        0x38 => Tool{ .name = "OSCILLATE", .description = "Dual-bank refresh coordination", .validate = oscillate.OSCILLATE.validate, .execute = oscillate.OSCILLATE.execute },
+        0x39 => Tool{ .name = "IMC_HIJACK", .description = "Direct memory controller access", .validate = imc_hijack.IMC_HIJACK.validate, .execute = imc_hijack.IMC_HIJACK.execute },
         else => null,
     };
 }

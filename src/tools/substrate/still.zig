@@ -13,7 +13,7 @@ pub const STILL = struct {
 
     pub fn validate(
         operands: []const u64,
-        ctx: interface.ToolInterface.Context,
+        _: interface.ToolInterface.Context,
     ) interface.ToolInterface.ValidateError!interface.ToolInterface.ValidateResult {
         if (operands.len < 1) {
             return interface.ToolInterface.ValidateError.InvalidAlignment;
@@ -25,8 +25,6 @@ pub const STILL = struct {
             return interface.ToolInterface.ValidateError.ThermalLimitExceeded;
         }
 
-        _ = ctx;
-
         return interface.ToolInterface.ValidateResult{
             .allowed = true,
             .injected_operations = &.{ "SYNC L3" },
@@ -36,10 +34,9 @@ pub const STILL = struct {
 
     pub fn execute(
         operands: []const u64,
-        ctx: interface.ToolInterface.Context,
+        _: interface.ToolInterface.Context,
     ) interface.ToolInterface.Result {
         const hold_us = if (operands.len > 0) operands[0] else DEFAULT_REFRESH_INTERVAL_US;
-        _ = ctx;
 
         return interface.ToolInterface.Result{
             .success = true,

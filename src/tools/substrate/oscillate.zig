@@ -10,7 +10,7 @@ pub const OSCILLATE = struct {
 
     pub fn validate(
         operands: []const u64,
-        ctx: interface.ToolInterface.Context,
+        _: interface.ToolInterface.Context,
     ) interface.ToolInterface.ValidateError!interface.ToolInterface.ValidateResult {
         if (operands.len < 2) {
             return interface.ToolInterface.ValidateError.InvalidAlignment;
@@ -20,7 +20,6 @@ pub const OSCILLATE = struct {
         const bank_b = operands[1];
         _ = bank_a;
         _ = bank_b;
-        _ = ctx;
 
         return interface.ToolInterface.ValidateResult{
             .allowed = true,
@@ -31,10 +30,9 @@ pub const OSCILLATE = struct {
 
     pub fn execute(
         operands: []const u64,
-        ctx: interface.ToolInterface.Context,
+        _: interface.ToolInterface.Context,
     ) interface.ToolInterface.Result {
         const iterations = if (operands.len > 2) operands[2] else 1;
-        _ = ctx;
 
         return interface.ToolInterface.Result{
             .success = true,

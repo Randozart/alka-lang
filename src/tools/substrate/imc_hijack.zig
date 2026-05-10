@@ -20,13 +20,11 @@ pub const IMC_HIJACK = struct {
 
     pub fn validate(
         operands: []const u64,
-        ctx: interface.ToolInterface.Context,
+        _: interface.ToolInterface.Context,
     ) interface.ToolInterface.ValidateError!interface.ToolInterface.ValidateResult {
         if (operands.len < 1) {
             return interface.ToolInterface.ValidateError.InvalidAlignment;
         }
-
-        _ = ctx;
 
         return interface.ToolInterface.ValidateResult{
             .allowed = true,
@@ -37,10 +35,9 @@ pub const IMC_HIJACK = struct {
 
     pub fn execute(
         operands: []const u64,
-        ctx: interface.ToolInterface.Context,
+        _: interface.ToolInterface.Context,
     ) interface.ToolInterface.Result {
         const cmd = if (operands.len > 0) operands[0] else 0;
-        _ = ctx;
 
         var msg: []const u8 = undefined;
         switch (cmd) {
