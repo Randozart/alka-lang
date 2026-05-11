@@ -1,12 +1,13 @@
 {
   "name": "alka-lang",
   "displayName": "Alka Language",
-  "description": "The Officina - Alka hardware instruction set for sovereign silicon manipulation",
+  "description": "The Officina - Alka hardware instruction set for (sub-)kernel manipulation",
   "version": "0.1.0",
   "publisher": "alka-lang",
   "engines": {
     "vscode": "^1.75.0"
   },
+  "icon": "assets/alka-logo.svg",
   "categories": [
     "Programming Languages",
     "Themes"
@@ -15,9 +16,44 @@
     "languages": [
       {
         "id": "alka",
-        "aliases": ["Alka", "alka"],
-        "extensions": [".alka", ".alkavl", ".alkas", ".azoth"],
+        "aliases": [
+          "Alka",
+          "alka"
+        ],
+        "extensions": [
+          ".alka",
+          ".azoth"
+        ],
+        "icon": {
+          "light": "assets/alka-icon.svg",
+          "dark": "assets/alka-icon.svg"
+        },
         "configuration": "./alka.configuration.json"
+      },
+      {
+        "id": "alkavl",
+        "aliases": [
+          "Alka Vial",
+          "alkavl"
+        ],
+        "extensions": [".alkavl"],
+        "icon": {
+          "light": "assets/alka-icon.svg",
+          "dark": "assets/alka-icon.svg"
+        },
+        "configuration": "./alkavl.configuration.json"
+      },
+      {
+        "id": "alkas",
+        "aliases": [
+          "Alka Binary",
+          "alkas"
+        ],
+        "extensions": [".alkas"],
+        "icon": {
+          "light": "assets/alka-icon.svg",
+          "dark": "assets/alka-icon.svg"
+        }
       }
     ],
     "grammars": [
@@ -25,6 +61,11 @@
         "language": "alka",
         "scopeName": "source.alka",
         "path": "./syntaxes/alka.tmLanguage.json"
+      },
+      {
+        "language": "alkavl",
+        "scopeName": "source.alkavl",
+        "path": "./syntaxes/alkavl.tmLanguage.json"
       }
     ],
     "themes": [
@@ -46,10 +87,7 @@
   "scripts": {
     "package": "vsce package"
   },
-  "dependencies": {
-    "vscode": "^1.75.0"
-  },
   "devDependencies": {
-    "@vscode/vsce": "^0.8.0"
+    "@vscode/vsce": "^2.16.0"
   }
 }

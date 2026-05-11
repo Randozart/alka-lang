@@ -20,6 +20,7 @@
   },
   "tokenColors": [
     {
+      "name": "Alka: Control Flow (Swirl)",
       "scope": "keyword.control.alka",
       "settings": {
         "foreground": "#DFFF00",
@@ -27,87 +28,243 @@
       }
     },
     {
-      "scope": "keyword.sovereignty.alka",
+      "name": "Alka: Sovereignty (Gold)",
+      "scope": "keyword.other.sovereignty.alka",
       "settings": {
         "foreground": "#FFD700",
         "fontStyle": "bold"
       }
     },
     {
-      "scope": "keyword.solvent.alka",
+      "name": "Alka: Solvent (Cyan)",
+      "scope": "keyword.other.solvent.alka",
       "settings": {
         "foreground": "#00FFFF"
       }
     },
     {
-      "scope": "keyword.dissolution.alka",
+      "name": "Alka: Dissolution (Magenta)",
+      "scope": "keyword.other.dissolution.alka",
       "settings": {
         "foreground": "#FF00FF"
       }
     },
     {
-      "scope": "keyword.pulse.alka",
+      "name": "Alka: Pulse (Blue)",
+      "scope": "keyword.other.pulse.alka",
       "settings": {
         "foreground": "#1F51FF"
       }
     },
     {
-      "scope": "keyword.antidote.alka",
+      "name": "Alka: Antidote (Orange)",
+      "scope": "keyword.other.antidote.alka",
       "settings": {
         "foreground": "#FF5F1F"
       }
     },
     {
-      "scope": "keyword.forging.alka",
+      "name": "Alka: Forging (Orange)",
+      "scope": "keyword.other.forging.alka",
       "settings": {
         "foreground": "#FF6B35"
       }
     },
     {
-      "scope": "keyword.safety.alka",
+      "name": "Alka: Safety (Neon Green)",
+      "scope": "keyword.other.safety.alka",
       "settings": {
         "foreground": "#39FF14"
       }
     },
     {
-      "scope": "variable.alka",
+      "name": "Alka: Substrate (Red - CRITICAL)",
+      "scope": "keyword.other.substrate.alka",
+      "settings": {
+        "foreground": "#FF4444",
+        "fontStyle": "bold italic"
+      }
+    },
+    {
+      "name": "Alka: Diagnostic (Light Blue)",
+      "scope": "keyword.other.diagnostic.alka",
+      "settings": {
+        "foreground": "#44AAFF",
+        "fontStyle": "italic"
+      }
+    },
+    {
+      "name": "Alka: Testing (Gray)",
+      "scope": "keyword.other.testing.alka",
+      "settings": {
+        "foreground": "#AAAAAA",
+        "fontStyle": "italic"
+      }
+    },
+    {
+      "name": "Alka: Flux (Purple)",
+      "scope": "keyword.other.flux.alka",
+      "settings": {
+        "foreground": "#8844FF",
+        "fontStyle": "italic"
+      }
+    },
+    {
+      "name": "Alka: Variables",
+      "scope": ["variable.other.constant.alka", "variable.other.constant.alkavl"],
       "settings": {
         "foreground": "#FF79C6"
       }
     },
     {
-      "scope": "string.alka",
+      "name": "Alka: Strings",
+      "scope": ["string.quoted.double.alka", "string.quoted.double.alkavl"],
       "settings": {
         "foreground": "#F1FA8C"
       }
     },
     {
-      "scope": "number.alka",
+      "name": "Alka: Numbers",
+      "scope": ["constant.numeric.alka", "constant.numeric.alkavl"],
       "settings": {
         "foreground": "#BD93F9"
       }
     },
     {
-      "scope": "comment.alka",
+      "name": "Alka: Operators",
+      "scope": "keyword.operator.alka",
+      "settings": {
+        "foreground": "#FF79C6"
+      }
+    },
+    {
+      "name": "Alka: Punctuation",
+      "scope": ["punctuation.definition.alka", "punctuation.definition.alkavl"],
+      "settings": {
+        "foreground": "#8B949E"
+      }
+    },
+    {
+      "name": "Alka: Vial Keywords",
+      "scope": "keyword.control.alkavl",
+      "settings": {
+        "foreground": "#DFFF00",
+        "fontStyle": "bold"
+      }
+    },
+    {
+      "name": "Alka: Vial Types",
+      "scope": "keyword.other.type.alkavl",
+      "settings": {
+        "foreground": "#8BE9FD",
+        "fontStyle": "underline"
+      }
+    },
+    {
+      "name": "Alka: Vial Units",
+      "scope": "constant.other.unit.alkavl",
+      "settings": {
+        "foreground": "#50FA7B"
+      }
+    },
+    {
+      "name": "Alka: Comments",
+      "scope": ["comment.line.double-slash.alka", "comment.block.alka", "comment.line.double-slash.alkavl"],
       "settings": {
         "foreground": "#6A737D",
         "fontStyle": "italic"
       }
     },
     {
-      "scope": "operator.alka",
+      "name": "Comments (All Languages)",
+      "scope": ["comment", "comment.line", "comment.block", "punctuation.definition.comment"],
+      "settings": {
+        "foreground": "#6A737D",
+        "fontStyle": "italic"
+      }
+    },
+    {
+      "name": "Strings (All Languages)",
+      "scope": ["string", "string.quoted", "string.template", "punctuation.definition.string"],
+      "settings": {
+        "foreground": "#F1FA8C"
+      }
+    },
+    {
+      "name": "Numbers (All Languages)",
+      "scope": ["constant.numeric", "constant.other"],
+      "settings": {
+        "foreground": "#BD93F9"
+      }
+    },
+    {
+      "name": "Keywords (All Languages)",
+      "scope": ["keyword", "keyword.control", "keyword.operator", "keyword.other"],
       "settings": {
         "foreground": "#FF79C6"
       }
     },
     {
-      "scope": "punctuation.alka",
+      "name": "Variables (All Languages)",
+      "scope": ["variable", "variable.other", "variable.language"],
+      "settings": {
+        "foreground": "#E0E0E0"
+      }
+    },
+    {
+      "name": "Functions (All Languages)",
+      "scope": ["entity.name.function", "support.function", "meta.function-call"],
+      "settings": {
+        "foreground": "#8BE9FD"
+      }
+    },
+    {
+      "name": "Types (All Languages)",
+      "scope": ["entity.name.type", "support.type", "storage.type"],
+      "settings": {
+        "foreground": "#8BE9FD",
+        "fontStyle": "italic"
+      }
+    },
+    {
+      "name": "Constants (All Languages)",
+      "scope": ["constant.language", "constant.character"],
+      "settings": {
+        "foreground": "#FF79C6"
+      }
+    },
+    {
+      "name": "Punctuation (All Languages)",
+      "scope": ["punctuation", "punctuation.definition", "meta.brace"],
       "settings": {
         "foreground": "#8B949E"
+      }
+    },
+    {
+      "name": "Tags (All Languages)",
+      "scope": ["entity.name.tag", "meta.tag"],
+      "settings": {
+        "foreground": "#FF5F1F"
+      }
+    },
+    {
+      "name": "Attributes (All Languages)",
+      "scope": ["entity.other.attribute-name", "meta.attribute"],
+      "settings": {
+        "foreground": "#50FA7B"
       }
     }
   ],
   "semanticTokenColors": {
+    "textMateRules": [
+      {
+        "scope": ["comment.line.double-slash.alka", "comment.block.alka"],
+        "settings": {
+          "foreground": "#6A737D",
+          "fontStyle": "italic"
+        }
+      }
+    ],
     "alka.keyword.control": {
       "foreground": "#DFFF00",
       "fontStyle": "bold"
@@ -127,6 +284,28 @@
     },
     "alka.keyword.antidote": {
       "foreground": "#FF5F1F"
+    },
+    "alka.keyword.forging": {
+      "foreground": "#FF6B35"
+    },
+    "alka.keyword.safety": {
+      "foreground": "#39FF14"
+    },
+    "alka.keyword.substrate": {
+      "foreground": "#FF4444",
+      "fontStyle": "bold italic"
+    },
+    "alka.keyword.diagnostic": {
+      "foreground": "#44AAFF",
+      "fontStyle": "italic"
+    },
+    "alka.keyword.testing": {
+      "foreground": "#AAAAAA",
+      "fontStyle": "italic"
+    },
+    "alka.keyword.flux": {
+      "foreground": "#8844FF",
+      "fontStyle": "italic"
     },
     "alka.variable": {
       "foreground": "#FF79C6"

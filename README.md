@@ -2,7 +2,7 @@
 
 <img src="assets/alka-logo.svg" alt="Alka" width="200"/>
 
-> A non-Turing-complete, component-driven hardware instruction set for physical machine state orchestration.
+> A non-Turing-complete, component-driven hardware instruction set for (sub-)kernel state orchestration.
 
 [![Zig](https://img.shields.io/badge/Zig-0.14+-yellow.svg)](https://ziglang.org)
 [![License: Apache 2.0](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE) 
@@ -33,6 +33,22 @@ This is where Alka comes in. The name is based on the alchemical *Alkahest*, the
 The intended purpose for this is hardware hacking, custom drivers, and to some extent cybersecurtity, pen-testing and general computer chicanery.
 
 As for the alchemical language? I figured it would be kind of neat.
+
+## VSCodium Extension
+
+Install the `.vsix` package:
+```bash
+flatpak run com.vscodium.codium --install-extension alka-lang.vsix
+```
+
+**Syntax highlighting works with any theme** — Alka uses standard TextMate scopes (`keyword.control`, `string.quoted.double`, `comment.line`, etc.) so keywords, strings, and comments are colored by whatever theme you have active.
+
+**Recommended:** Select the **"Alka Officina"** color theme (`Ctrl+K Ctrl+T`) for the full risk-based color personality:
+- 🟡 **Gold** — Sovereignty commands (`CLAIM`, `STAKE`)
+- 🔴 **Red** — Substrate operations (`OSSIFY`, `BOND`, `STILL`)
+-  **Magenta** — Dissolution (`STRIKE`, `GHOST`, `HIJACK`)
+- 🔵 **Cyan** — Solvent (`FLOW`, `SHIFT`)
+- 🟢 **Neon Green** — Safety (`FENCE`, `SYNC`, `ISOLATE`)
 
 ## File Types
 

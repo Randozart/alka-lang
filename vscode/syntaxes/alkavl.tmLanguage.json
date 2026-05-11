@@ -1,0 +1,38 @@
+{
+  "scopeName": "source.alkavl",
+  "patterns": [
+    {
+      "name": "comment.line.double-slash.alkavl",
+      "match": "//.*$"
+    },
+    {
+      "name": "keyword.control.alkavl",
+      "match": "\\b(Vessel|Aperture|Thermal|Memory|BLOCK_DEVICE|DMA_CAPABLE)\\b"
+    },
+    {
+      "name": "keyword.other.type.alkavl",
+      "match": "\\b(Prefetchable|NonPrefetchable|DMA|Real|bool|string|int|float)\\b"
+    },
+    {
+      "name": "constant.other.unit.alkavl",
+      "match": "\\b(MB|GB|KB|TB|B|ns|us|ms|Hz|MHz|GHz|K|C)\\b"
+    },
+    {
+      "name": "variable.other.constant.alkavl",
+      "match": "\\b([A-Z_][A-Z0-9_]*)\\b"
+    },
+    {
+      "name": "constant.numeric.alkavl",
+      "match": "\\b(0x[0-9A-Fa-f]+|\\d+\\.?\\d*([eE][+-]?\\d+)?)\\b"
+    },
+    {
+      "name": "string.quoted.double.alkavl",
+      "begin": "\"",
+      "end": "\""
+    },
+    {
+      "name": "punctuation.definition.alkavl",
+      "match": "[(){}\\[\\],;:]"
+    }
+  ]
+}
