@@ -20,6 +20,28 @@
 // that is itself a compiler, interpreter, or similar tool that incorporates
 // or embeds the Work.
 
+// VEIL — Device Masking Tool
+//
+// Purpose:
+//   Masks a device from OS enumeration by clearing PCI config space visibility
+//   bits. The OS sees "Disconnected" while Alka maintains full DMA access.
+//   This is the cornerstone of hardware-level stealth operations.
+//
+// How it works:
+//   1. Validates the veil mode (0-3) for the target vessel
+//   2. Clears PCI config space visibility bits at the specified level
+//   3. Injects GHOST and SYNC operations to ensure the mask is coherent
+//   4. Device disappears from lspci and OS device lists
+//
+// VITRIOL relevance:
+//   Used in dissolution operations to hide GPU or other devices from the OS
+//   while Alka maintains exclusive control. Combined with GHOST, this enables
+//   "invisible execution" — the machine is occupied but the OS doesn't know.
+//
+// Op-Code: 0x0F
+// Category: DISSOLUTION
+// Safety: L1 (hard contract — will hard abort on violation)
+
 const std = @import("std");
 const interface = @import("../interface.zig");
 

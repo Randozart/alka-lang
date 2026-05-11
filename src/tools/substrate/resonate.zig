@@ -1,3 +1,25 @@
+// RESONATE — Hardware Reset Coordination Tool
+//
+// Purpose:
+//   Forces coordinated hardware reset between devices to create a pure
+//   execution window. Both devices enter a known state simultaneously,
+//   eliminating timing drift and ensuring deterministic behavior.
+//
+// How it works:
+//   1. Validates target devices are accessible and compatible
+//   2. Injects STILL and SYNC operations to pause refresh and synchronize
+//   3. Triggers coordinated reset on both devices
+//   4. Returns the aligned execution window duration
+//
+// VITRIOL relevance:
+//   Before critical Moore Stream transfers, RESONATE aligns the GPU and NVMe
+//   into a known state. This eliminates timing jitter and ensures the transfer
+//   starts from a clean baseline — essential for reproducible results.
+//
+// Op-Code: 0x37
+// Category: SUBSTRATE
+// Safety: CRITICAL (requires explicit Vial waiver — resets active devices)
+
 const std = @import("std");
 const interface = @import("../interface.zig");
 

@@ -1,3 +1,25 @@
+// OSSIFY — CPU Core Pinning Tool
+//
+// Purpose:
+//   Pins a CPU core to Alka execution, bypassing the Linux scheduler entirely.
+//   The core becomes a dedicated Alka execution unit — no context switches,
+//   no IRQ handling, no OS interference. Pure silicon control.
+//
+// How it works:
+//   1. Validates the target core ID is available (0-3 for isolated cores)
+//   2. Claims the CPU core and removes it from the scheduler runqueue
+//   3. Injects SYNC L1 barrier to ensure the core isolation is coherent
+//   4. Core now executes Alka instructions with zero OS latency
+//
+// VITRIOL relevance:
+//   For hard real-time operations, OSSIFY a core to guarantee nanosecond
+//   precision. The Azoth counterpart is YIELD — which returns the core to
+//   the scheduler when the experiment completes or fails.
+//
+// Op-Code: 0x34
+// Category: SUBSTRATE
+// Safety: CRITICAL (requires explicit Vial waiver — can cause system instability)
+
 const std = @import("std");
 const interface = @import("../interface.zig");
 

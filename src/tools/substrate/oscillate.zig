@@ -1,3 +1,25 @@
+// OSCILLATE — Dual-Bank Refresh Coordination Tool
+//
+// Purpose:
+//   Alternates DRAM refresh between two banks for continuous data flow.
+//   While bank A refreshes, bank B flows data — and vice versa. This
+//   eliminates the downtime that single-bank refresh would cause.
+//
+// How it works:
+//   1. Validates both bank IDs are accessible and distinct
+//   2. Injects STILL, FLOW, and RESONATE in a ping-pong sequence
+//   3. Bank A refreshes while bank B transfers, then swaps
+//   4. Returns cycle count for the full oscillation
+//
+// VITRIOL relevance:
+//   Enables continuous Moore Stream transfers without refresh-induced pauses.
+//   The ping-pong pattern keeps the bus saturated — one bank always flowing
+//   while the other maintains data integrity through refresh.
+//
+// Op-Code: 0x38
+// Category: SUBSTRATE
+// Safety: CRITICAL (requires explicit Vial waiver — manual refresh coordination)
+
 const std = @import("std");
 const interface = @import("../interface.zig");
 

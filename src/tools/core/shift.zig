@@ -1,3 +1,25 @@
+// SHIFT — BAR Window Remap Tool
+//
+// Purpose:
+//   Remaps a BAR window to a new offset, enabling the sliding window mechanism
+//   that allows Alka to access more memory than the 256MB aperture size permits.
+//   This is how large transfers bypass aperture limitations.
+//
+// How it works:
+//   1. Validates the target offset is within the physical BAR range
+//   2. Writes the new offset to the BAR window register
+//   3. Injects a SYNC L1 barrier to ensure the remap is visible to the device
+//   4. Returns control for the next FLOW operation in the windowed sequence
+//
+// VITRIOL relevance:
+//   When FLOW exceeds the 256MB aperture, the compiler injects a SHIFT loop:
+//   SHIFT @ 0, FLOW 256MB, SHIFT @ 256MB, FLOW 256MB, etc. This enables
+//   transferring multi-gigabyte payloads through a small BAR window.
+//
+// Op-Code: 0x04
+// Category: CORE
+// Safety: L2 (soft contract — injects SYNC barrier)
+
 const std = @import("std");
 const interface = @import("../interface.zig");
 

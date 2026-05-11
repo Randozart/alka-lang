@@ -20,6 +20,29 @@
 // that is itself a compiler, interpreter, or similar tool that incorporates
 // or embeds the Work.
 
+// STRIKE — Targeted Bit Manipulation Tool
+//
+// Purpose:
+//   Performs targeted bit manipulation via rowhammer or direct VRAM poke.
+//   This is the most dangerous instruction in Alka — it can flip bits in
+//   physical memory through high-frequency non-cached access patterns.
+//
+// How it works:
+//   1. Validates the target address is non-zero and pattern is within range
+//   2. Injects FLUX to invalidate cache and AUDIT to verify residue
+//   3. Executes high-frequency access pattern at the target address
+//   4. Returns success with bytes transferred (typically 4 bytes per strike)
+//
+// VITRIOL relevance:
+//   Used in dissolution research for rowhammer experiments and bit-flipping
+//   attacks. The compiler wraps STRIKE with SENSE+GUARD for thermal protection
+//   and AUDIT for post-operation verification. Extremely dangerous — can
+//   cause data corruption or physical damage if misused.
+//
+// Op-Code: 0x1C
+// Category: DISSOLUTION
+// Safety: CRITICAL (requires explicit Vial waiver — can cause physical damage)
+
 const std = @import("std");
 const interface = @import("../interface.zig");
 

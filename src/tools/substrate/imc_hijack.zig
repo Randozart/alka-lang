@@ -1,3 +1,25 @@
+// IMC_HIJACK — Memory Controller Access Tool
+//
+// Purpose:
+//   Provides direct access to the Ivy Bridge Memory Controller registers
+//   via MCHBAR. This bypasses the OS memory manager entirely, enabling
+//   manual control of DRAM timing, refresh, and command scheduling.
+//
+// How it works:
+//   1. Maps the MCHBAR base address (0xFED10000) into accessible space
+//   2. Claims the system bus for exclusive IMC access
+//   3. Supports PAUSE_REFRESH, FORCE_REFRESH, and RESTORE commands
+//   4. Returns command status for verification
+//
+// VITRIOL relevance:
+//   The deepest level of substrate control — IMC_HIJACK lets Alka manage
+//   DRAM at the hardware level. Used with STILL and OSCILLATE for complete
+//   memory timing control during precision operations.
+//
+// Op-Code: 0x39
+// Category: SUBSTRATE
+// Safety: CRITICAL (requires explicit Vial waiver — direct memory controller access)
+
 const std = @import("std");
 const interface = @import("../interface.zig");
 

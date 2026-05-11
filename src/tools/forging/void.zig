@@ -20,6 +20,28 @@
 // that is itself a compiler, interpreter, or similar tool that incorporates
 // or embeds the Work.
 
+// VOID — Secure Substrate Erase Tool
+//
+// Purpose:
+//   Securely erases substrate memory by overwriting with cryptographic
+//   patterns. This is the calcination art — destroying data at the physical
+//   level so it cannot be recovered by any means.
+//
+// How it works:
+//   1. Validates the target address and size are non-zero
+//   2. Injects SYNC barrier and VERIFY operation for pre-erase attestation
+//   3. Overwrites the target region with cryptographic erase patterns
+//   4. Returns bytes transferred for verification
+//
+// VITRIOL relevance:
+//   Used as the Azoth counterpart to FLOW — if a transfer corrupts data,
+//   VOID sanitizes the affected region. Also used for secure deletion of
+//   sensitive data in the substrate before releasing control.
+//
+// Op-Code: 0x1F
+// Category: CALCINATION
+// Safety: CRITICAL (requires explicit Vial waiver — irreversible data destruction)
+
 const std = @import("std");
 const interface = @import("../interface.zig");
 

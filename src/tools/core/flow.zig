@@ -1,3 +1,25 @@
+// FLOW — Moore Stream DMA Transfer Tool
+//
+// Purpose:
+//   Executes direct DMA transfers bypassing the CPU entirely. This is the
+//   core of the Moore Stream — streaming data (like AI model weights) from
+//   NVMe to VRAM without CPU overhead or cache pollution.
+//
+// How it works:
+//   1. Validates source, destination, and transfer size against Vial constraints
+//   2. If size exceeds aperture, auto-splits into windowed SHIFT+FLOW sequences
+//   3. Initiates the DMA transfer on the PCIe bus
+//   4. Returns transfer metrics (cycles spent, bytes transferred)
+//
+// VITRIOL relevance:
+//   The Moore Stream is Alka's flagship capability — FLOW moves 5.5GB+ model
+//   weights from NVMe directly to GPU VRAM. The automatic windowing splits
+//   transfers into 256MB chunks when the BAR aperture is smaller than the payload.
+//
+// Op-Code: 0x03
+// Category: CORE
+// Safety: L2 (soft contract — injects safety operations)
+
 const std = @import("std");
 const interface = @import("../interface.zig");
 

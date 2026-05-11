@@ -20,6 +20,28 @@
 // that is itself a compiler, interpreter, or similar tool that incorporates
 // or embeds the Work.
 
+// SENSE — Hardware Sensor Reading Tool
+//
+// Purpose:
+//   Reads hardware sensor values (thermal, voltage, current) from the
+//   substrate. This is the primary telemetry primitive — all thermal
+//   shadowing and safety checks depend on SENSE data.
+//
+// How it works:
+//   1. Validates the sensor ID is within the valid range (0-255)
+//   2. Reads the sensor value from the hardware monitoring interface
+//   3. Returns the sensor reading as a 4-byte value
+//   4. Used by GUARD conditions to trigger automatic rollback on thresholds
+//
+// VITRIOL relevance:
+//   Before heat-generating operations (STRIKE, FLOW), SENSE checks GPU
+//   temperature. If temp exceeds the Vial's THROTTLE_AT or HALT_AT limits,
+//   the compiler injects YIELD or QUANCH operations automatically.
+//
+// Op-Code: 0x07
+// Category: PULSE
+// Safety: L2 (soft contract — injects safety operations)
+
 const std = @import("std");
 const interface = @import("../interface.zig");
 

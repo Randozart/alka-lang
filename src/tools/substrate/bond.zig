@@ -1,3 +1,25 @@
+// BOND — RAM-to-GPU Direct Tunnel Tool
+//
+// Purpose:
+//   Creates a direct RAM-to-GPU tunnel that bypasses the CPU cache hierarchy
+//   and IOMMU. This enables zero-copy data transfer between system memory
+//   and VRAM — the fastest path for model weight streaming.
+//
+// How it works:
+//   1. Validates RAM bank, GPU node, and tunnel size against aperture limits
+//   2. Establishes a P2P DMA channel between the specified RAM and GPU addresses
+//   3. Injects SYNC L3 and FLUX to ensure cache coherence across the tunnel
+//   4. Returns tunnel metrics for monitoring
+//
+// VITRIOL relevance:
+//   BOND is the physical infrastructure for the Moore Stream. While FLOW moves
+//   data, BOND creates the dedicated highway. The Azoth counterpart is FLUX,
+//   which invalidates tunnel mappings on rollback.
+//
+// Op-Code: 0x35
+// Category: SUBSTRATE
+// Safety: CRITICAL (requires explicit Vial waiver — bypasses IOMMU protection)
+
 const std = @import("std");
 const interface = @import("../interface.zig");
 

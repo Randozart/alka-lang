@@ -1,3 +1,25 @@
+// STILL — Manual DRAM Refresh Control Tool
+//
+// Purpose:
+//   Takes over DRAM refresh cycles from the memory controller, enabling
+//   precision timing by stopping auto-refresh during critical operations.
+//   This creates "pure execution windows" where bus timing is deterministic.
+//
+// How it works:
+//   1. Validates the hold duration is within safe limits (max 500us)
+//   2. Pauses the automatic DRAM refresh for the specified bank
+//   3. Injects SYNC L3 to ensure all pending writes complete before the hold
+//   4. Restores auto-refresh after the hold period expires
+//
+// VITRIOL relevance:
+//   Used in substrate orchestration to create timing-isolated windows. When
+//   DRAM refresh is paused, the memory bus becomes deterministic — essential
+//   for nanosecond-precision operations and side-channel measurements.
+//
+// Op-Code: 0x36
+// Category: SUBSTRATE
+// Safety: CRITICAL (requires explicit Vial waiver — data loss if held too long)
+
 const std = @import("std");
 const interface = @import("../interface.zig");
 
