@@ -25,6 +25,11 @@ pub const flow = @import("core/flow.zig");
 pub const shift = @import("core/shift.zig");
 pub const misc = @import("core/misc.zig");
 pub const veil = @import("core/veil.zig");
+pub const snap = @import("core/snap.zig");
+pub const revert = @import("core/revert.zig");
+pub const stake = @import("core/stake.zig");
+pub const echo = @import("core/echo.zig");
+pub const limit = @import("core/limit.zig");
 pub const substrate = @import("substrate/");
 pub const ossify = @import("substrate/ossify.zig");
 pub const bond = @import("substrate/bond.zig");
@@ -36,8 +41,12 @@ pub const occupy = @import("substrate/occupy.zig");
 pub const strike = @import("substrate/strike.zig");
 pub const forging = @import("forging/");
 pub const void_tool = @import("forging/void.zig");
-pub const pulse = @import("pulse/");
+pub const pulse_mod = @import("pulse/pulse.zig");
 pub const sense = @import("pulse/sense.zig");
+pub const flux = @import("transmutation/flux.zig");
+pub const guard = @import("safety/guard.zig");
+pub const audit = @import("testing/audit.zig");
+pub const molt = @import("solidification/molt.zig");
 
 pub const Tool = struct {
     pub const Context = @import("interface.zig").ToolInterface.Context;
@@ -57,22 +66,27 @@ pub const Tool = struct {
 pub fn getTool(op_code: u8) ?Tool {
     return switch (op_code) {
         0x01 => Tool{ .name = "CLAIM", .description = "Stake hardware node", .validate = claim.CLAIM.validate, .execute = claim.CLAIM.execute },
-        0x02 => Tool{ .name = "STAKE", .description = "Claim memory region", .validate = genericValidate, .execute = genericExecute },
+        0x02 => Tool{ .name = "STAKE", .description = "Claim memory region", .validate = stake.STAKE.validate, .execute = stake.STAKE.execute },
         0x03 => Tool{ .name = "FLOW", .description = "DMA transfer", .validate = flow.FLOW.validate, .execute = flow.FLOW.execute },
         0x04 => Tool{ .name = "SHIFT", .description = "Remap BAR window", .validate = shift.SHIFT.validate, .execute = shift.SHIFT.execute },
         0x05 => Tool{ .name = "FENCE", .description = "Wait for condition", .validate = misc.FENCE.validate, .execute = misc.FENCE.execute },
         0x06 => Tool{ .name = "SYNC", .description = "Memory barrier", .validate = misc.SYNC.validate, .execute = misc.SYNC.execute },
         0x07 => Tool{ .name = "SENSE", .description = "Read sensor", .validate = sense.SENSE.validate, .execute = sense.SENSE.execute },
-        0x08 => Tool{ .name = "PULSE", .description = "Timing signal", .validate = genericValidate, .execute = genericExecute },
+        0x08 => Tool{ .name = "PULSE", .description = "Timing signal", .validate = pulse_mod.PULSE.validate, .execute = pulse_mod.PULSE.execute },
         0x09 => Tool{ .name = "SIGNAL", .description = "Trigger interrupt", .validate = misc.SIGNAL.validate, .execute = misc.SIGNAL.execute },
         0x0A => Tool{ .name = "YIELD", .description = "Cooperative yield", .validate = misc.YIELD.validate, .execute = misc.YIELD.execute },
         0x0B => Tool{ .name = "RECAST", .description = "FPGA reconfigure", .validate = genericValidate, .execute = genericExecute },
-        0x0C => Tool{ .name = "SNAP", .description = "Serialize state", .validate = genericValidate, .execute = genericExecute },
-        0x0D => Tool{ .name = "REVERT", .description = "Restore state", .validate = genericValidate, .execute = genericExecute },
-        0x0E => Tool{ .name = "LIMIT", .description = "Hard contract", .validate = genericValidate, .execute = genericExecute },
+        0x0C => Tool{ .name = "SNAP", .description = "Serialize state", .validate = snap.SNAP.validate, .execute = snap.SNAP.execute },
+        0x0D => Tool{ .name = "REVERT", .description = "Restore state", .validate = revert.REVERT.validate, .execute = revert.REVERT.execute },
+        0x0E => Tool{ .name = "LIMIT", .description = "Hard contract", .validate = limit.LIMIT.validate, .execute = limit.LIMIT.execute },
         0x0F => Tool{ .name = "VEIL", .description = "Hide from OS", .validate = veil.VEIL.validate, .execute = veil.VEIL.execute },
+        0x14 => Tool{ .name = "MOLT", .description = "Full state dump", .validate = molt.MOLT.validate, .execute = molt.MOLT.execute },
+        0x17 => Tool{ .name = "ECHO", .description = "Non-intrusive introspection", .validate = echo.ECHO.validate, .execute = echo.ECHO.execute },
         0x1C => Tool{ .name = "STRIKE", .description = "Rowhammer/bit flipping", .validate = strike.STRIKE.validate, .execute = strike.STRIKE.execute },
         0x1F => Tool{ .name = "VOID", .description = "Secure substrate erase", .validate = void_tool.VOID.validate, .execute = void_tool.VOID.execute },
+        0x2A => Tool{ .name = "FLUX", .description = "Cache invalidation", .validate = flux.FLUX.validate, .execute = flux.FLUX.execute },
+        0x2B => Tool{ .name = "AUDIT", .description = "Post-instruction residue check", .validate = audit.AUDIT.validate, .execute = audit.AUDIT.execute },
+        0x31 => Tool{ .name = "GUARD", .description = "Runtime safety sentinel", .validate = guard.GUARD.validate, .execute = guard.GUARD.execute },
         0x34 => Tool{ .name = "OSSIFY", .description = "Pin CPU core to Alka", .validate = ossify.OSSIFY.validate, .execute = ossify.OSSIFY.execute },
         0x35 => Tool{ .name = "BOND", .description = "RAM-to-GPU direct tunnel", .validate = bond.BOND.validate, .execute = bond.BOND.execute },
         0x36 => Tool{ .name = "STILL", .description = "Manual DRAM refresh control", .validate = still.STILL.validate, .execute = still.STILL.execute },
