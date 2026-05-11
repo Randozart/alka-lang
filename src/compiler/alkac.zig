@@ -45,6 +45,8 @@
 const std = @import("std");
 const instructions = @import("../instructions/mod.zig");
 const alka_bin = @import("../codegen/alka_bin.zig");
+const welder = @import("../codegen/welder.zig");
+const tools = @import("../tools/mod.zig");
 
 pub const Program = struct {
     directives: std.ArrayList([]const u8),
@@ -91,14 +93,20 @@ pub const CompilerError = error{
     ParseError,
     FileNotFound,
     BufferOverflow,
+    VesselNotFound,
+    InvalidAlignment,
+    ProhibitedRange,
+    OutOfMemory,
 };
 
 pub fn compile(
     program: Program,
     vial: Vial,
     out: *std.ArrayList(u8),
+    azoth_out: ?*std.ArrayList(u8),
     allocator: std.mem.Allocator,
 ) CompilerError!void {
+    // Stage 1: Emit raw packets
     for (program.instructions.items) |instr| {
         const inst_def = instructions.getInstructionByName(instr.name) orelse {
             return CompilerError.UnknownInstruction;
@@ -109,6 +117,21 @@ pub fn compile(
 
         const packet = try emitPacket(inst_def.op_code, instr.operands, vial);
         _ = out.appendSlice(std.mem.asBytes(&packet)) catch return CompilerError.BufferOverflow;
+    }
+
+    // Stage 2: Post-precipitation refinement via Welder
+    // The Welder validates CRCs and optimizes packet sequences
+    const refined = try welder.Welder.refineBinary(out.items, allocator);
+    defer allocator.free(refined);
+
+    out.clearRetainingCapacity();
+    try out.appendSlice(refined);
+
+    // Stage 3: Generate Azoth rollback binary
+    if (azoth_out) |az| {
+        const azoth = try alka_bin.generateAzothBinary(out.items, allocator);
+        defer allocator.free(azoth);
+        try az.appendSlice(azoth);
     }
 }
 
@@ -130,12 +153,34 @@ fn validateInstruction(instr: Instruction, vial: Vial, allocator: std.mem.Alloca
 }
 
 fn validateWithTools(instr: Instruction, inst_def: *const instructions.Instruction, vial: Vial, allocator: std.mem.Allocator) !void {
-    _ = instr;
-    _ = inst_def;
-    _ = vial;
     _ = allocator;
-    // Tool-specific validation: available when tool dispatch is fully wired
-    // Currently using static op-code lookup via instruction registry
+    _ = vial;
+
+    const op_code = @intFromEnum(inst_def.op_code);
+    const tool = tools.getTool(op_code) orelse return;
+
+    var operands: [3]u64 = .{ 0, 0, 0 };
+    for (instr.operands.items, 0..) |op, i| {
+        if (i >= 3) break;
+        operands[i] = alka_bin.evalOperand(op);
+    }
+
+    const ctx = tools.Tool.Context{
+        .physical_addr = 0,
+        .pci_bus = 0,
+        .pci_device = 0,
+        .pci_function = 0,
+        .bar_base = 0,
+        .aperture_size = 0,
+        .thermal_limit = 0,
+        .current_temp = 0,
+    };
+
+    const result = try tool.validate(operands[0..instr.operands.items.len], ctx);
+
+    if (!result.allowed) {
+        return CompilerError.ParseError;
+    }
 }
 
 fn emitPacket(

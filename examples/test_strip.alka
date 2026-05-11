@@ -1,0 +1,8 @@
+// Test dead-code stripping
+CLAIM 0x01
+DRY_RUN 0xFF
+MOCK 0x00
+CLAIM 0x02
+SYNC 1
+SYNC 2
+SIGNAL 0x0A

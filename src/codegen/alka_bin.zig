@@ -22,7 +22,7 @@
 
 const std = @import("std");
 
-pub const MetrodPacket = extern struct {
+pub const MetrodPacket = packed struct {
     op_code: u8,
     flags: u8,
     vessel_id: u16,
@@ -51,7 +51,8 @@ pub const PACKET_SIZE_EXT = @sizeOf(MetrodPacketExt);
 pub fn computeCrc(packet: *const MetrodPacket) u32 {
     var crc: u32 = 0;
     const bytes: [*]const u8 = @ptrCast(packet);
-    for (0..PACKET_SIZE) |i| {
+    const crc_offset = @offsetOf(MetrodPacket, "crc");
+    for (0..crc_offset) |i| {
         crc = (crc << 1) | (crc >> 31);
         crc ^= bytes[i];
     }
@@ -61,7 +62,8 @@ pub fn computeCrc(packet: *const MetrodPacket) u32 {
 pub fn computeCrcExt(packet: *const MetrodPacketExt) u32 {
     var crc: u32 = 0;
     const bytes: [*]const u8 = @ptrCast(packet);
-    for (0..PACKET_SIZE_EXT) |i| {
+    const crc_offset = @offsetOf(MetrodPacketExt, "auth_sig");
+    for (0..crc_offset) |i| {
         crc = (crc << 1) | (crc >> 31);
         crc ^= bytes[i];
     }
@@ -103,4 +105,61 @@ pub fn evalOperand(operand: Operand) u64 {
         .indexed => |idx| idx.index,
         .memory_size => |m| m.value,
     };
+}
+
+/// Generate the Azoth (rollback) counterpart for a given MetrodPacket.
+/// Returns the inverse operation that restores pre-execution state.
+pub fn generateAzothPacket(packet: *const MetrodPacket) MetrodPacket {
+    var azoth = packet.*;
+
+    // Set Azoth flag (bit 7)
+    azoth.flags |= 0x80;
+
+    // Map forward operation to rollback counterpart
+    azoth.op_code = switch (packet.op_code) {
+        0x01 => 0x0D, // CLAIM → REVERT (restore driver binding)
+        0x02 => 0x20, // STAKE → ABDUCT (release physical pages)
+        0x03 => 0x1F, // FLOW → VOID (overwrite transferred data)
+        0x04 => 0x04, // SHIFT → SHIFT (restore original offset — src/dst swapped)
+        0x0F => 0x24, // VEIL → GHOST (restore PCI visibility)
+        0x34 => 0x0A, // OSSIFY → YIELD (return core to scheduler)
+        0x35 => 0x2A, // BOND → FLUX (invalidate tunnel mappings)
+        0x3A => 0x01, // OCCUPY → CLAIM (restore OS device access)
+        0x1C => 0x1F, // STRIKE → VOID (sanitize flipped bits)
+        0x1D => 0x0B, // QUENCH → RECAST (restore power state)
+        0x1F => 0x1F, // VOID → VOID (can't undo secure erase, but log it)
+        else => packet.op_code, // Self-inverse or no rollback needed
+    };
+
+    // Swap src/dst for bidirectional operations
+    if (packet.op_code == 0x04) { // SHIFT
+        const tmp = azoth.src_addr;
+        azoth.src_addr = azoth.dst_addr;
+        azoth.dst_addr = tmp;
+    }
+
+    azoth.crc = computeCrc(&azoth);
+    return azoth;
+}
+
+/// Generate a complete Azoth binary from an AlkaSol binary.
+/// Returns the rollback binary that restores pre-execution state.
+pub fn generateAzothBinary(alkas: []const u8, allocator: std.mem.Allocator) ![]u8 {
+    var azoth = std.ArrayList(u8).init(allocator);
+    errdefer azoth.deinit();
+
+    // Process packets in reverse order (LIFO rollback)
+    var i: usize = alkas.len;
+    while (i >= PACKET_SIZE) {
+        i -= PACKET_SIZE;
+        const packet = @as(*const MetrodPacket, @ptrCast(@alignCast(alkas[i..])));
+
+        // Skip non-rollbackable instructions (DRY_RUN, MOCK, PROVE)
+        if (packet.op_code == 0x2C or packet.op_code == 0x2D or packet.op_code == 0x2E) continue;
+
+        const azoth_packet = generateAzothPacket(packet);
+        try azoth.appendSlice(std.mem.asBytes(&azoth_packet));
+    }
+
+    return azoth.toOwnedSlice();
 }

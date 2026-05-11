@@ -65,11 +65,7 @@ pub const SYNC = struct {
         ctx: interface.ToolInterface.Context,
     ) interface.ToolInterface.Result {
         const level = if (operands.len > 0) operands[0] else 3;
-        const cost = switch (level) {
-            1 => 8,
-            2 => 12,
-            else => 20,
-        };
+        const cost: u64 = if (level == 1) 8 else if (level == 2) 12 else 20;
         
         _ = ctx;
         

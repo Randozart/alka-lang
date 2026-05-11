@@ -1,0 +1,8 @@
+// Test new tool implementations
+CLAIM 0x01
+VEIL 1
+SENSE 0
+STRIKE 0xBEEF 0xDEAD
+VOID 0x1000 256
+SYNC 1
+SIGNAL 0x0A

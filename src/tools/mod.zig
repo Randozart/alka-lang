@@ -24,6 +24,7 @@ pub const claim = @import("core/claim.zig");
 pub const flow = @import("core/flow.zig");
 pub const shift = @import("core/shift.zig");
 pub const misc = @import("core/misc.zig");
+pub const veil = @import("core/veil.zig");
 pub const substrate = @import("substrate/");
 pub const ossify = @import("substrate/ossify.zig");
 pub const bond = @import("substrate/bond.zig");
@@ -32,6 +33,11 @@ pub const resonate = @import("substrate/resonate.zig");
 pub const oscillate = @import("substrate/oscillate.zig");
 pub const imc_hijack = @import("substrate/imc_hijack.zig");
 pub const occupy = @import("substrate/occupy.zig");
+pub const strike = @import("substrate/strike.zig");
+pub const forging = @import("forging/");
+pub const void_tool = @import("forging/void.zig");
+pub const pulse = @import("pulse/");
+pub const sense = @import("pulse/sense.zig");
 
 pub const Tool = struct {
     pub const Context = @import("interface.zig").ToolInterface.Context;
@@ -39,8 +45,8 @@ pub const Tool = struct {
     pub const ValidateResult = @import("interface.zig").ToolInterface.ValidateResult;
     pub const ValidateError = @import("interface.zig").ToolInterface.ValidateError;
 
-    pub const ValidateFn = fn (operands: []const u64, ctx: Context) ValidateError!ValidateResult;
-    pub const ExecuteFn = fn (operands: []const u64, ctx: Context) Result;
+    pub const ValidateFn = *const fn (operands: []const u64, ctx: Context) ValidateError!ValidateResult;
+    pub const ExecuteFn = *const fn (operands: []const u64, ctx: Context) Result;
 
     name: []const u8,
     description: []const u8,
@@ -56,7 +62,7 @@ pub fn getTool(op_code: u8) ?Tool {
         0x04 => Tool{ .name = "SHIFT", .description = "Remap BAR window", .validate = shift.SHIFT.validate, .execute = shift.SHIFT.execute },
         0x05 => Tool{ .name = "FENCE", .description = "Wait for condition", .validate = misc.FENCE.validate, .execute = misc.FENCE.execute },
         0x06 => Tool{ .name = "SYNC", .description = "Memory barrier", .validate = misc.SYNC.validate, .execute = misc.SYNC.execute },
-        0x07 => Tool{ .name = "SENSE", .description = "Read sensor", .validate = misc.SENSE.validate, .execute = misc.SENSE.execute },
+        0x07 => Tool{ .name = "SENSE", .description = "Read sensor", .validate = sense.SENSE.validate, .execute = sense.SENSE.execute },
         0x08 => Tool{ .name = "PULSE", .description = "Timing signal", .validate = genericValidate, .execute = genericExecute },
         0x09 => Tool{ .name = "SIGNAL", .description = "Trigger interrupt", .validate = misc.SIGNAL.validate, .execute = misc.SIGNAL.execute },
         0x0A => Tool{ .name = "YIELD", .description = "Cooperative yield", .validate = misc.YIELD.validate, .execute = misc.YIELD.execute },
@@ -64,6 +70,9 @@ pub fn getTool(op_code: u8) ?Tool {
         0x0C => Tool{ .name = "SNAP", .description = "Serialize state", .validate = genericValidate, .execute = genericExecute },
         0x0D => Tool{ .name = "REVERT", .description = "Restore state", .validate = genericValidate, .execute = genericExecute },
         0x0E => Tool{ .name = "LIMIT", .description = "Hard contract", .validate = genericValidate, .execute = genericExecute },
+        0x0F => Tool{ .name = "VEIL", .description = "Hide from OS", .validate = veil.VEIL.validate, .execute = veil.VEIL.execute },
+        0x1C => Tool{ .name = "STRIKE", .description = "Rowhammer/bit flipping", .validate = strike.STRIKE.validate, .execute = strike.STRIKE.execute },
+        0x1F => Tool{ .name = "VOID", .description = "Secure substrate erase", .validate = void_tool.VOID.validate, .execute = void_tool.VOID.execute },
         0x34 => Tool{ .name = "OSSIFY", .description = "Pin CPU core to Alka", .validate = ossify.OSSIFY.validate, .execute = ossify.OSSIFY.execute },
         0x35 => Tool{ .name = "BOND", .description = "RAM-to-GPU direct tunnel", .validate = bond.BOND.validate, .execute = bond.BOND.execute },
         0x36 => Tool{ .name = "STILL", .description = "Manual DRAM refresh control", .validate = still.STILL.validate, .execute = still.STILL.execute },

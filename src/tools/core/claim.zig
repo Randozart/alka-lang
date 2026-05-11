@@ -12,12 +12,14 @@ pub const CLAIM = struct {
         operands: []const u64,
         ctx: interface.ToolInterface.Context,
     ) interface.ToolInterface.ValidateError!interface.ToolInterface.ValidateResult {
-        _ = operands;
         _ = ctx;
+        if (operands.len < 1) {
+            return interface.ToolInterface.ValidateError.InvalidAlignment;
+        }
         return interface.ToolInterface.ValidateResult{
             .allowed = true,
             .injected_operations = &.{"SYNC L3"},
-            .reason = null,
+            .reason = "Hardware node staked",
         };
     }
 
@@ -26,7 +28,6 @@ pub const CLAIM = struct {
         _: interface.ToolInterface.Context,
     ) interface.ToolInterface.Result {
         _ = operands;
-        
         return interface.ToolInterface.Result{
             .success = true,
             .cycles_spent = 42,
