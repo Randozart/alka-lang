@@ -5,7 +5,7 @@
 > A non-Turing-complete, component-driven hardware instruction set for (sub-)kernel state orchestration.
 
 [![Zig](https://img.shields.io/badge/Zig-0.14+-yellow.svg)](https://ziglang.org)
-[![License: Apache 2.0](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE) 
+[![License: Apache 2.0 with Runtime Exception](https://img.shields.io/badge/License-Apache_2.0_with_Runtime_Exception-blue.svg)](LICENSE)
 
 ## What is Alka?
 
