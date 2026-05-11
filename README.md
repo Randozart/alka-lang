@@ -46,9 +46,11 @@ flatpak run com.vscodium.codium --install-extension alka-lang.vsix
 **Recommended:** Select the **"Alka Officina"** color theme (`Ctrl+K Ctrl+T`) for the full risk-based color personality:
 - 🟡 **Gold** — Sovereignty commands (`CLAIM`, `STAKE`)
 - 🔴 **Red** — Substrate operations (`OSSIFY`, `BOND`, `STILL`)
--  **Magenta** — Dissolution (`STRIKE`, `GHOST`, `HIJACK`)
+- 🟣 **Magenta** — Dissolution (`STRIKE`, `GHOST`, `HIJACK`)
 - 🔵 **Cyan** — Solvent (`FLOW`, `SHIFT`)
 - 🟢 **Neon Green** — Safety (`FENCE`, `SYNC`, `ISOLATE`)
+
+<img src="assets/alka-ide.png" alt="Alka Officina Theme"/>
 
 ## File Types
 
