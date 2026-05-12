@@ -1,0 +1,12 @@
+# VITRIOL — udev rules for /dev/vitriol
+#
+# Install: sudo cp 99-vitriol.rules /etc/udev/rules.d/
+# Reload:  sudo udevadm control --reload-rules && sudo udevadm trigger
+#
+# This grants the 'vitriol' group read/write access to the device node.
+
+# Athanor kernel module device
+KERNEL=="vitriol", GROUP="vitriol", MODE="0660"
+
+# Optional: also set permissions on NVIDIA hwmon for thermal monitoring
+SUBSYSTEM=="hwmon", ATTR{name}=="nvidia*", GROUP="vitriol", MODE="0640"

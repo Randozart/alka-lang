@@ -1,0 +1,73 @@
+// Alka Program: Moore Stream
+// Goal: Continuous tensor streaming from NVMe to GTX 1070 Ti VRAM
+// Uses sliding window pattern for 8GB model on 8GB VRAM device
+// Named after Gordon Moore - sustained throughput over time
+
+REQUIRE moore_stream.alkavl;
+
+// Phase 1: Claim and isolate hardware
+CLAIM GPU_MAIN;
+CLAIM NVME_STORAGE;
+GUARD 0x01 0x0 80000;
+
+// Phase 2: Set thermal contracts
+LIMIT 0x0 0x0 80000;
+
+// Phase 3: Initial window setup
+SHIFT 0x0 0x100000000 0x10000000;
+FENCE 0x0 0x0 0x0;
+
+// Phase 4: Stream tensor blocks (256MB windows)
+// Block 0: Embedding layer
+FLOW 0x0 0x100000000 0x10000000;
+SYNC;
+FENCE 0x0 0x0 0x1;
+
+// Block 1: Attention layers 1-8
+SHIFT 0x100000000 0x110000000 0x10000000;
+FLOW 0x10000000 0x100000000 0x10000000;
+SYNC;
+FENCE 0x0 0x0 0x2;
+
+// Block 2: Attention layers 9-16
+SHIFT 0x110000000 0x120000000 0x10000000;
+FLOW 0x20000000 0x100000000 0x10000000;
+SYNC;
+FENCE 0x0 0x0 0x3;
+
+// Block 3: Attention layers 17-24
+SHIFT 0x120000000 0x130000000 0x10000000;
+FLOW 0x30000000 0x100000000 0x10000000;
+SYNC;
+FENCE 0x0 0x0 0x4;
+
+// Block 4: FFN layers 1-8
+SHIFT 0x130000000 0x140000000 0x10000000;
+FLOW 0x40000000 0x100000000 0x10000000;
+SYNC;
+FENCE 0x0 0x0 0x5;
+
+// Block 5: FFN layers 9-16
+SHIFT 0x140000000 0x150000000 0x10000000;
+FLOW 0x50000000 0x100000000 0x10000000;
+SYNC;
+FENCE 0x0 0x0 0x6;
+
+// Block 6: FFN layers 17-24
+SHIFT 0x150000000 0x160000000 0x10000000;
+FLOW 0x60000000 0x100000000 0x10000000;
+SYNC;
+FENCE 0x0 0x0 0x7;
+
+// Block 7: Output layer + head
+SHIFT 0x160000000 0x170000000 0x10000000;
+FLOW 0x70000000 0x100000000 0x10000000;
+SYNC;
+FENCE 0x0 0x0 0x8;
+
+// Phase 5: Final synchronization
+SYNC;
+WATCH 0x0 0x0 0x0;
+
+// Phase 6: Signal completion
+SIGNAL 0x0 0x0 0x0;

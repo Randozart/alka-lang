@@ -84,18 +84,24 @@ pub const Operand = union(enum) {
 };
 
 pub fn parseOperand(str: []const u8) Operand {
-    if (std.mem.indexOf(u8, str, "MB")) |_| {
-        const num = std.fmt.parseInt(u64, str[0..str.len-2], 10) catch 0;
+    const trimmed = std.mem.trimRight(u8, str, "; \t");
+    
+    if (std.mem.indexOf(u8, trimmed, "MB")) |_| {
+        const num = std.fmt.parseInt(u64, trimmed[0..trimmed.len-2], 10) catch 0;
         return .{ .memory_size = .{ .value = num * 1024 * 1024, .unit = "MB" } };
     }
-    if (std.mem.indexOf(u8, str, "GB")) |_| {
-        const num = std.fmt.parseInt(u64, str[0..str.len-2], 10) catch 0;
+    if (std.mem.indexOf(u8, trimmed, "GB")) |_| {
+        const num = std.fmt.parseInt(u64, trimmed[0..trimmed.len-2], 10) catch 0;
         return .{ .memory_size = .{ .value = num * 1024 * 1024 * 1024, .unit = "GB" } };
     }
-    if (str.len > 2 and str[0] == '0' and str[1] == 'x') {
-        return .{ .literal = std.fmt.parseInt(u64, str[2..], 16) catch 0 };
+    if (trimmed.len > 2 and trimmed[0] == '0' and trimmed[1] == 'x') {
+        return .{ .literal = std.fmt.parseInt(u64, trimmed[2..], 16) catch 0 };
     }
-    return .{ .literal = std.fmt.parseInt(u64, str, 10) catch 0 };
+    if (std.fmt.parseInt(u64, trimmed, 10)) |val| {
+        return .{ .literal = val };
+    } else |_| {
+        return .{ .identifier = trimmed };
+    }
 }
 
 pub fn evalOperand(operand: Operand) u64 {
@@ -152,12 +158,13 @@ pub fn generateAzothBinary(alkas: []const u8, allocator: std.mem.Allocator) ![]u
     var i: usize = alkas.len;
     while (i >= PACKET_SIZE) {
         i -= PACKET_SIZE;
-        const packet = @as(*const MetrodPacket, @ptrCast(@alignCast(alkas[i..])));
+        var packet: MetrodPacket = undefined;
+        @memcpy(std.mem.asBytes(&packet), alkas[i .. i + PACKET_SIZE]);
 
         // Skip non-rollbackable instructions (DRY_RUN, MOCK, PROVE)
         if (packet.op_code == 0x2C or packet.op_code == 0x2D or packet.op_code == 0x2E) continue;
 
-        const azoth_packet = generateAzothPacket(packet);
+        const azoth_packet = generateAzothPacket(&packet);
         try azoth.appendSlice(std.mem.asBytes(&azoth_packet));
     }
 

@@ -1,0 +1,8 @@
+# SPDX-License-Identifier: GPL-2.0
+# Athanor — Alka Hardware Executor for VITRIOL
+
+obj-m := vitriol_alka.o
+
+vitriol_alka-y := vitriol_alka_core.o vitriol_alka_dma.o vitriol_alka_thermal.o vitriol_alka_ioctls.o vitriol_alka_ops.o
+
+ccflags-y := -I$(src)/../tools

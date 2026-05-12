@@ -103,6 +103,8 @@ pub const OpCode = enum(u8) {
     OSCILLATE = 0x38,
     IMC_HIJACK = 0x39,
     OCCUPY = 0x3A,
+    REFRACT = 0x3B,
+    PIPE = 0x3C,
 };
 
 pub const Category = enum {
@@ -206,6 +208,10 @@ pub const instruction_set: []const Instruction = &[_]Instruction{
     .{ .op_code = .IMC_HIJACK, .name = "IMC_HIJACK", .category = .DISSOLUTION, .description = "Direct memory controller access" },
     // CHRONOS (0x3A)
     .{ .op_code = .OCCUPY, .name = "OCCUPY", .category = .CORE, .description = "Seize PCIe device, sever OS access" },
+    // SUB-TENSOR SLICING (0x3B)
+    .{ .op_code = .REFRACT, .name = "REFRACT", .category = .CORE, .description = "Slice large tensor into BAR-sized chunks for micro-paging" },
+    // DATAFLOW (0x3C)
+    .{ .op_code = .PIPE, .name = "PIPE", .category = .CORE, .description = "Continuous DMA ring buffer — hardware runs autonomously after initiation" },
 };
 
 pub fn getInstructionByName(name: []const u8) ?*const Instruction {

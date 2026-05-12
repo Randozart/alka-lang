@@ -1,23 +1,39 @@
+# Build artifacts
 .zig-cache/
 zig-out/
 vendor/
-*.alkas
-*.azoth
-*.alkab
 main
 main.o
 *.o
+*.obj
+*.exe
+
+# Kernel module build
 *.ko
 *.mod
 *.mod.c
 *.mod.o
-*.order
-*.symvers
-*.cmd
+Module.symvers
+modules.order
+Module.markers
+.*.cmd
+*.o.d
+
+# Alka compiled binaries
+*.alkas
+*.azoth
+*.alkab
+
+# VS Code / IDE
 node_modules/
 package-lock.json
-*.dbv
-*.bv
+.vscode/
+
+# Python
 __pycache__/
 *.pyc
 .venv/
+
+# Database files
+*.dbv
+*.bv

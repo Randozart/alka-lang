@@ -44,6 +44,6 @@ pub fn build(b: *std.Build) void {
         .optimize = .ReleaseSmall,
     });
     const header_run = b.addRunArtifact(header_gen);
-    header_run.addArg(b.pathJoin(&.{ b.install_path.?, "include", "vitriol_alka.h" }));
+    header_run.addArg(b.pathJoin(&.{ b.install_path, "include", "vitriol_alka.h" }));
     header_step.dependOn(&header_run.step);
 }

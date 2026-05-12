@@ -91,10 +91,11 @@ pub const Welder = struct {
         var i: usize = 0;
         var prev_was_sync = false;
         while (i + @sizeOf(alka_bin.MetrodPacket) <= binary.len) : (i += @sizeOf(alka_bin.MetrodPacket)) {
-            const packet = @as(*const alka_bin.MetrodPacket, @ptrCast(@alignCast(binary[i..])));
+            var packet: alka_bin.MetrodPacket = undefined;
+            @memcpy(std.mem.asBytes(&packet), binary[i .. i + @sizeOf(alka_bin.MetrodPacket)]);
 
             // CRC verification
-            const computed_crc = alka_bin.computeCrc(packet);
+            const computed_crc = alka_bin.computeCrc(&packet);
             if (packet.crc != computed_crc) continue;
 
             // Dead-code stripping: skip DRY_RUN (0x2C) and MOCK (0x2D) packets

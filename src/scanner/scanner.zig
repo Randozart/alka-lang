@@ -121,23 +121,47 @@ pub const Scanner = struct {
 
         try writer.print("Vessel {s} {{\n", .{name});
         try writer.print("    PCI_ID: {x:0>4}:{x:0>4};\n", .{ device.vendor, device.device });
+        try writer.print("    BDF: {x:0>4}:{x:0>2}.{d};\n\n", .{ 
+            device.bus, device.slot, device.function,
+        });
 
-        if (device.driver) |drv| {
-            try writer.print("    DRIVER: {s};\n", .{drv});
-        }
-
+        var bar_count: usize = 0;
         for (device.bars, 0..) |bar, i| {
-            if (bar.size > 0) {
+            if (bar.size > 0 and bar.is_prefetchable) {
                 const size_mb = bar.size / (1024 * 1024);
-                try writer.print("    BAR {d} {d}MB;\n", .{ i, size_mb });
+                try writer.print("    Aperture DATA_PLANE {{\n", .{});
+                try writer.print("        BAR: {d};\n", .{i});
+                try writer.print("        BASE: 0x{x};\n", .{bar.physical_base});
+                try writer.print("        SIZE: {d}MB;\n", .{size_mb});
+                try writer.print("        TYPE: Prefetchable;\n", .{});
                 if (bar.requires_sliding_window) {
-                    try writer.writeAll("    CONSTRAINT: SLIDING_WINDOW;\n");
+                    try writer.writeAll("        CONSTRAINT: SLIDING_WINDOW;\n");
                 }
+                try writer.writeAll("    }\n\n");
+                bar_count += 1;
+            } else if (bar.size > 0 and !bar.is_prefetchable and bar.size < 64 * 1024 * 1024) {
+                const size_mb = bar.size / (1024 * 1024);
+                try writer.print("    Aperture CTRL_PLANE {{\n", .{});
+                try writer.print("        BAR: {d};\n", .{i});
+                try writer.print("        BASE: 0x{x};\n", .{bar.physical_base});
+                try writer.print("        SIZE: {d}MB;\n", .{size_mb});
+                try writer.print("        TYPE: NonPrefetchable;\n", .{});
+                try writer.writeAll("    }\n\n");
+                bar_count += 1;
             }
         }
 
-        if (device.thermal_path) |tp| {
-            try writer.print("    THERMAL_SENSOR: {s};\n", .{tp});
+        try writer.writeAll("    Thermal SENSOR_0 {\n");
+        try writer.writeAll("        HALT_AT: 98000;\n");
+        try writer.writeAll("        THROTTLE_AT: 90000;\n");
+        try writer.writeAll("    }\n\n");
+
+        if (bar_count > 0) {
+            const total_vram_mb = device.bars[1].size / (1024 * 1024);
+            try writer.print("    Memory VRAM {{\n", .{});
+            try writer.print("        TOTAL: {d}MB;\n", .{total_vram_mb});
+            try writer.print("        RESERVED: 256MB;\n", .{});
+            try writer.writeAll("    }\n");
         }
 
         try writer.writeAll("}\n");

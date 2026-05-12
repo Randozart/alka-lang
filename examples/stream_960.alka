@@ -1,0 +1,24 @@
+// Alka Program: Stream 960
+// Goal: Test SSD-to-GTX 960 direct streaming (sacrificial lamb test)
+// Streams 512MB from NVMe to 960 VRAM via 256MB BAR window
+
+REQUIRE gtx960_2gb.alkavl;
+
+// Phase 1: Claim the 960
+CLAIM GTX_960;
+
+// Phase 2: Set thermal limit (98C max for Maxwell)
+LIMIT GTX_960 98000;
+
+// Phase 3: Stream 512MB from NVMe to 960 VRAM
+// REFRACT auto-chunks into 2x 256MB drops
+// src = NVMe offset, dst = total size, size = chunk size
+REFRACT 0x0 0x20000000 0x10000000;
+
+// Phase 4: Synchronize and verify
+SYNC;
+FENCE GTX_960.METAPAGE 1;
+
+// Phase 5: Signal completion
+WATCH 0x0 0x0 0x0;
+SIGNAL STREAM_COMPLETE;

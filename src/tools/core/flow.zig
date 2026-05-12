@@ -44,7 +44,7 @@ pub const FLOW = struct {
         _ = src;
         _ = dst;
 
-        if (size > ctx.aperture_size) {
+        if (ctx.aperture_size > 0 and size > ctx.aperture_size) {
             const windows = (size + ctx.aperture_size - 1) / ctx.aperture_size;
             _ = windows;
             var injected: [16][]const u8 = undefined;

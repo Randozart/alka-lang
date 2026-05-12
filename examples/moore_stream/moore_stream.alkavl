@@ -1,0 +1,55 @@
+// The Vial: Moore Stream Configuration
+// GTX 1070 Ti (Pascal) + NVMe SSD for continuous tensor streaming
+// Designed for 8GB model streaming with 256MB sliding window
+
+Vessel GPU_MAIN {
+    PCI_ID: 10de:1b82;
+    NAME: "GTX 1070 Ti";
+
+    Aperture DATA_PLANE {
+        BAR: 1;
+        MAX_WINDOW: 256MB;
+        TYPE: Prefetchable;
+    }
+
+    Aperture CTRL_PLANE {
+        BAR: 0;
+        SIZE: 16MB;
+        TYPE: NonPrefetchable;
+    }
+
+    Thermal SENSOR_0 {
+        HALT_AT: 85C;
+        THROTTLE_AT: 80C;
+        POLL: hwmon;
+    }
+
+    Memory VRAM {
+        TOTAL: 8GB;
+        RESERVED: 256MB;
+    }
+
+    DMA_CAPABLE: true;
+}
+
+Vessel NVME_STORAGE {
+    PCI_ID: 144d:a808;
+    NAME: "Samsung 980 Pro";
+
+    BLOCK_DEVICE: /dev/nvme0n1;
+    DMA_CAPABLE: true;
+    DMA_MAX_BURST: 4096;
+
+    Aperture STREAM_BUFFER {
+        BAR: 0;
+        SIZE: 16MB;
+        TYPE: NonPrefetchable;
+    }
+}
+
+Vessel SYSTEM {
+    PCIe_GEN: 3;
+    PCIe_LANES: 16;
+    IOMMU: enabled;
+    MAX_DMA_SIZE: 4GB;
+}

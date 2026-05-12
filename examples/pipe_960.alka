@@ -1,0 +1,23 @@
+// Alka Program: Pipe 960
+// Goal: Test continuous dataflow pipe from NVMe to GTX 960
+// Sets up a ring buffer for autonomous DMA streaming
+
+REQUIRE gtx960_2gb.alkavl;
+
+// Phase 1: Claim the 960
+CLAIM GTX_960;
+
+// Phase 2: Set thermal limit (98C max for Maxwell)
+LIMIT GTX_960 98000;
+
+// Phase 3: Establish continuous pipe
+// src = NVMe offset, dst = ring size (64MB), size = flags (0)
+PIPE 0x0 0x4000000 0x0;
+
+// Phase 4: Synchronize and verify
+SYNC;
+FENCE GTX_960.METAPAGE 1;
+
+// Phase 5: Signal completion
+WATCH 0x0 0x0 0x0;
+SIGNAL PIPE_ESTABLISHED;

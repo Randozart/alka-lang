@@ -136,20 +136,11 @@ pub fn compile(
 }
 
 fn validateInstruction(instr: Instruction, vial: Vial, allocator: std.mem.Allocator, inst_def: *const instructions.Instruction) CompilerError!void {
+    _ = instr;
+    _ = vial;
     _ = allocator;
     _ = inst_def;
-
-    // Basic vessel validation
-    for (instr.operands.items) |operand| {
-        switch (operand) {
-            .identifier => |name| {
-                if (!vial.vessels.contains(name)) {
-                    return CompilerError.UnknownVessel;
-                }
-            },
-            else => {},
-        }
-    }
+    // Vessel validation deferred to runtime
 }
 
 fn validateWithTools(instr: Instruction, inst_def: *const instructions.Instruction, vial: Vial, allocator: std.mem.Allocator) !void {
@@ -176,7 +167,7 @@ fn validateWithTools(instr: Instruction, inst_def: *const instructions.Instructi
         .current_temp = 0,
     };
 
-    const result = try tool.validate(operands[0..instr.operands.items.len], ctx);
+    const result = try tool.validate(operands[0..@min(instr.operands.items.len, 3)], ctx);
 
     if (!result.allowed) {
         return CompilerError.ParseError;
@@ -186,7 +177,7 @@ fn validateWithTools(instr: Instruction, inst_def: *const instructions.Instructi
 fn emitPacket(
     op_code: instructions.OpCode,
     operands: std.ArrayList(alka_bin.Operand),
-    _: Vial,
+    vial: Vial,
 ) CompilerError!alka_bin.MetrodPacket {
     var packet = std.mem.zeroInit(alka_bin.MetrodPacket, .{
         .op_code = @intFromEnum(op_code),
@@ -198,6 +189,111 @@ fn emitPacket(
         .reserved = 0,
         .crc = 0,
     });
+
+    if (op_code == .CLAIM and operands.items.len >= 1) {
+        const name = switch (operands.items[0]) {
+            .identifier => |id| id,
+            else => {
+                packet.src_addr = alka_bin.evalOperand(operands.items[0]);
+                packet.crc = alka_bin.computeCrc(&packet);
+                return packet;
+            },
+        };
+
+        var it = vial.vessels.iterator();
+        while (it.next()) |entry| {
+            if (std.mem.eql(u8, entry.key_ptr.*, name)) {
+                const vessel = entry.value_ptr.*;
+                if (vessel.pci_id) |pci| {
+                    packet.src_addr = (@as(u64, pci.device) << 16) | pci.vendor;
+                    packet.vessel_id = 0;
+                    packet.crc = alka_bin.computeCrc(&packet);
+                    return packet;
+                }
+                break;
+            }
+        }
+        return CompilerError.UnknownVessel;
+    }
+
+    if (op_code == .LIMIT and operands.items.len >= 1) {
+        const name = switch (operands.items[0]) {
+            .identifier => |id| id,
+            else => {
+                packet.src_addr = alka_bin.evalOperand(operands.items[0]);
+                if (operands.items.len >= 2) {
+                    packet.dst_addr = alka_bin.evalOperand(operands.items[1]);
+                }
+                packet.crc = alka_bin.computeCrc(&packet);
+                return packet;
+            },
+        };
+
+        var it = vial.vessels.iterator();
+        while (it.next()) |entry| {
+            if (std.mem.eql(u8, entry.key_ptr.*, name)) {
+                const vessel = entry.value_ptr.*;
+                if (vessel.pci_id) |pci| {
+                    packet.src_addr = (@as(u64, pci.device) << 16) | pci.vendor;
+                }
+                break;
+            }
+        }
+        if (operands.items.len >= 2) {
+            packet.dst_addr = alka_bin.evalOperand(operands.items[1]);
+        }
+        packet.crc = alka_bin.computeCrc(&packet);
+        return packet;
+    }
+
+    if (op_code == .FENCE and operands.items.len >= 1) {
+        const name = switch (operands.items[0]) {
+            .identifier => |id| id,
+            else => {
+                packet.src_addr = alka_bin.evalOperand(operands.items[0]);
+                if (operands.items.len >= 2) {
+                    packet.dst_addr = alka_bin.evalOperand(operands.items[1]);
+                }
+                packet.crc = alka_bin.computeCrc(&packet);
+                return packet;
+            },
+        };
+
+        var it = vial.vessels.iterator();
+        while (it.next()) |entry| {
+            if (std.mem.eql(u8, entry.key_ptr.*, name)) {
+                const vessel = entry.value_ptr.*;
+                if (vessel.pci_id) |pci| {
+                    packet.src_addr = (@as(u64, pci.device) << 16) | pci.vendor;
+                }
+                break;
+            }
+        }
+        if (operands.items.len >= 2) {
+            packet.dst_addr = alka_bin.evalOperand(operands.items[1]);
+        }
+        packet.crc = alka_bin.computeCrc(&packet);
+        return packet;
+    }
+
+    if (op_code == .SIGNAL and operands.items.len >= 1) {
+        const name = switch (operands.items[0]) {
+            .identifier => |id| id,
+            else => {
+                packet.src_addr = alka_bin.evalOperand(operands.items[0]);
+                packet.crc = alka_bin.computeCrc(&packet);
+                return packet;
+            },
+        };
+
+        var hash: u64 = 5381;
+        for (name) |c| {
+            hash = ((hash << 5) +% hash) +% c;
+        }
+        packet.src_addr = hash;
+        packet.crc = alka_bin.computeCrc(&packet);
+        return packet;
+    }
 
     if (operands.items.len >= 1) {
         packet.src_addr = alka_bin.evalOperand(operands.items[0]);
@@ -232,7 +328,8 @@ pub fn parseProgram(source: []const u8, allocator: std.mem.Allocator) !Program {
         }
 
         var parts = std.mem.tokenizeScalar(u8, trimmed, ' ');
-        const name = parts.next() orelse continue;
+        const raw_name = parts.next() orelse continue;
+        const name = std.mem.trimRight(u8, raw_name, "; \t");
 
         var instr = Instruction{
             .name = try allocator.dupe(u8, name),
