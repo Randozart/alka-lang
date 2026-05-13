@@ -1,4 +1,4 @@
-// STILL — Manual DRAM Refresh Control Tool
+// SUSPEND — Manual DRAM Refresh Control Tool
 //
 // Purpose:
 //   Takes over DRAM refresh cycles from the memory controller, enabling
@@ -25,10 +25,10 @@ const interface = @import("../interface.zig");
 
 pub const OpCode = interface.ToolInterface.OpCode;
 
-pub const STILL = struct {
-    pub const OP = OpCode.STILL;
-    pub const NAME = "STILL";
-    pub const DESCRIPTION = "Manual DRAM refresh control - stops auto-refresh for precision timing";
+pub const SUSPEND = struct {
+    pub const OP = OpCode.SUSPEND;
+    pub const NAME = "SUSPEND";
+    pub const DESCRIPTION = "Pause auto-behavior of subsystem - stops auto-refresh for precision timing";
 
     pub const DEFAULT_REFRESH_INTERVAL_US = 64;
     pub const MAX_SAFE_HOLD_US = 500;

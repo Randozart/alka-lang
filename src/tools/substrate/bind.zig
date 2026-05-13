@@ -1,4 +1,4 @@
-// OCCUPY — PCIe Device Seizure Tool
+// BIND — PCIe Device Seizure Tool
 //
 // Purpose:
 //   Seizes a PCIe device and severs all OS access to it. The device becomes
@@ -12,7 +12,7 @@
 //   4. Device is now exclusively controlled by Alka
 //
 // VITRIOL relevance:
-//   The ultimate device takeover — OCCUPY seizes a PCIe device completely.
+//   The ultimate device takeover — BIND seizes a PCIe device completely.
 //   Used in dissolution operations to take full control of GPUs, NICs, or
 //   other devices. The Azoth counterpart is CLAIM, which restores OS access.
 //
@@ -25,10 +25,10 @@ const interface = @import("../interface.zig");
 
 pub const OpCode = interface.ToolInterface.OpCode;
 
-pub const OCCUPY = struct {
-    pub const OP = OpCode.OCCUPY;
-    pub const NAME = "OCCUPY";
-    pub const DESCRIPTION = "Seize PCIe device - sever all OS access to the device";
+pub const BIND = struct {
+    pub const OP = OpCode.BIND;
+    pub const NAME = "BIND";
+    pub const DESCRIPTION = "Bind to device with force option - sever all OS access to the device";
 
     pub fn validate(
         operands: []const u64,

@@ -1,8 +1,8 @@
-// FORGE — FPGA Bitstream Injection Tool
+// INJECT — FPGA Bitstream Injection Tool
 //
 // Purpose:
 //   Injects a custom bitstream into a specific tile of the FPGA fabric.
-//   Unlike RECAST which reconfigures the entire FPGA, FORGE performs
+//   Unlike RECAST which reconfigures the entire FPGA, INJECT performs
 //   partial reconfiguration — changing only one tile while the rest
 //   continues running. This enables live updates without downtime.
 //
@@ -14,7 +14,7 @@
 //   5. Other tiles continue operating throughout the process
 //
 // VITRIOL relevance:
-//   FORGE loads custom DMA logic into one KV260 tile while the other
+//   INJECT loads custom DMA logic into one KV260 tile while the other
 //   tile handles the Cortical Annex sensor processing. This enables
 //   simultaneous inference and real-time control.
 //
@@ -27,9 +27,9 @@ const interface = @import("../interface.zig");
 
 pub const OpCode = interface.ToolInterface.OpCode;
 
-pub const FORGE = struct {
-    pub const OP = OpCode.FORGE;
-    pub const NAME = "FORGE";
+pub const INJECT = struct {
+    pub const OP = OpCode.INJECT;
+    pub const NAME = "INJECT";
     pub const DESCRIPTION = "FPGA partial reconfiguration — inject bitstream into specific tile";
 
     pub fn validate(
@@ -44,7 +44,7 @@ pub const FORGE = struct {
         return interface.ToolInterface.ValidateResult{
             .allowed = true,
             .injected_operations = &.{ "SYNC L2", "AUDIT" },
-            .reason = "Bitstream injection validated — barrier + audit injected",
+            .reason = "Load firmware or config into device validated — barrier + audit injected",
         };
     }
 

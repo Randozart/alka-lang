@@ -1,4 +1,4 @@
-// IMC_HIJACK — Memory Controller Access Tool
+// DIRECT — Memory Controller Access Tool
 //
 // Purpose:
 //   Provides direct access to the Ivy Bridge Memory Controller registers
@@ -12,7 +12,7 @@
 //   4. Returns command status for verification
 //
 // VITRIOL relevance:
-//   The deepest level of substrate control — IMC_HIJACK lets Alka manage
+//   The deepest level of substrate control — DIRECT lets Alka manage
 //   DRAM at the hardware level. Used with STILL and OSCILLATE for complete
 //   memory timing control during precision operations.
 //
@@ -25,9 +25,9 @@ const interface = @import("../interface.zig");
 
 pub const OpCode = interface.ToolInterface.OpCode;
 
-pub const IMC_HIJACK = struct {
-    pub const OP = OpCode.IMC_HIJACK;
-    pub const NAME = "IMC_HIJACK";
+pub const DIRECT = struct {
+    pub const OP = OpCode.DIRECT;
+    pub const NAME = "DIRECT";
     pub const DESCRIPTION = "Direct access to Ivy Bridge Memory Controller registers (MCHBAR)";
 
     pub const MCHBAR_BASE = 0xFED10000;

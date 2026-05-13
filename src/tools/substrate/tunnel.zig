@@ -1,4 +1,4 @@
-// BOND — RAM-to-GPU Direct Tunnel Tool
+// TUNNEL — RAM-to-GPU Direct Tunnel Tool
 //
 // Purpose:
 //   Creates a direct RAM-to-GPU tunnel that bypasses the CPU cache hierarchy
@@ -12,8 +12,8 @@
 //   4. Returns tunnel metrics for monitoring
 //
 // VITRIOL relevance:
-//   BOND is the physical infrastructure for the Moore Stream. While FLOW moves
-//   data, BOND creates the dedicated highway. The Azoth counterpart is FLUX,
+//   TUNNEL is the physical infrastructure for the Moore Stream. While FLOW moves
+//   data, TUNNEL creates the dedicated highway. The Azoth counterpart is FLUX,
 //   which invalidates tunnel mappings on rollback.
 //
 // Op-Code: 0x35
@@ -25,9 +25,9 @@ const interface = @import("../interface.zig");
 
 pub const OpCode = interface.ToolInterface.OpCode;
 
-pub const BOND = struct {
-    pub const OP = OpCode.BOND;
-    pub const NAME = "BOND";
+pub const TUNNEL = struct {
+    pub const OP = OpCode.TUNNEL;
+    pub const NAME = "TUNNEL";
     pub const DESCRIPTION = "Creates direct RAM-to-GPU tunnel bypassing CPU cache hierarchy";
 
     pub fn validate(

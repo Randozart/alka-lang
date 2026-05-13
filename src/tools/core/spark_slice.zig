@@ -1,12 +1,12 @@
-// REFRACT — Sub-tensor Slicer (SPARK-verified)
+// SLICE — Sub-tensor Slicer (SPARK-verified)
 //
 // Bridges to SPARK Ada tool_refract.adb via C ABI.
 //
 // HOW IT WORKS:
-//   REFRACT slices large tensors (e.g., 7B-parameter LLM weights = ~14GB)
+//   SLICE slices large tensors (e.g., 7B-parameter LLM weights = ~14GB)
 //   into BAR1-sized chunks for micro-paging through the 256MB sliding window.
 //   Since the GTX 960 can only map 256MB of its 2GB VRAM at once, tensors
-//   larger than 256MB must be processed in chunks. REFRACT calculates how
+//   larger than 256MB must be processed in chunks. SLICE calculates how
 //   many Drop-sized chunks are needed to cover the full tensor and validates
 //   that each chunk fits within the aperture.
 //
@@ -41,7 +41,7 @@
 //
 //   CALL FLOW:
 //   alkac.zig validateWithTools() -> mod.zig getTool(0x3B) ->
-//   spark_refract.zig REFRACT.validate() -> spark_bridge.zig validateRefract() ->
+//   spark_refract.zig SLICE.validate() -> spark_bridge.zig validateRefract() ->
 //   vitriol_tool_wrapper.c tool_refract_validate() ->
 //   tool_refract.adb tool_refract__validate() [SPARK verified]
 //
@@ -51,10 +51,10 @@ const std = @import("std");
 const interface = @import("../interface.zig");
 const spark = @import("spark_bridge.zig");
 
-pub const REFRACT = struct {
-    pub const OP = interface.ToolInterface.OpCode.REFRACT;
-    pub const NAME = "REFRACT";
-    pub const DESCRIPTION = "Sub-tensor slicer (SPARK-verified)";
+pub const SLICE = struct {
+    pub const OP = interface.ToolInterface.OpCode.SLICE;
+    pub const NAME = "SLICE";
+    pub const DESCRIPTION = "Split region into chunks (SPARK-verified)";
 
     pub fn validate(
         operands: []const u64,
@@ -84,7 +84,7 @@ pub const REFRACT = struct {
         return .{
             .allowed = ok,
             .injected_operations = &.{},
-            .reason = if (!ok) "SPARK: REFRACT rejected (tensor size zero or chunk exceeds aperture)" else null,
+            .reason = if (!ok) "SPARK: SLICE rejected (tensor size zero or chunk exceeds aperture)" else null,
         };
     }
 

@@ -1,4 +1,4 @@
-// OSSIFY — CPU Core Pinning Tool
+// AFFINITY — CPU Core Pinning Tool
 //
 // Purpose:
 //   Pins a CPU core to Alka execution, bypassing the Linux scheduler entirely.
@@ -12,7 +12,7 @@
 //   4. Core now executes Alka instructions with zero OS latency
 //
 // VITRIOL relevance:
-//   For hard real-time operations, OSSIFY a core to guarantee nanosecond
+//   For hard real-time operations, AFFINITY a core to guarantee nanosecond
 //   precision. The Azoth counterpart is YIELD — which returns the core to
 //   the scheduler when the experiment completes or fails.
 //
@@ -25,9 +25,9 @@ const interface = @import("../interface.zig");
 
 pub const OpCode = interface.ToolInterface.OpCode;
 
-pub const OSSIFY = struct {
-    pub const OP = OpCode.OSSIFY;
-    pub const NAME = "OSSIFY";
+pub const AFFINITY = struct {
+    pub const OP = OpCode.AFFINITY;
+    pub const NAME = "AFFINITY";
     pub const DESCRIPTION = "Pins a CPU core to Alka code, bypassing the Linux scheduler entirely";
 
     pub fn validate(

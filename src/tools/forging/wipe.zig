@@ -20,7 +20,7 @@
 // that is itself a compiler, interpreter, or similar tool that incorporates
 // or embeds the Work.
 
-// VOID — Secure Substrate Erase Tool
+// WIPE — Secure Substrate Erase Tool
 //
 // Purpose:
 //   Securely erases substrate memory by overwriting with cryptographic
@@ -35,7 +35,7 @@
 //
 // VITRIOL relevance:
 //   Used as the Azoth counterpart to FLOW — if a transfer corrupts data,
-//   VOID sanitizes the affected region. Also used for secure deletion of
+//   WIPE sanitizes the affected region. Also used for secure deletion of
 //   sensitive data in the substrate before releasing control.
 //
 // Op-Code: 0x1F
@@ -47,10 +47,10 @@ const interface = @import("../interface.zig");
 
 pub const OpCode = interface.ToolInterface.OpCode;
 
-pub const VOID = struct {
-    pub const OP = OpCode.VOID;
-    pub const NAME = "VOID";
-    pub const DESCRIPTION = "Secure substrate erase — overwrite with cryptographic pattern";
+pub const WIPE = struct {
+    pub const OP = OpCode.WIPE;
+    pub const NAME = "WIPE";
+    pub const DESCRIPTION = "Securely erase region — overwrite with cryptographic pattern";
 
     pub fn validate(
         operands: []const u64,

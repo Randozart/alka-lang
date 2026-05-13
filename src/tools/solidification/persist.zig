@@ -1,8 +1,8 @@
-// FOSSILIZE — Substrate Persistence Tool
+// PERSIST — Substrate Persistence Tool
 //
 // Purpose:
 //   Writes Alka bytecode to the "Option ROM" of a peripheral (NIC, GPU,
-//   etc.) so it executes at power-on, before the BIOS loads. FOSSILIZE
+//   etc.) so it executes at power-on, before the BIOS loads. PERSIST
 //   is the "permanent residence" instruction — it makes Alka survive
 //   reboots, OS reinstalls, and even hardware swaps.
 //
@@ -13,7 +13,7 @@
 //   4. Returns once the firmware is flashed and verified
 //
 // VITRIOL relevance:
-//   FOSSILIZE writes the Moore Stream bootstrap into the GPU's Option ROM.
+//   PERSIST writes the Moore Stream bootstrap into the GPU's Option ROM.
 //   On next boot, the GPU initializes the DMA bridge before the OS loads,
 //   enabling true zero-touch inference startup.
 //
@@ -26,10 +26,10 @@ const interface = @import("../interface.zig");
 
 pub const OpCode = interface.ToolInterface.OpCode;
 
-pub const FOSSILIZE = struct {
-    pub const OP = OpCode.FOSSILIZE;
-    pub const NAME = "FOSSILIZE";
-    pub const DESCRIPTION = "Substrate persistence — write bytecode to Option ROM";
+pub const PERSIST = struct {
+    pub const OP = OpCode.PERSIST;
+    pub const NAME = "PERSIST";
+    pub const DESCRIPTION = "Store data in memory indefinitely — write bytecode to Option ROM";
 
     pub fn validate(
         operands: []const u64,

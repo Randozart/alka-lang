@@ -11,9 +11,9 @@ CLAIM GTX_960;
 LIMIT GTX_960 98000;
 
 // Phase 3: Stream 512MB from NVMe to 960 VRAM
-// REFRACT auto-chunks into 2x 256MB drops
+// SLICE auto-chunks into 2x 256MB drops
 // src = NVMe offset, dst = total size, size = chunk size
-REFRACT 0x0 0x20000000 0x10000000;
+SLICE 0x0 0x20000000 0x10000000;
 
 // Phase 4: Synchronize and verify
 SYNC;

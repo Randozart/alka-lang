@@ -47,6 +47,7 @@ const instructions = @import("../instructions/mod.zig");
 const alka_bin = @import("../codegen/alka_bin.zig");
 const welder = @import("../codegen/welder.zig");
 const tools = @import("../tools/mod.zig");
+const chain_validator = @import("chain_validator.zig");
 
 pub const Program = struct {
     directives: std.ArrayList([]const u8),
@@ -106,7 +107,23 @@ pub fn compile(
     azoth_out: ?*std.ArrayList(u8),
     allocator: std.mem.Allocator,
 ) CompilerError!void {
-    // Stage 1: Emit raw packets
+    // Stage 1: Chain validation (NEW in v5.0)
+    // CHAIN_VALIDATION_TODO: Full chain graph from pharmacopia.json metadata
+    const chain_result = try chain_validator.validateChain(program.instructions.items, allocator);
+    if (!chain_result.valid) {
+        for (chain_result.errors) |err| {
+            std.debug.print("CHAIN ERROR: {s}\n", .{err});
+        }
+        for (chain_result.suggestions) |sug| {
+            std.debug.print("SUGGESTION: {s}\n", .{sug});
+        }
+        return CompilerError.ParseError;
+    }
+    for (chain_result.warnings) |warn| {
+        std.debug.print("CHAIN WARNING: {s}\n", .{warn});
+    }
+
+    // Stage 2: Emit raw packets
     for (program.instructions.items) |instr| {
         const inst_def = instructions.getInstructionByName(instr.name) orelse {
             return CompilerError.UnknownInstruction;
@@ -119,7 +136,7 @@ pub fn compile(
         _ = out.appendSlice(std.mem.asBytes(&packet)) catch return CompilerError.BufferOverflow;
     }
 
-    // Stage 2: Post-precipitation refinement via Welder
+    // Stage 3: Post-precipitation refinement via Welder
     // The Welder validates CRCs and optimizes packet sequences
     const refined = try welder.Welder.refineBinary(out.items, allocator);
     defer allocator.free(refined);
@@ -127,7 +144,7 @@ pub fn compile(
     out.clearRetainingCapacity();
     try out.appendSlice(refined);
 
-    // Stage 3: Generate Azoth rollback binary
+    // Stage 4: Generate Azoth rollback binary
     if (azoth_out) |az| {
         const azoth = try alka_bin.generateAzothBinary(out.items, allocator);
         defer allocator.free(azoth);
@@ -545,8 +562,8 @@ pub fn analyzeWithTools(
         var byte_count: u64 = 32;
 
         switch (inst_def.op_code) {
-            .CLAIM => { op_desc = "Stake hardware node"; byte_count = 32; },
-            .STAKE => { op_desc = "Claim memory region"; byte_count = 64; },
+            .CLAIM => { op_desc = "Take ownership of hardware node"; byte_count = 32; },
+            .STAKE => { op_desc = "Reserve memory region"; byte_count = 64; },
             .FLOW => { op_desc = "DMA transfer"; byte_count = 64; },
             .SHIFT => { op_desc = "Remap BAR window"; byte_count = 32; },
             .FENCE => { op_desc = "Wait for condition"; byte_count = 32; },
@@ -555,33 +572,13 @@ pub fn analyzeWithTools(
             .PULSE => { op_desc = "Timing signal"; byte_count = 24; },
             .SIGNAL => { op_desc = "Trigger interrupt"; byte_count = 16; },
             .YIELD => { op_desc = "Cooperative yield"; byte_count = 8; },
-            .RECAST => { op_desc = "FPGA reconfigure"; byte_count = 128; },
+            .RECAST => { op_desc = "Reconfigure device"; byte_count = 128; },
             .SNAP => { op_desc = "Serialize state"; byte_count = 256; },
             .REVERT => { op_desc = "Restore state"; byte_count = 256; },
-            .LIMIT => { op_desc = "Hard contract"; byte_count = 32; },
-            .VEIL => { op_desc = "Hide from OS"; byte_count = 48; },
-            .DELEGATE => { op_desc = "CPU bypass"; byte_count = 64; },
+            .LIMIT => { op_desc = "Enforce constraint"; byte_count = 32; },
             .RHYTHM => { op_desc = "Timing constraint"; byte_count = 32; },
-            .DISTILL => { op_desc = "Algorithmic synthesis"; byte_count = 512; },
-            .ENQUEUE => { op_desc = "Command ring"; byte_count = 32; },
-            .MOLT => { op_desc = "Full state dump"; byte_count = 4096; },
-            .VOUCH => { op_desc = "Attestation"; byte_count = 128; },
-            .PROBE_BUS => { op_desc = "Forensic audit"; byte_count = 64; },
             .ECHO => { op_desc = "Non-intrusive introspection"; byte_count = 32; },
             .STASIS => { op_desc = "Bus-level locking"; byte_count = 24; },
-            .TRANSVERSE => { op_desc = "Bit-level swizzling"; byte_count = 48; },
-            .SEARCH => { op_desc = "Physical signature scanning"; byte_count = 128; },
-            .FOSSILIZE => { op_desc = "Substrate persistence"; byte_count = 64; },
-            .STRIKE => { op_desc = "Rowhammer/bit flipping"; byte_count = 16; },
-            .QUENCH => { op_desc = "Emergency power-state reset"; byte_count = 8; },
-            .FORGE => { op_desc = "Bitstream injection"; byte_count = 2048; },
-            .VOID => { op_desc = "Secure substrate erase"; byte_count = 16; },
-            .ABDUCT => { op_desc = "Physical page stealing"; byte_count = 128; },
-            .SNOOP => { op_desc = "Cache-coherent monitoring"; byte_count = 32; },
-            .SCATTER => { op_desc = "Vectored I/O (scatter-gather)"; byte_count = 64; },
-            .WHISPER => { op_desc = "Side-channel extraction"; byte_count = 48; },
-            .GHOST => { op_desc = "Configuration space masking"; byte_count = 48; },
-            .HIJACK => { op_desc = "IRQ stealing"; byte_count = 32; },
             .FLUX => { op_desc = "Cache invalidation"; byte_count = 16; },
             .AUDIT => { op_desc = "Post-instruction residue check"; byte_count = 32; },
             .DRY_RUN => { op_desc = "Simulate without executing"; byte_count = 0; },
@@ -592,14 +589,19 @@ pub fn analyzeWithTools(
             .GUARD => { op_desc = "Runtime safety sentinel"; byte_count = 16; },
             .ISOLATE => { op_desc = "Complete hardware isolation"; byte_count = 8; },
             .VERIFY => { op_desc = "Cryptographic state verification"; byte_count = 64; },
-            .OSSIFY => { op_desc = "Pin CPU core - scheduler bypass"; byte_count = 100; },
-            .BOND => { op_desc = "RAM-to-GPU direct tunnel"; byte_count = 64; },
-            .STILL => { op_desc = "Manual DRAM refresh control"; byte_count = 24; },
-            .RESONATE => { op_desc = "Hardware reset coordination"; byte_count = 48; },
-            .OSCILLATE => { op_desc = "Dual-bank refresh coordination"; byte_count = 96; },
-            .IMC_HIJACK => { op_desc = "Direct memory controller access"; byte_count = 32; },
-            .OCCUPY => { op_desc = "Seize PCIe device - OS access severed"; byte_count = 200; },
-            else => { op_desc = "Unknown"; byte_count = 32; },
+            .AFFINITY => { op_desc = "Pin resource to target"; byte_count = 100; },
+            .TUNNEL => { op_desc = "Direct channel between endpoints"; byte_count = 64; },
+            .SUSPEND => { op_desc = "Pause auto-behavior"; byte_count = 24; },
+            .COORDINATE => { op_desc = "Coordinate devices"; byte_count = 48; },
+            .DIRECT => { op_desc = "Bypass OS, access controller"; byte_count = 32; },
+            .BIND => { op_desc = "Bind to device with force"; byte_count = 200; },
+            .PERSIST => { op_desc = "Store in memory indefinitely"; byte_count = 64; },
+            .POKE => { op_desc = "Write pattern to address"; byte_count = 16; },
+            .RESET => { op_desc = "Reset subsystem to known state"; byte_count = 8; },
+            .INJECT => { op_desc = "Load firmware/config"; byte_count = 2048; },
+            .WIPE => { op_desc = "Securely erase region"; byte_count = 16; },
+            .SLICE => { op_desc = "Split region into chunks"; byte_count = 32; },
+            .PIPE => { op_desc = "Continuous DMA ring buffer"; byte_count = 64; },
         }
 
         std.debug.print("  [{s:>12}] {s:40} - {} bytes\n", .{ instr.name, op_desc, byte_count });

@@ -20,7 +20,7 @@
 // that is itself a compiler, interpreter, or similar tool that incorporates
 // or embeds the Work.
 
-// STRIKE — Targeted Bit Manipulation Tool
+// POKE — Targeted Bit Manipulation Tool
 //
 // Purpose:
 //   Performs targeted bit manipulation via rowhammer or direct VRAM poke.
@@ -35,7 +35,7 @@
 //
 // VITRIOL relevance:
 //   Used in dissolution research for rowhammer experiments and bit-flipping
-//   attacks. The compiler wraps STRIKE with SENSE+GUARD for thermal protection
+//   attacks. The compiler wraps POKE with SENSE+GUARD for thermal protection
 //   and AUDIT for post-operation verification. Extremely dangerous — can
 //   cause data corruption or physical damage if misused.
 //
@@ -48,9 +48,9 @@ const interface = @import("../interface.zig");
 
 pub const OpCode = interface.ToolInterface.OpCode;
 
-pub const STRIKE = struct {
-    pub const OP = OpCode.STRIKE;
-    pub const NAME = "STRIKE";
+pub const POKE = struct {
+    pub const OP = OpCode.POKE;
+    pub const NAME = "POKE";
     pub const DESCRIPTION = "Targeted bit manipulation via rowhammer or direct VRAM poke";
 
     pub fn validate(
