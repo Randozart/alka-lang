@@ -29,6 +29,7 @@
 // they provide a Zig wrapper implementing the ToolInterface contract.
 
 pub const dispatch = @import("dispatch_table.zig");
+pub const interface = @import("interface.zig");
 
 pub const Tool = dispatch.Tool;
 pub const getTool = dispatch.getTool;

@@ -103,6 +103,28 @@ pub fn build(b: *std.Build) void {
     const spark_test_step = b.step("test-spark", "Run SPARK C ABI integration tests");
     spark_test_step.dependOn(&run_spark_tests.step);
 
+    // Tool harness tests — all 43 tools validated against edge cases
+    const harness_tests = b.addTest(.{
+        .root_source_file = b.path("tests/tool_harness.zig"),
+        .target = target,
+        .optimize = optimize,
+    });
+    const tools_mod = b.createModule(.{ .root_source_file = b.path("src/tools/mod.zig") });
+    harness_tests.root_module.addImport("tools", tools_mod);
+
+    harness_tests.addObjectFile(b.path("src/spark/obj/vitriol_types.o"));
+    harness_tests.addObjectFile(b.path("src/spark/obj/tool_shift.o"));
+    harness_tests.addObjectFile(b.path("src/spark/obj/tool_refract.o"));
+    harness_tests.addObjectFile(b.path("src/spark/obj/tool_flow.o"));
+    harness_tests.addObjectFile(b.path("src/spark/obj/tool_fence.o"));
+    harness_tests.addObjectFile(b.path("src/spark/obj/tool_signal.o"));
+    harness_tests.addObjectFile(b.path("src/spark/obj/vitriol_tool_wrapper.o"));
+    harness_tests.linkSystemLibrary("gnat");
+
+    const run_harness_tests = b.addRunArtifact(harness_tests);
+    const harness_test_step = b.step("test-harness", "Run tool harness edge-case tests");
+    harness_test_step.dependOn(&run_harness_tests.step);
+
     // Generate vitriol.h header for kernel module
     const header_step = b.step("header", "Generate vitriol.h IOCTL header");
     const header_gen = b.addExecutable(.{
