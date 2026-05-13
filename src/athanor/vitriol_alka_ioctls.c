@@ -19,12 +19,12 @@
  * CRC verification (matches userspace alka_bin.computeCrc)
  * ============================================================================ */
 
-static u32 compute_crc(struct metrod_packet *pkt)
+static u32 compute_crc(struct alka_drop *pkt)
 {
     u32 crc = 0;
     u8 *bytes = (u8 *)pkt;
     int i;
-    size_t crc_offset = offsetof(struct metrod_packet, crc);
+    size_t crc_offset = offsetof(struct alka_drop, crc);
 
     for (i = 0; i < (int)crc_offset; i++) {
         crc = (crc << 1) | (crc >> 31);
@@ -37,7 +37,7 @@ static u32 compute_crc(struct metrod_packet *pkt)
  * REFRACT (0x3B) — Sub-Tensor Slicer
  * ============================================================================ */
 
-static int op_refract(struct vitriol_device *vdev, struct metrod_packet *pkt)
+static int op_refract(struct vitriol_device *vdev, struct alka_drop *pkt)
 {
     u64 src = pkt->src_addr;
     u64 total = pkt->dst_addr;
@@ -68,7 +68,7 @@ static int op_refract(struct vitriol_device *vdev, struct metrod_packet *pkt)
  * PIPE (0x3C) — Continuous DMA Ring Buffer
  * ============================================================================ */
 
-static int op_pipe(struct vitriol_device *vdev, struct metrod_packet *pkt)
+static int op_pipe(struct vitriol_device *vdev, struct alka_drop *pkt)
 {
     u64 src = pkt->src_addr;
     u64 dst = pkt->dst_addr;
@@ -91,7 +91,7 @@ static int op_pipe(struct vitriol_device *vdev, struct metrod_packet *pkt)
  * Opcode dispatch table
  * ============================================================================ */
 
-typedef int (*op_handler_t)(struct vitriol_device *, struct metrod_packet *);
+typedef int (*op_handler_t)(struct vitriol_device *, struct alka_drop *);
 
 static const op_handler_t opcode_handlers[256] = {
     [ALKA_OP_CLAIM]       = op_claim,
@@ -140,11 +140,11 @@ static const op_handler_t opcode_handlers[256] = {
 };
 
 /* ============================================================================
- * Execute a batch of Metrod packets
+ * Execute a batch of Alka drops
  * ============================================================================ */
 
 static int execute_packets(struct vitriol_device *vdev,
-                           struct metrod_packet *packets,
+                           struct alka_drop *packets,
                            u32 packet_count,
                            struct exec_result *result)
 {
@@ -159,7 +159,7 @@ static int execute_packets(struct vitriol_device *vdev,
     result->thermal_peak = vdev->current_temp;
 
     for (i = 0; i < packet_count; i++) {
-        struct metrod_packet *pkt = &packets[i];
+        struct alka_drop *pkt = &packets[i];
         op_handler_t handler;
 
         /* CRC verification */
@@ -216,7 +216,7 @@ static int execute_packets(struct vitriol_device *vdev,
         }
 
         result->packets_executed++;
-        result->bytes_transferred += sizeof(struct metrod_packet);
+        result->bytes_transferred += sizeof(struct alka_drop);
     }
 
     /* Update thermal peak */
@@ -230,7 +230,7 @@ static int execute_packets(struct vitriol_device *vdev,
  * ============================================================================ */
 
 static void execute_azoth_rollback(struct vitriol_device *vdev,
-                                    struct metrod_packet *azoth_packets,
+                                    struct alka_drop *azoth_packets,
                                     u32 azoth_count)
 {
     u32 i;
@@ -239,7 +239,7 @@ static void execute_azoth_rollback(struct vitriol_device *vdev,
 
     /* Azoth packets are already in LIFO order — execute sequentially */
     for (i = 0; i < azoth_count; i++) {
-        struct metrod_packet *pkt = &azoth_packets[i];
+        struct alka_drop *pkt = &azoth_packets[i];
         op_handler_t handler;
 
         /* Verify Azoth flag is set */
@@ -302,14 +302,14 @@ long vitriol_ioctl_execute(struct vitriol_device *vdev, void __user *arg)
         u32 packet_size;
         struct exec_result __user *result;
     } exec_args;
-    struct metrod_packet *packets;
+    struct alka_drop *packets;
     struct exec_result result;
     int ret;
 
     if (copy_from_user(&exec_args, arg, sizeof(exec_args)))
         return -EFAULT;
 
-    if (exec_args.packet_count == 0 || exec_args.packet_size < sizeof(struct metrod_packet))
+    if (exec_args.packet_count == 0 || exec_args.packet_size < sizeof(struct alka_drop))
         return -EINVAL;
 
     /* Allocate kernel buffer for packets */
@@ -348,8 +348,8 @@ long vitriol_ioctl_execute_safe(struct vitriol_device *vdev, void __user *arg)
         u32 azoth_count;
         struct exec_result __user *result;
     } safe_args;
-    struct metrod_packet *packets = NULL;
-    struct metrod_packet *azoth_packets = NULL;
+    struct alka_drop *packets = NULL;
+    struct alka_drop *azoth_packets = NULL;
     struct exec_result result;
     int ret;
 

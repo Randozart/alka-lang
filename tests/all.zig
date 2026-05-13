@@ -55,11 +55,11 @@ test "Codegen emits 32-byte packets" {
     const program = try parser.parseAlka(source, &arena);
     const vial = try parser.parseVial("Vessel GPU_MAIN { }", &arena);
 
-    const binary = try codegen.emitMetrod(program, vial, &arena);
+    const binary = try codegen.emitDrops(program, vial, &arena);
     try std.testing.expect(binary.len == 32);
 }
 
-test "Metrod packet has correct opcodes" {
+test "Drop has correct opcodes" {
     const source = "CLAIM GPU_MAIN;";
     var arena = std.heap.ArenaAllocator.init(std.testing.allocator);
     defer arena.deinit();
@@ -67,8 +67,8 @@ test "Metrod packet has correct opcodes" {
     const program = try parser.parseAlka(source, &arena);
     const vial = try parser.parseVial("Vessel GPU_MAIN { }", &arena);
 
-    const binary = try codegen.emitMetrod(program, vial, &arena);
+    const binary = try codegen.emitDrops(program, vial, &arena);
 
-    const packet = @as(*const codegen.MetrodPacket, @alignCast(binary.ptr));
+    const packet = @as(*const codegen.Drop, @alignCast(binary.ptr));
     try std.testing.expectEqual(codegen.OpCodes.CLAIM, packet.op_code);
 }

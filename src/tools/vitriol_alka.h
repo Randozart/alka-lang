@@ -18,12 +18,12 @@
 #define VITRIOL_DEVICE_PATH "/dev/vitriol"
 
 /* ============================================================================
- * Metrod Packet Format (32 bytes)
+ * Alka Drop Format (32 bytes)
  * ============================================================================ */
 
-#define METROD_PACKET_SIZE 32
+#define DROP_SIZE 32
 
-struct metrod_packet {
+struct alka_drop {
     __u8    op_code;        /* Instruction identifier */
     __u8    flags;          /* Execution flags (bit 7 = Azoth rollback) */
     __u16   vessel_id;      /* Target vessel index */
@@ -35,12 +35,12 @@ struct metrod_packet {
 } __attribute__((packed));
 
 /* ============================================================================
- * Extended Metrod Packet Format (64 bytes)
+ * Extended Alka Drop Format (64 bytes)
  * ============================================================================ */
 
-#define METROD_PACKET_EXT_SIZE 64
+#define DROP_SIZE_EXT 64
 
-struct metrod_packet_ext {
+struct alka_drop_ext {
     __u8    op_code;        /* Instruction identifier */
     __u8    intensity;      /* Operation intensity */
     __u16   safety;         /* Safety level override */
@@ -136,7 +136,7 @@ struct exec_result {
 /* Load a Vial (substrate description) */
 #define VITRIOL_IOC_LOAD_VIAL    _IOW(VITRIOL_IOC_MAGIC, 1, struct vial_desc)
 
-/* Execute an AlkaSol binary (array of metrod_packet) */
+/* Execute an AlkaSol binary (array of alka_drop) */
 #define VITRIOL_IOC_EXECUTE      _IOWR(VITRIOL_IOC_MAGIC, 2, struct { \
     void __user *packets; \
     __u32 packet_count; \

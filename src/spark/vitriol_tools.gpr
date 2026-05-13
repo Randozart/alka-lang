@@ -1,0 +1,37 @@
+--  vitriol_tools.gpr
+--  GNAT Project file for Alka SPARK tools.
+--  Each tool compiles to a C-compatible object file for linking with Zig.
+--
+--  Usage:
+--    gnatprove -Pvitriol_tools.gpr --level=2    # Verify all tools
+--    gprbuild -Pvitriol_tools.gpr                # Build all tools
+
+project Vitriol_Tools is
+   for Languages use ("Ada");
+   for Source_Dirs use (".");
+   for Object_Dir use "obj";
+   for Exec_Dir use "bin";
+   for Main use ("tool_shift.adb", "tool_refract.adb");
+
+   package Compiler is
+      for Default_Switches ("Ada") use
+        ("-gnatwa",       --  All warnings
+         "-gnatyg",       --  SPARK mode
+         "-gnat2022",     --  Ada 2022
+         "-gnatn",        --  Native type sizes
+         "-O2");          --  Optimize
+   end Compiler;
+
+   package Builder is
+      for Default_Switches ("Ada") use
+        ("-largs", "-static");  --  Static linking for kernel use
+   end Builder;
+
+   package Prove is
+      for Switches ("Ada") use
+        ("--level=2",     --  Medium proof level
+         "--timeout=30",  --  30s timeout per check
+         "--warnings=continue");
+   end Prove;
+
+end Vitriol_Tools;

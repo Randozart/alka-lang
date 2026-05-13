@@ -29,7 +29,7 @@
  * Real driver unbinding uses device_release_driver() via sysfs.
  * ============================================================================ */
 
-int op_claim(struct vitriol_device *vdev, struct metrod_packet *pkt)
+int op_claim(struct vitriol_device *vdev, struct alka_drop *pkt)
 {
     u16 vendor = pkt->src_addr & 0xFFFF;
     u16 device = (pkt->src_addr >> 16) & 0xFFFF;
@@ -129,7 +129,7 @@ int op_claim(struct vitriol_device *vdev, struct metrod_packet *pkt)
  * Uses the 4MB bounce buffer with sliding window for transfers > 256MB.
  * ============================================================================ */
 
-int op_flow(struct vitriol_device *vdev, struct metrod_packet *pkt)
+int op_flow(struct vitriol_device *vdev, struct alka_drop *pkt)
 {
     u64 src = pkt->src_addr;
     u64 dst = pkt->dst_addr;
@@ -167,7 +167,7 @@ int op_flow(struct vitriol_device *vdev, struct metrod_packet *pkt)
  * we must shift the window. src_addr = new VRAM offset.
  * ============================================================================ */
 
-int op_shift(struct vitriol_device *vdev, struct metrod_packet *pkt)
+int op_shift(struct vitriol_device *vdev, struct alka_drop *pkt)
 {
     u64 offset = pkt->src_addr;
     int ret;
@@ -193,7 +193,7 @@ int op_shift(struct vitriol_device *vdev, struct metrod_packet *pkt)
  * This is the completion synchronization mechanism.
  * ============================================================================ */
 
-int op_fence(struct vitriol_device *vdev, struct metrod_packet *pkt)
+int op_fence(struct vitriol_device *vdev, struct alka_drop *pkt)
 {
     u64 expected = pkt->dst_addr;
     int timeout_ms = 5000;
@@ -227,7 +227,7 @@ int op_fence(struct vitriol_device *vdev, struct metrod_packet *pkt)
  * SYNC (0x06) — Memory barrier
  * ============================================================================ */
 
-int op_sync(struct vitriol_device *vdev, struct metrod_packet *pkt)
+int op_sync(struct vitriol_device *vdev, struct alka_drop *pkt)
 {
     u32 level = pkt->src_addr & 0xFF;
 
@@ -244,7 +244,7 @@ int op_sync(struct vitriol_device *vdev, struct metrod_packet *pkt)
  * SENSE (0x07) — Read sensor (thermal, power, etc.)
  * ============================================================================ */
 
-int op_sense(struct vitriol_device *vdev, struct metrod_packet *pkt)
+int op_sense(struct vitriol_device *vdev, struct alka_drop *pkt)
 {
     u32 sensor_id = pkt->src_addr & 0xFF;
 
@@ -259,7 +259,7 @@ int op_sense(struct vitriol_device *vdev, struct metrod_packet *pkt)
  * STAKE (0x02) — Claim physical memory region
  * ============================================================================ */
 
-int op_stake(struct vitriol_device *vdev, struct metrod_packet *pkt)
+int op_stake(struct vitriol_device *vdev, struct alka_drop *pkt)
 {
     u64 phys_addr = pkt->src_addr;
     u32 size = pkt->size;
@@ -272,7 +272,7 @@ int op_stake(struct vitriol_device *vdev, struct metrod_packet *pkt)
  * SNAP (0x0C) — Serialize hardware state
  * ============================================================================ */
 
-int op_snap(struct vitriol_device *vdev, struct metrod_packet *pkt)
+int op_snap(struct vitriol_device *vdev, struct alka_drop *pkt)
 {
     pr_info("VITRIOL: SNAP vessel=%u\n", pkt->vessel_id);
 
@@ -287,7 +287,7 @@ int op_snap(struct vitriol_device *vdev, struct metrod_packet *pkt)
  * REVERT (0x0D) — Restore previously SNAP'd state
  * ============================================================================ */
 
-int op_revert(struct vitriol_device *vdev, struct metrod_packet *pkt)
+int op_revert(struct vitriol_device *vdev, struct alka_drop *pkt)
 {
     pr_info("VITRIOL: REVERT vessel=%u blob=%llu\n", pkt->vessel_id, pkt->dst_addr);
 
@@ -302,7 +302,7 @@ int op_revert(struct vitriol_device *vdev, struct metrod_packet *pkt)
  * LIMIT (0x0E) — Set hard contract (thermal, power)
  * ============================================================================ */
 
-int op_limit(struct vitriol_device *vdev, struct metrod_packet *pkt)
+int op_limit(struct vitriol_device *vdev, struct alka_drop *pkt)
 {
     u32 property = pkt->src_addr & 0xFF;
     u32 value = pkt->size;
@@ -319,7 +319,7 @@ int op_limit(struct vitriol_device *vdev, struct metrod_packet *pkt)
  * VEIL (0x0F) — Hide device from OS
  * ============================================================================ */
 
-int op_veil(struct vitriol_device *vdev, struct metrod_packet *pkt)
+int op_veil(struct vitriol_device *vdev, struct alka_drop *pkt)
 {
     u16 cmd;
 
@@ -339,7 +339,7 @@ int op_veil(struct vitriol_device *vdev, struct metrod_packet *pkt)
  * QUENCH (0x1D) — Emergency power cut
  * ============================================================================ */
 
-int op_quench(struct vitriol_device *vdev, struct metrod_packet *pkt)
+int op_quench(struct vitriol_device *vdev, struct alka_drop *pkt)
 {
     u16 pmcsr;
 
@@ -359,7 +359,7 @@ int op_quench(struct vitriol_device *vdev, struct metrod_packet *pkt)
  * FORGE (0x1E) — FPGA partial reconfiguration
  * ============================================================================ */
 
-int op_forge(struct vitriol_device *vdev, struct metrod_packet *pkt)
+int op_forge(struct vitriol_device *vdev, struct alka_drop *pkt)
 {
     pr_info("VITRIOL: FORGE vessel=%u tile=%llu\n", pkt->vessel_id, pkt->dst_addr);
     return 0;
@@ -369,7 +369,7 @@ int op_forge(struct vitriol_device *vdev, struct metrod_packet *pkt)
  * VOID (0x1F) — Secure erase
  * ============================================================================ */
 
-int op_void_op(struct vitriol_device *vdev, struct metrod_packet *pkt)
+int op_void_op(struct vitriol_device *vdev, struct alka_drop *pkt)
 {
     pr_info("VITRIOL: VOID addr=%llx size=%u\n", pkt->src_addr, pkt->size);
     return 0;
@@ -379,7 +379,7 @@ int op_void_op(struct vitriol_device *vdev, struct metrod_packet *pkt)
  * ECHO (0x17) — Read without mutating
  * ============================================================================ */
 
-int op_echo(struct vitriol_device *vdev, struct metrod_packet *pkt)
+int op_echo(struct vitriol_device *vdev, struct alka_drop *pkt)
 {
     u32 value;
 
@@ -396,7 +396,7 @@ int op_echo(struct vitriol_device *vdev, struct metrod_packet *pkt)
  * AUDIT (0x2B) — Post-instruction residue check
  * ============================================================================ */
 
-int op_audit(struct vitriol_device *vdev, struct metrod_packet *pkt)
+int op_audit(struct vitriol_device *vdev, struct alka_drop *pkt)
 {
     u32 err_status;
 
@@ -417,7 +417,7 @@ int op_audit(struct vitriol_device *vdev, struct metrod_packet *pkt)
  * GUARD (0x31) — Runtime safety sentinel
  * ============================================================================ */
 
-int op_guard(struct vitriol_device *vdev, struct metrod_packet *pkt)
+int op_guard(struct vitriol_device *vdev, struct alka_drop *pkt)
 {
     u32 threshold = pkt->size;
 
@@ -434,7 +434,7 @@ int op_guard(struct vitriol_device *vdev, struct metrod_packet *pkt)
  * ISOLATE (0x32) — Disconnect device from bus
  * ============================================================================ */
 
-int op_isolate(struct vitriol_device *vdev, struct metrod_packet *pkt)
+int op_isolate(struct vitriol_device *vdev, struct alka_drop *pkt)
 {
     u16 cmd;
 
@@ -454,7 +454,7 @@ int op_isolate(struct vitriol_device *vdev, struct metrod_packet *pkt)
  * VERIFY (0x33) — Cryptographic state verification
  * ============================================================================ */
 
-int op_verify(struct vitriol_device *vdev, struct metrod_packet *pkt)
+int op_verify(struct vitriol_device *vdev, struct alka_drop *pkt)
 {
     pr_info("VITRIOL: VERIFY vessel=%u expected_hash=%llu\n",
             pkt->vessel_id, pkt->dst_addr);
@@ -465,7 +465,7 @@ int op_verify(struct vitriol_device *vdev, struct metrod_packet *pkt)
  * WATCH (0x2F) — Real-time monitoring
  * ============================================================================ */
 
-int op_watch(struct vitriol_device *vdev, struct metrod_packet *pkt)
+int op_watch(struct vitriol_device *vdev, struct alka_drop *pkt)
 {
     u32 target = pkt->src_addr & 0xFF;
     u32 interval = pkt->size;
@@ -478,7 +478,7 @@ int op_watch(struct vitriol_device *vdev, struct metrod_packet *pkt)
  * TRACE (0x30) — Enable execution trace
  * ============================================================================ */
 
-int op_trace(struct vitriol_device *vdev, struct metrod_packet *pkt)
+int op_trace(struct vitriol_device *vdev, struct alka_drop *pkt)
 {
     pr_info("VITRIOL: TRACE enabled (id=%llu)\n", pkt->src_addr);
     return 0;
@@ -488,7 +488,7 @@ int op_trace(struct vitriol_device *vdev, struct metrod_packet *pkt)
  * MOLT (0x14) — Full state dump
  * ============================================================================ */
 
-int op_molt(struct vitriol_device *vdev, struct metrod_packet *pkt)
+int op_molt(struct vitriol_device *vdev, struct alka_drop *pkt)
 {
     pr_info("VITRIOL: MOLT vessel=%u blob=%llu\n", pkt->vessel_id, pkt->dst_addr);
 
@@ -502,7 +502,7 @@ int op_molt(struct vitriol_device *vdev, struct metrod_packet *pkt)
  * FOSSILIZE (0x1B) — Write to Option ROM
  * ============================================================================ */
 
-int op_fossilize(struct vitriol_device *vdev, struct metrod_packet *pkt)
+int op_fossilize(struct vitriol_device *vdev, struct alka_drop *pkt)
 {
     pr_info("VITRIOL: FOSSILIZE vessel=%u bytecode=%llu\n",
             pkt->vessel_id, pkt->dst_addr);
@@ -513,7 +513,7 @@ int op_fossilize(struct vitriol_device *vdev, struct metrod_packet *pkt)
  * STASIS (0x18) — PCIe bus locking
  * ============================================================================ */
 
-int op_stasis(struct vitriol_device *vdev, struct metrod_packet *pkt)
+int op_stasis(struct vitriol_device *vdev, struct alka_drop *pkt)
 {
     pr_info("VITRIOL: STASIS bus=%llu\n", pkt->src_addr);
     return 0;
@@ -523,7 +523,7 @@ int op_stasis(struct vitriol_device *vdev, struct metrod_packet *pkt)
  * RHYTHM (0x11) — Hard-clock alignment
  * ============================================================================ */
 
-int op_rhythm(struct vitriol_device *vdev, struct metrod_packet *pkt)
+int op_rhythm(struct vitriol_device *vdev, struct alka_drop *pkt)
 {
     u32 frequency = pkt->size;
 
@@ -535,7 +535,7 @@ int op_rhythm(struct vitriol_device *vdev, struct metrod_packet *pkt)
  * PULSE (0x08) — Timing signal
  * ============================================================================ */
 
-int op_pulse_op(struct vitriol_device *vdev, struct metrod_packet *pkt)
+int op_pulse_op(struct vitriol_device *vdev, struct alka_drop *pkt)
 {
     u32 pin = pkt->src_addr & 0xFF;
     u32 freq = pkt->size;
@@ -548,7 +548,7 @@ int op_pulse_op(struct vitriol_device *vdev, struct metrod_packet *pkt)
  * SIGNAL (0x09) — Hardware interrupt
  * ============================================================================ */
 
-int op_signal_op(struct vitriol_device *vdev, struct metrod_packet *pkt)
+int op_signal_op(struct vitriol_device *vdev, struct alka_drop *pkt)
 {
     u32 vector = pkt->src_addr & 0xFF;
 
@@ -560,7 +560,7 @@ int op_signal_op(struct vitriol_device *vdev, struct metrod_packet *pkt)
  * YIELD (0x0A) — Cooperative yield
  * ============================================================================ */
 
-int op_yield_op(struct vitriol_device *vdev, struct metrod_packet *pkt)
+int op_yield_op(struct vitriol_device *vdev, struct alka_drop *pkt)
 {
     u32 micros = pkt->src_addr;
 
@@ -574,7 +574,7 @@ int op_yield_op(struct vitriol_device *vdev, struct metrod_packet *pkt)
  * RECAST (0x0B) — FPGA reconfiguration
  * ============================================================================ */
 
-int op_recast(struct vitriol_device *vdev, struct metrod_packet *pkt)
+int op_recast(struct vitriol_device *vdev, struct alka_drop *pkt)
 {
     pr_info("VITRIOL: RECAST vessel=%u bitstream=%llu\n",
             pkt->vessel_id, pkt->dst_addr);
@@ -585,7 +585,7 @@ int op_recast(struct vitriol_device *vdev, struct metrod_packet *pkt)
  * DRY_RUN (0x2C) — Simulate only
  * ============================================================================ */
 
-int op_dry_run(struct vitriol_device *vdev, struct metrod_packet *pkt)
+int op_dry_run(struct vitriol_device *vdev, struct alka_drop *pkt)
 {
     pr_info("VITRIOL: DRY_RUN op=0x%02x (simulated)\n", pkt->op_code);
     return 0;
@@ -595,7 +595,7 @@ int op_dry_run(struct vitriol_device *vdev, struct metrod_packet *pkt)
  * MOCK (0x2D) — Use mock hardware
  * ============================================================================ */
 
-int op_mock(struct vitriol_device *vdev, struct metrod_packet *pkt)
+int op_mock(struct vitriol_device *vdev, struct alka_drop *pkt)
 {
     pr_info("VITRIOL: MOCK mock_id=%llu\n", pkt->src_addr);
     return 0;
@@ -605,7 +605,7 @@ int op_mock(struct vitriol_device *vdev, struct metrod_packet *pkt)
  * PROVE (0x2E) — Formal verification
  * ============================================================================ */
 
-int op_prove(struct vitriol_device *vdev, struct metrod_packet *pkt)
+int op_prove(struct vitriol_device *vdev, struct alka_drop *pkt)
 {
     pr_info("VITRIOL: PROVE invariant=%llu\n", pkt->src_addr);
     return 0;
@@ -615,7 +615,7 @@ int op_prove(struct vitriol_device *vdev, struct metrod_packet *pkt)
  * STRIKE (0x1C) — Rowhammer/bit flipping
  * ============================================================================ */
 
-int op_strike(struct vitriol_device *vdev, struct metrod_packet *pkt)
+int op_strike(struct vitriol_device *vdev, struct alka_drop *pkt)
 {
     pr_warn("VITRIOL: STRIKE target=%llx pattern=%llu reps=%u\n",
             pkt->src_addr, pkt->dst_addr, pkt->size);
@@ -626,7 +626,7 @@ int op_strike(struct vitriol_device *vdev, struct metrod_packet *pkt)
  * FLUX (0x2A) — Cache invalidation
  * ============================================================================ */
 
-int op_flux(struct vitriol_device *vdev, struct metrod_packet *pkt)
+int op_flux(struct vitriol_device *vdev, struct alka_drop *pkt)
 {
     pr_info("VITRIOL: FLUX vessel=%llu\n", pkt->src_addr);
     return 0;
@@ -636,7 +636,7 @@ int op_flux(struct vitriol_device *vdev, struct metrod_packet *pkt)
  * OSSIFY (0x34) — Pin CPU core
  * ============================================================================ */
 
-int op_ossify(struct vitriol_device *vdev, struct metrod_packet *pkt)
+int op_ossify(struct vitriol_device *vdev, struct alka_drop *pkt)
 {
     u32 core_id = pkt->src_addr & 0xFF;
 
@@ -648,7 +648,7 @@ int op_ossify(struct vitriol_device *vdev, struct metrod_packet *pkt)
  * BOND (0x35) — RAM-to-GPU direct tunnel
  * ============================================================================ */
 
-int op_bond(struct vitriol_device *vdev, struct metrod_packet *pkt)
+int op_bond(struct vitriol_device *vdev, struct alka_drop *pkt)
 {
     u64 ram_addr = pkt->src_addr;
     u64 gpu_addr = pkt->dst_addr;
@@ -662,7 +662,7 @@ int op_bond(struct vitriol_device *vdev, struct metrod_packet *pkt)
  * STILL (0x36) — Manual DRAM refresh
  * ============================================================================ */
 
-int op_still(struct vitriol_device *vdev, struct metrod_packet *pkt)
+int op_still(struct vitriol_device *vdev, struct alka_drop *pkt)
 {
     u32 bank = pkt->src_addr & 0xFF;
 
@@ -674,7 +674,7 @@ int op_still(struct vitriol_device *vdev, struct metrod_packet *pkt)
  * RESONATE (0x37) — Coordinate reset
  * ============================================================================ */
 
-int op_resonate(struct vitriol_device *vdev, struct metrod_packet *pkt)
+int op_resonate(struct vitriol_device *vdev, struct alka_drop *pkt)
 {
     pr_info("VITRIOL: RESONATE node_a=%llu node_b=%llu\n",
             pkt->src_addr, pkt->dst_addr);
@@ -685,7 +685,7 @@ int op_resonate(struct vitriol_device *vdev, struct metrod_packet *pkt)
  * OSCILLATE (0x38) — Dual-bank refresh
  * ============================================================================ */
 
-int op_oscillate(struct vitriol_device *vdev, struct metrod_packet *pkt)
+int op_oscillate(struct vitriol_device *vdev, struct alka_drop *pkt)
 {
     pr_info("VITRIOL: OSCILLATE bank_a=%llu bank_b=%llu\n",
             pkt->src_addr, pkt->dst_addr);
@@ -696,7 +696,7 @@ int op_oscillate(struct vitriol_device *vdev, struct metrod_packet *pkt)
  * IMC_HIJACK (0x39) — Direct memory controller access
  * ============================================================================ */
 
-int op_imc_hijack(struct vitriol_device *vdev, struct metrod_packet *pkt)
+int op_imc_hijack(struct vitriol_device *vdev, struct alka_drop *pkt)
 {
     u32 channel = pkt->src_addr & 0xFF;
 
@@ -708,7 +708,7 @@ int op_imc_hijack(struct vitriol_device *vdev, struct metrod_packet *pkt)
  * OCCUPY (0x3A) — Seize PCIe device
  * ============================================================================ */
 
-int op_occupy(struct vitriol_device *vdev, struct metrod_packet *pkt)
+int op_occupy(struct vitriol_device *vdev, struct alka_drop *pkt)
 {
     u32 bus = (pkt->src_addr >> 8) & 0xFF;
     u32 slot = (pkt->src_addr >> 3) & 0x1F;

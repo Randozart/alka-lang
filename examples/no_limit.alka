@@ -1,0 +1,9 @@
+// Alka Program: FLOW without LIMIT (should fail proof)
+
+REQUIRE gtx960_2gb.alkavl;
+
+CLAIM GTX_960;
+// No LIMIT before FLOW
+FLOW GTX_960 0x0 0x1000000;
+SYNC;
+SIGNAL DONE;

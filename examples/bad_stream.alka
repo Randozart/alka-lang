@@ -1,0 +1,14 @@
+// Alka Program: Bad stream (should fail proof)
+// REFRACT chunk size exceeds 256MB BAR window
+
+REQUIRE gtx960_2gb.alkavl;
+
+CLAIM GTX_960;
+LIMIT GTX_960 98000;
+
+// 512MB chunk — exceeds 256MB aperture
+REFRACT 0x0 0x40000000 0x20000000;
+
+SYNC;
+FENCE GTX_960.METAPAGE 1;
+SIGNAL STREAM_COMPLETE;
