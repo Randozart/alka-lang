@@ -1,0 +1,456 @@
+{
+  "version": "4.0",
+  "description": "Alka Pharmacopia — the manifest of all available tools across languages",
+  "tools": [
+    {
+      "opcode": "0x01",
+      "name": "CLAIM",
+      "description": "Stake hardware node",
+      "language": "zig",
+      "category": "core",
+      "sources": ["src/tools/core/claim.zig"],
+      "struct_name": "CLAIM",
+      "safety_level": 3
+    },
+    {
+      "opcode": "0x02",
+      "name": "STAKE",
+      "description": "Claim memory region",
+      "language": "zig",
+      "category": "core",
+      "sources": ["src/tools/core/stake.zig"],
+      "struct_name": "STAKE",
+      "safety_level": 2
+    },
+    {
+      "opcode": "0x03",
+      "name": "FLOW",
+      "description": "DMA transfer (SPARK-verified)",
+      "language": "spark",
+      "category": "core",
+      "sources": ["src/spark/tool_flow.ads", "src/spark/tool_flow.adb"],
+      "project": "src/spark/vitriol_tools.gpr",
+      "wrapper": "core/spark_flow.zig",
+      "struct_name": "FLOW",
+      "safety_level": 4,
+      "link_libraries": ["gnat"],
+      "verified_by": "gnatprove"
+    },
+    {
+      "opcode": "0x04",
+      "name": "SHIFT",
+      "description": "Remap BAR window (SPARK-verified)",
+      "language": "spark",
+      "category": "core",
+      "sources": ["src/spark/tool_shift.ads", "src/spark/tool_shift.adb"],
+      "project": "src/spark/vitriol_tools.gpr",
+      "wrapper": "core/spark_shift.zig",
+      "struct_name": "SHIFT",
+      "safety_level": 4,
+      "link_libraries": ["gnat"],
+      "verified_by": "gnatprove"
+    },
+    {
+      "opcode": "0x05",
+      "name": "FENCE",
+      "description": "Wait for metapage (SPARK-verified)",
+      "language": "spark",
+      "category": "core",
+      "sources": ["src/spark/tool_fence.ads", "src/spark/tool_fence.adb"],
+      "project": "src/spark/vitriol_tools.gpr",
+      "wrapper": "core/spark_fence.zig",
+      "struct_name": "FENCE",
+      "safety_level": 4,
+      "link_libraries": ["gnat"],
+      "verified_by": "gnatprove"
+    },
+    {
+      "opcode": "0x06",
+      "name": "SYNC",
+      "description": "Memory barrier",
+      "language": "zig",
+      "category": "core",
+      "sources": ["src/tools/core/sync.zig"],
+      "struct_name": "SYNC",
+      "safety_level": 2
+    },
+    {
+      "opcode": "0x09",
+      "name": "SIGNAL",
+      "description": "GPU compute trigger (SPARK-verified)",
+      "language": "spark",
+      "category": "core",
+      "sources": ["src/spark/tool_signal.ads", "src/spark/tool_signal.adb"],
+      "project": "src/spark/vitriol_tools.gpr",
+      "wrapper": "core/spark_signal.zig",
+      "struct_name": "SIGNAL",
+      "safety_level": 4,
+      "link_libraries": ["gnat"],
+      "verified_by": "gnatprove"
+    },
+    {
+      "opcode": "0x0A",
+      "name": "YIELD",
+      "description": "Cooperative yield",
+      "language": "zig",
+      "category": "core",
+      "sources": ["src/tools/core/yield.zig"],
+      "struct_name": "YIELD",
+      "safety_level": 1
+    },
+    {
+      "opcode": "0x0E",
+      "name": "LIMIT",
+      "description": "Thermal limit",
+      "language": "zig",
+      "category": "core",
+      "sources": ["src/tools/core/limit.zig"],
+      "struct_name": "LIMIT",
+      "safety_level": 3
+    },
+    {
+      "opcode": "0x3B",
+      "name": "REFRACT",
+      "description": "Sub-tensor slicer (SPARK-verified)",
+      "language": "spark",
+      "category": "core",
+      "sources": ["src/spark/tool_refract.ads", "src/spark/tool_refract.adb"],
+      "project": "src/spark/vitriol_tools.gpr",
+      "wrapper": "core/spark_refract.zig",
+      "struct_name": "REFRACT",
+      "safety_level": 4,
+      "link_libraries": ["gnat"],
+      "verified_by": "gnatprove"
+    },
+    {
+      "opcode": "0x3C",
+      "name": "PIPE",
+      "description": "Continuous DMA ring buffer",
+      "language": "zig",
+      "category": "core",
+      "sources": ["src/tools/core/pipe.zig"],
+      "struct_name": "PIPE",
+      "safety_level": 3
+    },
+    {
+      "opcode": "0x11",
+      "name": "RHYTHM",
+      "description": "Timing constraint",
+      "language": "zig",
+      "category": "pulse",
+      "sources": ["src/tools/pulse/rhythm.zig"],
+      "struct_name": "RHYTHM",
+      "safety_level": 2
+    },
+    {
+      "opcode": "0x14",
+      "name": "MOLT",
+      "description": "Full state dump",
+      "language": "zig",
+      "category": "solidification",
+      "sources": ["src/tools/solidification/molt.zig"],
+      "struct_name": "MOLT",
+      "safety_level": 2
+    },
+    {
+      "opcode": "0x17",
+      "name": "ECHO",
+      "description": "Non-intrusive introspection",
+      "language": "zig",
+      "category": "core",
+      "sources": ["src/tools/core/echo.zig"],
+      "struct_name": "ECHO",
+      "safety_level": 1
+    },
+    {
+      "opcode": "0x18",
+      "name": "STASIS",
+      "description": "Bus-level locking",
+      "language": "zig",
+      "category": "pulse",
+      "sources": ["src/tools/pulse/stasis.zig"],
+      "struct_name": "STASIS",
+      "safety_level": 3
+    },
+    {
+      "opcode": "0x2A",
+      "name": "FLUX",
+      "description": "Cache invalidation",
+      "language": "zig",
+      "category": "transmutation",
+      "sources": ["src/tools/transmutation/flux.zig"],
+      "struct_name": "FLUX",
+      "safety_level": 2
+    },
+    {
+      "opcode": "0x2B",
+      "name": "AUDIT",
+      "description": "Post-instruction residue check",
+      "language": "zig",
+      "category": "testing",
+      "sources": ["src/tools/testing/audit.zig"],
+      "struct_name": "AUDIT",
+      "safety_level": 2
+    },
+    {
+      "opcode": "0x2C",
+      "name": "DRY_RUN",
+      "description": "Simulate without executing",
+      "language": "zig",
+      "category": "testing",
+      "sources": ["src/tools/testing/dry_run.zig"],
+      "struct_name": "DRY_RUN",
+      "safety_level": 1
+    },
+    {
+      "opcode": "0x2D",
+      "name": "MOCK",
+      "description": "Use mock hardware",
+      "language": "zig",
+      "category": "testing",
+      "sources": ["src/tools/testing/mock.zig"],
+      "struct_name": "MOCK",
+      "safety_level": 1
+    },
+    {
+      "opcode": "0x2E",
+      "name": "PROVE",
+      "description": "Formal verification",
+      "language": "zig",
+      "category": "testing",
+      "sources": ["src/tools/testing/prove.zig"],
+      "struct_name": "PROVE",
+      "safety_level": 1
+    },
+    {
+      "opcode": "0x2F",
+      "name": "WATCH",
+      "description": "Real-time monitoring",
+      "language": "zig",
+      "category": "monitoring",
+      "sources": ["src/tools/monitoring/watch.zig"],
+      "struct_name": "WATCH",
+      "safety_level": 1
+    },
+    {
+      "opcode": "0x30",
+      "name": "TRACE",
+      "description": "Execution trace",
+      "language": "zig",
+      "category": "monitoring",
+      "sources": ["src/tools/monitoring/trace.zig"],
+      "struct_name": "TRACE",
+      "safety_level": 1
+    },
+    {
+      "opcode": "0x31",
+      "name": "GUARD",
+      "description": "Runtime safety sentinel",
+      "language": "zig",
+      "category": "safety",
+      "sources": ["src/tools/safety/guard.zig"],
+      "struct_name": "GUARD",
+      "safety_level": 3
+    },
+    {
+      "opcode": "0x32",
+      "name": "ISOLATE",
+      "description": "Complete hardware isolation",
+      "language": "zig",
+      "category": "safety",
+      "sources": ["src/tools/safety/isolate.zig"],
+      "struct_name": "ISOLATE",
+      "safety_level": 4
+    },
+    {
+      "opcode": "0x33",
+      "name": "VERIFY",
+      "description": "Cryptographic state verification",
+      "language": "zig",
+      "category": "safety",
+      "sources": ["src/tools/safety/verify.zig"],
+      "struct_name": "VERIFY",
+      "safety_level": 3
+    },
+    {
+      "opcode": "0x34",
+      "name": "OSSIFY",
+      "description": "Pin CPU core to Alka",
+      "language": "zig",
+      "category": "substrate",
+      "sources": ["src/tools/substrate/ossify.zig"],
+      "struct_name": "OSSIFY",
+      "safety_level": 3
+    },
+    {
+      "opcode": "0x35",
+      "name": "BOND",
+      "description": "RAM-to-GPU direct tunnel",
+      "language": "zig",
+      "category": "substrate",
+      "sources": ["src/tools/substrate/bond.zig"],
+      "struct_name": "BOND",
+      "safety_level": 3
+    },
+    {
+      "opcode": "0x36",
+      "name": "STILL",
+      "description": "Manual DRAM refresh control",
+      "language": "zig",
+      "category": "substrate",
+      "sources": ["src/tools/substrate/still.zig"],
+      "struct_name": "STILL",
+      "safety_level": 3
+    },
+    {
+      "opcode": "0x37",
+      "name": "RESONATE",
+      "description": "Coordinate reset for pure window",
+      "language": "zig",
+      "category": "substrate",
+      "sources": ["src/tools/substrate/resonate.zig"],
+      "struct_name": "RESONATE",
+      "safety_level": 2
+    },
+    {
+      "opcode": "0x38",
+      "name": "OSCILLATE",
+      "description": "Dual-bank refresh coordination",
+      "language": "zig",
+      "category": "substrate",
+      "sources": ["src/tools/substrate/oscillate.zig"],
+      "struct_name": "OSCILLATE",
+      "safety_level": 2
+    },
+    {
+      "opcode": "0x39",
+      "name": "IMC_HIJACK",
+      "description": "Direct memory controller access",
+      "language": "zig",
+      "category": "substrate",
+      "sources": ["src/tools/substrate/imc_hijack.zig"],
+      "struct_name": "IMC_HIJACK",
+      "safety_level": 4
+    },
+    {
+      "opcode": "0x3A",
+      "name": "OCCUPY",
+      "description": "Seize PCIe device",
+      "language": "zig",
+      "category": "substrate",
+      "sources": ["src/tools/substrate/occupy.zig"],
+      "struct_name": "OCCUPY",
+      "safety_level": 4
+    },
+    {
+      "opcode": "0x1B",
+      "name": "FOSSILIZE",
+      "description": "Substrate persistence",
+      "language": "zig",
+      "category": "solidification",
+      "sources": ["src/tools/solidification/fossilize.zig"],
+      "struct_name": "FOSSILIZE",
+      "safety_level": 3
+    },
+    {
+      "opcode": "0x1C",
+      "name": "STRIKE",
+      "description": "Rowhammer/bit flipping",
+      "language": "zig",
+      "category": "substrate",
+      "sources": ["src/tools/substrate/strike.zig"],
+      "struct_name": "STRIKE",
+      "safety_level": 5
+    },
+    {
+      "opcode": "0x1D",
+      "name": "QUENCH",
+      "description": "Emergency power-state reset",
+      "language": "zig",
+      "category": "calcination",
+      "sources": ["src/tools/calcination/quench.zig"],
+      "struct_name": "QUENCH",
+      "safety_level": 4
+    },
+    {
+      "opcode": "0x1E",
+      "name": "FORGE",
+      "description": "Bitstream injection",
+      "language": "zig",
+      "category": "forging",
+      "sources": ["src/tools/forging/forge.zig"],
+      "struct_name": "FORGE",
+      "safety_level": 4
+    },
+    {
+      "opcode": "0x1F",
+      "name": "VOID",
+      "description": "Secure substrate erase",
+      "language": "zig",
+      "category": "forging",
+      "sources": ["src/tools/forging/void.zig"],
+      "struct_name": "VOID",
+      "safety_level": 5
+    },
+    {
+      "opcode": "0x07",
+      "name": "SENSE",
+      "description": "Read sensor",
+      "language": "zig",
+      "category": "pulse",
+      "sources": ["src/tools/pulse/sense.zig"],
+      "struct_name": "SENSE",
+      "safety_level": 1
+    },
+    {
+      "opcode": "0x08",
+      "name": "PULSE",
+      "description": "Timing signal",
+      "language": "zig",
+      "category": "pulse",
+      "sources": ["src/tools/pulse/pulse.zig"],
+      "struct_name": "PULSE",
+      "safety_level": 2
+    },
+    {
+      "opcode": "0x0B",
+      "name": "RECAST",
+      "description": "FPGA reconfigure",
+      "language": "zig",
+      "category": "forging",
+      "sources": ["src/tools/forging/recast.zig"],
+      "struct_name": "RECAST",
+      "safety_level": 3
+    },
+    {
+      "opcode": "0x0C",
+      "name": "SNAP",
+      "description": "Serialize state",
+      "language": "zig",
+      "category": "core",
+      "sources": ["src/tools/core/snap.zig"],
+      "struct_name": "SNAP",
+      "safety_level": 2
+    },
+    {
+      "opcode": "0x0D",
+      "name": "REVERT",
+      "description": "Restore state",
+      "language": "zig",
+      "category": "core",
+      "sources": ["src/tools/core/revert.zig"],
+      "struct_name": "REVERT",
+      "safety_level": 2
+    },
+    {
+      "opcode": "0x0F",
+      "name": "VEIL",
+      "description": "Hide from OS",
+      "language": "zig",
+      "category": "core",
+      "sources": ["src/tools/core/veil.zig"],
+      "struct_name": "VEIL",
+      "safety_level": 4
+    }
+  ]
+}

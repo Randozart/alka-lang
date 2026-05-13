@@ -20,6 +20,8 @@ pub fn build(b: *std.Build) void {
     exe.addObjectFile(b.path("src/spark/obj/tool_flow.o"));
     exe.addObjectFile(b.path("src/spark/obj/tool_fence.o"));
     exe.addObjectFile(b.path("src/spark/obj/tool_signal.o"));
+    exe.addObjectFile(b.path("src/spark/obj/vitriol_tool_wrapper.o"));
+    exe.linkSystemLibrary("gnat");
 
     b.installArtifact(exe);
 
@@ -33,9 +35,44 @@ pub fn build(b: *std.Build) void {
     const run_step = b.step("run", "Run the Alka compiler");
     run_step.dependOn(&run_cmd.step);
 
+    // Generate dispatch table from pharmacopia manifest
+    const gen_dispatch = b.addExecutable(.{
+        .name = "gen_dispatch",
+        .root_source_file = b.path("build/generate_dispatch.zig"),
+        .target = target,
+        .optimize = .ReleaseSmall,
+    });
+    const gen_dispatch_run = b.addRunArtifact(gen_dispatch);
+    gen_dispatch_run.addFileArg(b.path("pharmacopia.json"));
+    gen_dispatch_run.addFileArg(b.path("src/tools/dispatch_table.zig"));
+
+    const dispatch_step = b.step("dispatch", "Generate dispatch table from pharmacopia.json");
+    dispatch_step.dependOn(&gen_dispatch_run.step);
+
+    // Pharmacopia CLI tools
+    const pharma_exe = b.addExecutable(.{
+        .name = "pharmacopia",
+        .root_source_file = b.path("build/pharmacopia_build.zig"),
+        .target = target,
+        .optimize = .ReleaseSmall,
+    });
+    b.installArtifact(pharma_exe);
+
+    const pharma_list = b.addRunArtifact(pharma_exe);
+    pharma_list.addFileArg(b.path("pharmacopia.json"));
+    pharma_list.addArg("list");
+    const list_step = b.step("list", "List all tools in pharmacopia");
+    list_step.dependOn(&pharma_list.step);
+
+    const pharma_verify = b.addRunArtifact(pharma_exe);
+    pharma_verify.addFileArg(b.path("pharmacopia.json"));
+    pharma_verify.addArg("verify");
+    const verify_step = b.step("verify", "Verify SPARK tools with gnatprove");
+    verify_step.dependOn(&pharma_verify.step);
+
     // Test step
     const tests = b.addTest(.{
-        .root_source_file = b.path("tests/all.zig"),
+        .root_source_file = b.path("src/main.zig"),
         .target = target,
         .optimize = optimize,
     });
@@ -44,7 +81,7 @@ pub fn build(b: *std.Build) void {
     const test_step = b.step("test", "Run unit tests");
     test_step.dependOn(&run_tests.step);
 
-    // SPARK integration tests (links SPARK Ada tools)
+    // SPARK integration tests
     const spark_tests = b.addTest(.{
         .root_source_file = b.path("tests/spark_integration.zig"),
         .target = target,
@@ -53,7 +90,6 @@ pub fn build(b: *std.Build) void {
     const spark_mod = b.createModule(.{ .root_source_file = b.path("src/tools/core/spark_bridge.zig") });
     spark_tests.root_module.addImport("spark_tools", spark_mod);
 
-    // Link SPARK Ada tools for tests
     spark_tests.addObjectFile(b.path("src/spark/obj/vitriol_types.o"));
     spark_tests.addObjectFile(b.path("src/spark/obj/tool_shift.o"));
     spark_tests.addObjectFile(b.path("src/spark/obj/tool_refract.o"));

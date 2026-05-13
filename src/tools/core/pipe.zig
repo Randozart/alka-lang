@@ -51,11 +51,11 @@ pub const PIPE = struct {
         _ = dst;
 
         if (ring_size == 0) {
-            return interface.ToolInterface.ValidateError.BufferOverflow;
+            return interface.ToolInterface.ValidateError.ApertureOverflow;
         }
 
         if (ring_size > ctx.aperture_size and ctx.aperture_size > 0) {
-            return interface.ToolInterface.ValidateError.BufferOverflow;
+            return interface.ToolInterface.ValidateError.ApertureOverflow;
         }
 
         const bidirectional = (flags & 1) != 0;

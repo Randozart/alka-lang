@@ -1,39 +1,41 @@
-# Build artifacts
+# Zig build cache
 .zig-cache/
-zig-out/
-vendor/
+
+# SPARK Ada build artifacts
+src/spark/obj/*.o
+src/spark/obj/*.ali
+src/spark/obj/*.adb.stderr
+src/spark/obj/*.ads.stderr
+src/spark/obj/*.bexch
+src/spark/obj/gnatprove/
+src/spark/bin/
+
+# Generated dispatch table
+src/tools/dispatch_table.zig
+
+# C wrapper object
+src/spark/obj/vitriol_tool_wrapper.o
+
+# Kernel module build artifacts
+src/athanor/*.o
+src/athanor/*.ko
+src/athanor/*.mod
+src/athanor/*.mod.c
+src/athanor/Module.symvers
+src/athanor/modules.order
+src/athanor/.*.cmd
+
+# Compiled binaries
 main
 main.o
-*.o
-*.obj
-*.exe
+zig-out/
 
-# Kernel module build
-*.ko
-*.mod
-*.mod.c
-*.mod.o
-Module.symvers
-modules.order
-Module.markers
-.*.cmd
-*.o.d
+# Example output files
+examples/*.alkas
+examples/*.azoth
 
-# Alka compiled binaries
-*.alkas
-*.azoth
-*.alkab
-
-# VS Code / IDE
-node_modules/
-package-lock.json
+# Temporary files
+*.tmp
+GNAT-TEMP-*
 .vscode/
-
-# Python
-__pycache__/
-*.pyc
-.venv/
-
-# Database files
-*.dbv
-*.bv
+package-lock.json
