@@ -10,15 +10,18 @@ CLAIM GTX_960;
 // Phase 2: Set thermal limit (98C max for Maxwell)
 LIMIT GTX_960 98000;
 
-// Phase 3: Stream 512MB from NVMe to 960 VRAM
+// Phase 3: Map BAR window for VRAM access
+SHIFT GTX_960.BAR1 0x0 0x10000000;
+
+// Phase 4: Stream 512MB from NVMe to 960 VRAM
 // SLICE auto-chunks into 2x 256MB drops
 // src = NVMe offset, dst = total size, size = chunk size
 SLICE 0x0 0x20000000 0x10000000;
 
-// Phase 4: Synchronize and verify
+// Phase 5: Synchronize and verify
 SYNC;
 FENCE GTX_960.METAPAGE 1;
 
-// Phase 5: Signal completion
+// Phase 6: Signal completion
 WATCH 0x0 0x0 0x0;
 SIGNAL STREAM_COMPLETE;

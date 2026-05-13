@@ -39,11 +39,15 @@ pub fn main() !void {
     defer std.process.argsFree(allocator, args);
 
     if (args.len < 2) {
-        std.debug.print("Alka Compiler v3.0 — The Officina\n", .{});
+        std.debug.print("Alka Compiler v5.0 — The Officina\n", .{});
         std.debug.print("\n", .{});
         std.debug.print("Usage:\n", .{});
         std.debug.print("  alka <source.alka> <vial.alkavl>          Compile a Recipe with a Vial\n", .{});
+        std.debug.print("  alka --override <source.alka> <vial.alkavl>  Compile, suppress chain warnings\n", .{});
         std.debug.print("  alka --execute <binary.alkas> [azoth]     Execute binary via kernel\n", .{});
+        std.debug.print("  alka --execute --bind <bdf> <binary.alkas>  Bind device, then execute\n", .{});
+        std.debug.print("  alka --execute --bind-force <bdf> <binary.alkas>  Force-bind, then execute\n", .{});
+        std.debug.print("  alka --safe <binary.alkas> <azoth.azoth>  Execute with rollback\n", .{});
         std.debug.print("  alka --safe <binary.alkas> <azoth.azoth>  Execute with rollback\n", .{});
         std.debug.print("  alka --gguf <model.gguf> <vial.alkavl>    Generate tensor streaming recipe\n", .{});
         std.debug.print("  alka --inject <source.alka> <vial.alkavl> Compile with safety injection\n", .{});
@@ -110,7 +114,13 @@ pub fn main() !void {
     }
 
     if (std.mem.eql(u8, args[1], "--probe-all")) {
-        std.debug.print("Scanning all PCI devices...\n\n", .{});
+        const generate_vials = args.len >= 3 and std.mem.eql(u8, args[2], "--vials");
+
+        if (generate_vials) {
+            std.debug.print("Scanning all PCI devices and generating vials...\n\n", .{});
+        } else {
+            std.debug.print("Scanning all PCI devices...\n\n", .{});
+        }
 
         const devices = scanner.Scanner.scanAllPciDevices(allocator) catch |err| {
             std.debug.print("Error scanning devices: {s}\n", .{@errorName(err)});
@@ -130,6 +140,20 @@ pub fn main() !void {
                 });
                 }
             }
+
+            if (generate_vials) {
+                const vial_name = try std.fmt.allocPrint(allocator, "auto_{x:0>4}_{x:0>4}", .{ device.vendor, device.device });
+                defer allocator.free(vial_name);
+                const vial_content = try scanner.Scanner.generateVial(allocator, device, vial_name);
+                defer allocator.free(vial_content);
+
+                const vial_path = try std.fmt.allocPrint(allocator, "{s}.alkavl", .{vial_name});
+                defer allocator.free(vial_path);
+
+                try std.fs.cwd().writeFile(.{ .sub_path = vial_path, .data = vial_content });
+                std.debug.print("    → Emitted: {s}\n", .{vial_path});
+            }
+
             std.debug.print("\n", .{});
         }
         return;
@@ -220,12 +244,39 @@ pub fn main() !void {
     }
 
     if (std.mem.eql(u8, args[1], "--execute")) {
-        if (args.len < 3) {
-            std.debug.print("Usage: alka --execute <binary.alkas> [azoth.azoth]\n", .{});
+        var bind_bdf: ?[]const u8 = null;
+        var bind_force = false;
+        var alkas_arg: usize = 2;
+
+        if (args.len >= 4 and std.mem.eql(u8, args[2], "--bind")) {
+            bind_bdf = args[3];
+            alkas_arg = 4;
+        } else if (args.len >= 4 and std.mem.eql(u8, args[2], "--bind-force")) {
+            bind_bdf = args[3];
+            bind_force = true;
+            alkas_arg = 4;
+        }
+
+        if (args.len <= alkas_arg) {
+            std.debug.print("Usage: alka --execute [--bind <bdf>|--bind-force <bdf>] <binary.alkas> [azoth.azoth]\n", .{});
             return;
         }
-        const alkas_path = args[2];
-        const azoth_path = if (args.len >= 4) args[3] else null;
+
+        // Pre-execution: bind device if requested
+        if (bind_bdf) |bdf| {
+            const binder = @import("bind/binder.zig");
+            std.debug.print("Binding {s}{s}...\n", .{ bdf, if (bind_force) " (force)" else "" });
+            const result = binder.bindDevice(allocator, bdf, bind_force);
+            if (result.success) {
+                std.debug.print("  ✓ {s}\n", .{if (bind_force) "Force-bound" else "Bound to vfio-pci"});
+            } else {
+                std.debug.print("  ✗ {s}\n", .{result.error_msg orelse "unknown error"});
+                return;
+            }
+        }
+
+        const alkas_path = args[alkas_arg];
+        const azoth_path = if (args.len > alkas_arg + 1) args[alkas_arg + 1] else null;
 
         std.debug.print("Executing: {s}\n", .{alkas_path});
         if (azoth_path) |az| {
@@ -360,7 +411,7 @@ pub fn main() !void {
 
         var binary = std.ArrayList(u8).init(allocator);
         var azoth = std.ArrayList(u8).init(allocator);
-        try alkac.compile(program, vial, &binary, &azoth, allocator);
+        try alkac.compile(program, vial, &binary, &azoth, allocator, .{});
 
         const out_path = try std.fmt.allocPrint(allocator, "{s}.alkas", .{ source_path });
         defer allocator.free(out_path);
@@ -412,6 +463,55 @@ pub fn main() !void {
         return;
     }
 
+    // Override compilation mode (suppress chain warnings)
+    if (std.mem.eql(u8, args[1], "--override")) {
+        if (args.len < 4) {
+            std.debug.print("Usage: alka --override <source.alka> <vial.alkavl>\n", .{});
+            return;
+        }
+        const source_path = args[2];
+        const vial_path = args[3];
+
+        std.debug.print("Compiling (override): {s} + {s}\n", .{ source_path, vial_path });
+
+        const source = try std.fs.cwd().readFileAlloc(allocator, source_path, std.math.maxInt(usize));
+        defer allocator.free(source);
+
+        const vial_data = try std.fs.cwd().readFileAlloc(allocator, vial_path, std.math.maxInt(usize));
+        defer allocator.free(vial_data);
+
+        const program = try alkac.parseProgram(source, allocator);
+        const vial = try alkac.parseVial(vial_data, allocator);
+
+        try alkac.analyzeWithTools(program, vial, allocator);
+
+        var binary = std.ArrayList(u8).init(allocator);
+        var azoth = std.ArrayList(u8).init(allocator);
+        try alkac.compile(program, vial, &binary, &azoth, allocator, .{ .chain_override = true });
+
+        const out_path = try std.fmt.allocPrint(allocator, "{s}.alkas", .{ source_path });
+        defer allocator.free(out_path);
+
+        try std.fs.cwd().writeFile(.{ .sub_path = out_path, .data = binary.items });
+
+        const azoth_path = try std.fmt.allocPrint(allocator, "{s}.azoth", .{ source_path });
+        defer allocator.free(azoth_path);
+
+        try std.fs.cwd().writeFile(.{ .sub_path = azoth_path, .data = azoth.items });
+
+        std.debug.print("Emitted: {s} ({} bytes, {} packets)\n", .{
+            out_path,
+            binary.items.len,
+            binary.items.len / @sizeOf(alka_bin.Drop),
+        });
+        std.debug.print("Emitted: {s} ({} bytes, {} rollback packets)\n", .{
+            azoth_path,
+            azoth.items.len,
+            azoth.items.len / @sizeOf(alka_bin.Drop),
+        });
+        return;
+    }
+
     // Standard compilation mode
     if (args.len < 3) {
         std.debug.print("Error: Expected <source.alka> <vial.alkavl>\n", .{});
@@ -436,7 +536,7 @@ pub fn main() !void {
 
     var binary = std.ArrayList(u8).init(allocator);
     var azoth = std.ArrayList(u8).init(allocator);
-    try alkac.compile(program, vial, &binary, &azoth, allocator);
+    try alkac.compile(program, vial, &binary, &azoth, allocator, .{});
 
     const out_path = try std.fmt.allocPrint(allocator, "{s}.alkas", .{ source_path });
     defer allocator.free(out_path);

@@ -81,26 +81,79 @@ pub const Operand = union(enum) {
     identifier: []const u8,
     indexed: struct { base: []const u8, index: u64 },
     memory_size: struct { value: u64, unit: []const u8 },
+    vessel_member: []const u8,
 };
 
+const UnitSpec = struct {
+    suffixes: []const []const u8,
+    multiplier: u64,
+};
+
+const unit_table = [_]UnitSpec{
+    .{ .suffixes = &.{ "B", "b" }, .multiplier = 1 },
+    .{ .suffixes = &.{ "KB", "Kb" }, .multiplier = 1024 },
+    .{ .suffixes = &.{ "KIB", "KiB" }, .multiplier = 1024 },
+    .{ .suffixes = &.{ "MB", "Mb" }, .multiplier = 1024 * 1024 },
+    .{ .suffixes = &.{ "MIB", "MiB" }, .multiplier = 1024 * 1024 },
+    .{ .suffixes = &.{ "GB", "Gb" }, .multiplier = 1024 * 1024 * 1024 },
+    .{ .suffixes = &.{ "GIB", "GiB" }, .multiplier = 1024 * 1024 * 1024 },
+    .{ .suffixes = &.{ "TB", "Tb" }, .multiplier = 1024 * 1024 * 1024 * 1024 },
+    .{ .suffixes = &.{ "TIB", "TiB" }, .multiplier = 1024 * 1024 * 1024 * 1024 },
+};
+
+pub fn parseMemorySize(str: []const u8) ?Operand {
+    const UnitMatch = struct {
+        suffix_len: usize,
+        multiplier: u64,
+    };
+
+    var best: ?UnitMatch = null;
+
+    for (unit_table) |spec| {
+        for (spec.suffixes) |suffix| {
+            if (str.len <= suffix.len) continue;
+            const suffix_start = str.len - suffix.len;
+            const str_suffix = str[suffix_start..];
+            if (std.ascii.eqlIgnoreCase(str_suffix, suffix)) {
+                const num_str = str[0..suffix_start];
+                _ = std.fmt.parseInt(u64, num_str, 10) catch continue;
+                if (best == null or suffix.len > best.?.suffix_len) {
+                    best = UnitMatch{ .suffix_len = suffix.len, .multiplier = spec.multiplier };
+                }
+            }
+        }
+    }
+
+    if (best) |m| {
+        const num_str = str[0 .. str.len - m.suffix_len];
+        const num = std.fmt.parseInt(u64, num_str, 10) catch return null;
+        return Operand{ .memory_size = .{ .value = num * m.multiplier, .unit = str[str.len - m.suffix_len ..] } };
+    }
+    return null;
+}
+
 pub fn parseOperand(str: []const u8) Operand {
-    const trimmed = std.mem.trimRight(u8, str, "; \t");
-    
-    if (std.mem.indexOf(u8, trimmed, "MB")) |_| {
-        const num = std.fmt.parseInt(u64, trimmed[0..trimmed.len-2], 10) catch 0;
-        return .{ .memory_size = .{ .value = num * 1024 * 1024, .unit = "MB" } };
+    const trimmed = std.mem.trimRight(u8, str, " \t\r\n");
+
+    if (trimmed.len == 0) return Operand{ .literal = 0 };
+
+    if (trimmed[0] == '.') {
+        const member = std.mem.trimLeft(u8, trimmed, ".");
+        if (member.len > 0) {
+            return Operand{ .vessel_member = member };
+        }
     }
-    if (std.mem.indexOf(u8, trimmed, "GB")) |_| {
-        const num = std.fmt.parseInt(u64, trimmed[0..trimmed.len-2], 10) catch 0;
-        return .{ .memory_size = .{ .value = num * 1024 * 1024 * 1024, .unit = "GB" } };
+
+    if (parseMemorySize(trimmed)) |operand| return operand;
+
+    if (trimmed.len > 2 and trimmed[0] == '0' and (trimmed[1] == 'x' or trimmed[1] == 'X')) {
+        return Operand{ .literal = std.fmt.parseInt(u64, trimmed[2..], 16) catch 0 };
     }
-    if (trimmed.len > 2 and trimmed[0] == '0' and trimmed[1] == 'x') {
-        return .{ .literal = std.fmt.parseInt(u64, trimmed[2..], 16) catch 0 };
-    }
+
     if (std.fmt.parseInt(u64, trimmed, 10)) |val| {
-        return .{ .literal = val };
+        return Operand{ .literal = val };
     } else |_| {
-        return .{ .identifier = trimmed };
+        return Operand{ .identifier = trimmed };
     }
 }
 
@@ -110,6 +163,7 @@ pub fn evalOperand(operand: Operand) u64 {
         .identifier => 0,
         .indexed => |idx| idx.index,
         .memory_size => |m| m.value,
+        .vessel_member => 0,
     };
 }
 

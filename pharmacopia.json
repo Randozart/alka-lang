@@ -1,6 +1,6 @@
 {
   "version": "5.0",
-  "description": "Alka Pharmacopia v5.0 — manifest-driven tool registry with chain validation and SPARK-first policy",
+  "description": "Alka Pharmacopia v5.0 \u2014 manifest-driven tool registry with chain validation and SPARK-first policy",
   "tools": [
     {
       "opcode": "0x01",
@@ -8,16 +8,27 @@
       "description": "Take ownership of a hardware node",
       "language": "zig",
       "category": "core",
-      "sources": ["src/tools/core/claim.zig"],
+      "sources": [
+        "src/tools/core/claim.zig"
+      ],
       "struct_name": "CLAIM",
       "safety_level": 3,
       "spark_target": true,
       "chain": {
         "pre_state": [],
-        "post_state": ["vessel_claimed"],
-        "side_effects": ["driver_unbound"],
-        "suggests_after": ["LIMIT", "STAKE"],
-        "warns_if_before": []
+        "post_state": [
+          "vessel_claimed"
+        ],
+        "side_effects": [
+          "driver_unbound"
+        ],
+        "suggests_after": [
+          "LIMIT",
+          "STAKE"
+        ],
+        "warns_if_before": [
+          "BIND"
+        ]
       }
     },
     {
@@ -26,16 +37,25 @@
       "description": "Reserve a memory region",
       "language": "zig",
       "category": "core",
-      "sources": ["src/tools/core/stake.zig"],
+      "sources": [
+        "src/tools/core/stake.zig"
+      ],
       "struct_name": "STAKE",
       "safety_level": 2,
       "spark_target": true,
       "chain": {
         "pre_state": [],
-        "post_state": ["memory_reserved"],
-        "side_effects": ["memory_allocated"],
-        "suggests_after": ["FLOW", "SLICE"],
-        "warns_if_before": ["CLAIM"]
+        "post_state": [
+          "memory_reserved"
+        ],
+        "side_effects": [
+          "memory_allocated"
+        ],
+        "suggests_after": [
+          "FLOW",
+          "SLICE"
+        ],
+        "warns_if_before": []
       }
     },
     {
@@ -44,19 +64,36 @@
       "description": "DMA transfer between two addresses (SPARK-verified)",
       "language": "spark",
       "category": "core",
-      "sources": ["src/spark/tool_flow.ads", "src/spark/tool_flow.adb"],
+      "sources": [
+        "src/spark/tool_flow.ads",
+        "src/spark/tool_flow.adb"
+      ],
       "project": "src/spark/vitriol_tools.gpr",
       "wrapper": "core/spark_flow.zig",
       "struct_name": "FLOW",
       "safety_level": 4,
-      "link_libraries": ["gnat"],
+      "link_libraries": [
+        "gnat"
+      ],
       "verified_by": "gnatprove",
       "chain": {
-        "pre_state": ["vessel_claimed", "aperture_mapped"],
-        "post_state": ["data_transferred"],
-        "side_effects": ["thermal_increase", "memory_modified"],
-        "suggests_after": ["SYNC", "FENCE"],
-        "warns_if_before": ["CLAIM", "SHIFT"]
+        "pre_state": [
+          "vessel_claimed",
+          "aperture_mapped"
+        ],
+        "post_state": [
+          "data_transferred",
+          "operation_pending"
+        ],
+        "side_effects": [
+          "thermal_increase",
+          "memory_modified"
+        ],
+        "suggests_after": [
+          "SYNC",
+          "FENCE"
+        ],
+        "warns_if_before": []
       }
     },
     {
@@ -65,19 +102,33 @@
       "description": "Remap a memory window (BAR) (SPARK-verified)",
       "language": "spark",
       "category": "core",
-      "sources": ["src/spark/tool_shift.ads", "src/spark/tool_shift.adb"],
+      "sources": [
+        "src/spark/tool_shift.ads",
+        "src/spark/tool_shift.adb"
+      ],
       "project": "src/spark/vitriol_tools.gpr",
       "wrapper": "core/spark_shift.zig",
       "struct_name": "SHIFT",
       "safety_level": 4,
-      "link_libraries": ["gnat"],
+      "link_libraries": [
+        "gnat"
+      ],
       "verified_by": "gnatprove",
       "chain": {
-        "pre_state": ["vessel_claimed"],
-        "post_state": ["aperture_mapped"],
-        "side_effects": ["memory_remapped"],
-        "suggests_after": ["FLOW", "SLICE"],
-        "warns_if_before": ["CLAIM"]
+        "pre_state": [
+          "vessel_claimed"
+        ],
+        "post_state": [
+          "aperture_mapped"
+        ],
+        "side_effects": [
+          "memory_remapped"
+        ],
+        "suggests_after": [
+          "FLOW",
+          "SLICE"
+        ],
+        "warns_if_before": []
       }
     },
     {
@@ -86,19 +137,29 @@
       "description": "Wait for a condition (SPARK-verified)",
       "language": "spark",
       "category": "core",
-      "sources": ["src/spark/tool_fence.ads", "src/spark/tool_fence.adb"],
+      "sources": [
+        "src/spark/tool_fence.ads",
+        "src/spark/tool_fence.adb"
+      ],
       "project": "src/spark/vitriol_tools.gpr",
       "wrapper": "core/spark_fence.zig",
       "struct_name": "FENCE",
       "safety_level": 4,
-      "link_libraries": ["gnat"],
+      "link_libraries": [
+        "gnat"
+      ],
       "verified_by": "gnatprove",
       "chain": {
-        "pre_state": ["operation_pending"],
-        "post_state": ["condition_met"],
+        "pre_state": [],
+        "post_state": [
+          "condition_met"
+        ],
         "side_effects": [],
-        "suggests_after": ["SIGNAL", "SYNC"],
-        "warns_if_before": ["FLOW", "SLICE"]
+        "suggests_after": [
+          "SIGNAL",
+          "SYNC"
+        ],
+        "warns_if_before": []
       }
     },
     {
@@ -107,15 +168,22 @@
       "description": "Memory barrier",
       "language": "zig",
       "category": "core",
-      "sources": ["src/tools/core/sync.zig"],
+      "sources": [
+        "src/tools/core/sync.zig"
+      ],
       "struct_name": "SYNC",
       "safety_level": 2,
       "spark_target": true,
       "chain": {
         "pre_state": [],
-        "post_state": ["memory_visible"],
+        "post_state": [
+          "memory_visible"
+        ],
         "side_effects": [],
-        "suggests_after": ["FENCE", "SIGNAL"],
+        "suggests_after": [
+          "FENCE",
+          "SIGNAL"
+        ],
         "warns_if_before": []
       }
     },
@@ -125,19 +193,31 @@
       "description": "Trigger an event/interrupt (SPARK-verified)",
       "language": "spark",
       "category": "core",
-      "sources": ["src/spark/tool_signal.ads", "src/spark/tool_signal.adb"],
+      "sources": [
+        "src/spark/tool_signal.ads",
+        "src/spark/tool_signal.adb"
+      ],
       "project": "src/spark/vitriol_tools.gpr",
       "wrapper": "core/spark_signal.zig",
       "struct_name": "SIGNAL",
       "safety_level": 4,
-      "link_libraries": ["gnat"],
+      "link_libraries": [
+        "gnat"
+      ],
       "verified_by": "gnatprove",
       "chain": {
-        "pre_state": ["condition_met"],
-        "post_state": ["event_triggered"],
-        "side_effects": ["interrupt_sent"],
-        "suggests_after": ["AUDIT", "WATCH"],
-        "warns_if_before": ["FENCE", "FLOW"]
+        "pre_state": [],
+        "post_state": [
+          "event_triggered"
+        ],
+        "side_effects": [
+          "interrupt_sent"
+        ],
+        "suggests_after": [
+          "AUDIT",
+          "WATCH"
+        ],
+        "warns_if_before": []
       }
     },
     {
@@ -146,14 +226,18 @@
       "description": "Cooperative yield",
       "language": "zig",
       "category": "core",
-      "sources": ["src/tools/core/yield.zig"],
+      "sources": [
+        "src/tools/core/yield.zig"
+      ],
       "struct_name": "YIELD",
       "safety_level": 1,
       "spark_target": false,
       "chain": {
         "pre_state": [],
         "post_state": [],
-        "side_effects": ["time_elapsed"],
+        "side_effects": [
+          "time_elapsed"
+        ],
         "suggests_after": [],
         "warns_if_before": []
       }
@@ -164,16 +248,26 @@
       "description": "Enforce a constraint",
       "language": "zig",
       "category": "core",
-      "sources": ["src/tools/core/limit.zig"],
+      "sources": [
+        "src/tools/core/limit.zig"
+      ],
       "struct_name": "LIMIT",
       "safety_level": 3,
       "spark_target": true,
       "chain": {
-        "pre_state": ["vessel_claimed"],
-        "post_state": ["constraint_set"],
+        "pre_state": [
+          "vessel_claimed"
+        ],
+        "post_state": [
+          "constraint_set"
+        ],
         "side_effects": [],
-        "suggests_after": ["FLOW", "SLICE", "POKE"],
-        "warns_if_before": ["CLAIM"]
+        "suggests_after": [
+          "FLOW",
+          "SLICE",
+          "POKE"
+        ],
+        "warns_if_before": []
       }
     },
     {
@@ -182,19 +276,36 @@
       "description": "Split region into chunks (SPARK-verified, was REFRACT)",
       "language": "spark",
       "category": "core",
-      "sources": ["src/spark/tool_slice.ads", "src/spark/tool_slice.adb"],
+      "sources": [
+        "src/spark/tool_slice.ads",
+        "src/spark/tool_slice.adb"
+      ],
       "project": "src/spark/vitriol_tools.gpr",
       "wrapper": "core/spark_slice.zig",
       "struct_name": "SLICE",
       "safety_level": 4,
-      "link_libraries": ["gnat"],
+      "link_libraries": [
+        "gnat"
+      ],
       "verified_by": "gnatprove",
       "chain": {
-        "pre_state": ["vessel_claimed", "aperture_mapped"],
-        "post_state": ["data_chunked"],
-        "side_effects": ["thermal_increase", "memory_modified"],
-        "suggests_after": ["SYNC", "FENCE"],
-        "warns_if_before": ["CLAIM", "SHIFT"]
+        "pre_state": [
+          "vessel_claimed",
+          "aperture_mapped"
+        ],
+        "post_state": [
+          "data_chunked",
+          "operation_pending"
+        ],
+        "side_effects": [
+          "thermal_increase",
+          "memory_modified"
+        ],
+        "suggests_after": [
+          "SYNC",
+          "FENCE"
+        ],
+        "warns_if_before": []
       }
     },
     {
@@ -203,16 +314,27 @@
       "description": "Continuous DMA ring buffer",
       "language": "zig",
       "category": "core",
-      "sources": ["src/tools/core/pipe.zig"],
+      "sources": [
+        "src/tools/core/pipe.zig"
+      ],
       "struct_name": "PIPE",
       "safety_level": 3,
       "spark_target": true,
       "chain": {
-        "pre_state": ["vessel_claimed"],
-        "post_state": ["pipe_established"],
-        "side_effects": ["dma_engine_active"],
-        "suggests_after": ["WATCH", "GUARD"],
-        "warns_if_before": ["CLAIM"]
+        "pre_state": [
+          "vessel_claimed"
+        ],
+        "post_state": [
+          "pipe_established"
+        ],
+        "side_effects": [
+          "dma_engine_active"
+        ],
+        "suggests_after": [
+          "WATCH",
+          "GUARD"
+        ],
+        "warns_if_before": []
       }
     },
     {
@@ -221,16 +343,22 @@
       "description": "Timing constraint",
       "language": "zig",
       "category": "pulse",
-      "sources": ["src/tools/pulse/rhythm.zig"],
+      "sources": [
+        "src/tools/pulse/rhythm.zig"
+      ],
       "struct_name": "RHYTHM",
       "safety_level": 2,
       "spark_target": true,
       "chain": {
-        "pre_state": ["vessel_claimed"],
-        "post_state": ["timing_set"],
+        "pre_state": [
+          "vessel_claimed"
+        ],
+        "post_state": [
+          "timing_set"
+        ],
         "side_effects": [],
         "suggests_after": [],
-        "warns_if_before": ["CLAIM"]
+        "warns_if_before": []
       }
     },
     {
@@ -239,7 +367,9 @@
       "description": "Non-intrusive introspection",
       "language": "zig",
       "category": "core",
-      "sources": ["src/tools/core/echo.zig"],
+      "sources": [
+        "src/tools/core/echo.zig"
+      ],
       "struct_name": "ECHO",
       "safety_level": 1,
       "spark_target": false,
@@ -257,16 +387,27 @@
       "description": "Bus-level locking",
       "language": "zig",
       "category": "pulse",
-      "sources": ["src/tools/pulse/stasis.zig"],
+      "sources": [
+        "src/tools/pulse/stasis.zig"
+      ],
       "struct_name": "STASIS",
       "safety_level": 3,
       "spark_target": true,
       "chain": {
-        "pre_state": ["vessel_claimed"],
-        "post_state": ["bus_locked"],
-        "side_effects": ["traffic_frozen"],
-        "suggests_after": ["FLOW", "SLICE"],
-        "warns_if_before": ["CLAIM"]
+        "pre_state": [
+          "vessel_claimed"
+        ],
+        "post_state": [
+          "bus_locked"
+        ],
+        "side_effects": [
+          "traffic_frozen"
+        ],
+        "suggests_after": [
+          "FLOW",
+          "SLICE"
+        ],
+        "warns_if_before": []
       }
     },
     {
@@ -275,15 +416,22 @@
       "description": "Cache invalidation",
       "language": "zig",
       "category": "transmutation",
-      "sources": ["src/tools/transmutation/flux.zig"],
+      "sources": [
+        "src/tools/transmutation/flux.zig"
+      ],
       "struct_name": "FLUX",
       "safety_level": 2,
       "spark_target": true,
       "chain": {
         "pre_state": [],
-        "post_state": ["cache_invalidated"],
+        "post_state": [
+          "cache_invalidated"
+        ],
         "side_effects": [],
-        "suggests_after": ["FLOW", "AUDIT"],
+        "suggests_after": [
+          "FLOW",
+          "AUDIT"
+        ],
         "warns_if_before": []
       }
     },
@@ -293,13 +441,17 @@
       "description": "Post-instruction residue check",
       "language": "zig",
       "category": "testing",
-      "sources": ["src/tools/testing/audit.zig"],
+      "sources": [
+        "src/tools/testing/audit.zig"
+      ],
       "struct_name": "AUDIT",
       "safety_level": 2,
       "spark_target": false,
       "chain": {
         "pre_state": [],
-        "post_state": ["residue_checked"],
+        "post_state": [
+          "residue_checked"
+        ],
         "side_effects": [],
         "suggests_after": [],
         "warns_if_before": []
@@ -311,7 +463,9 @@
       "description": "Simulate without executing",
       "language": "zig",
       "category": "testing",
-      "sources": ["src/tools/testing/dry_run.zig"],
+      "sources": [
+        "src/tools/testing/dry_run.zig"
+      ],
       "struct_name": "DRY_RUN",
       "safety_level": 1,
       "spark_target": false,
@@ -329,7 +483,9 @@
       "description": "Use mock hardware",
       "language": "zig",
       "category": "testing",
-      "sources": ["src/tools/testing/mock.zig"],
+      "sources": [
+        "src/tools/testing/mock.zig"
+      ],
       "struct_name": "MOCK",
       "safety_level": 1,
       "spark_target": false,
@@ -347,7 +503,9 @@
       "description": "Formal verification",
       "language": "zig",
       "category": "testing",
-      "sources": ["src/tools/testing/prove.zig"],
+      "sources": [
+        "src/tools/testing/prove.zig"
+      ],
       "struct_name": "PROVE",
       "safety_level": 1,
       "spark_target": false,
@@ -365,7 +523,9 @@
       "description": "Real-time monitoring",
       "language": "zig",
       "category": "monitoring",
-      "sources": ["src/tools/monitoring/watch.zig"],
+      "sources": [
+        "src/tools/monitoring/watch.zig"
+      ],
       "struct_name": "WATCH",
       "safety_level": 1,
       "spark_target": false,
@@ -383,7 +543,9 @@
       "description": "Execution trace logging",
       "language": "zig",
       "category": "monitoring",
-      "sources": ["src/tools/monitoring/trace.zig"],
+      "sources": [
+        "src/tools/monitoring/trace.zig"
+      ],
       "struct_name": "TRACE",
       "safety_level": 1,
       "spark_target": false,
@@ -401,13 +563,17 @@
       "description": "Runtime safety sentinel",
       "language": "zig",
       "category": "safety",
-      "sources": ["src/tools/safety/guard.zig"],
+      "sources": [
+        "src/tools/safety/guard.zig"
+      ],
       "struct_name": "GUARD",
       "safety_level": 3,
       "spark_target": true,
       "chain": {
         "pre_state": [],
-        "post_state": ["guard_armed"],
+        "post_state": [
+          "guard_armed"
+        ],
         "side_effects": [],
         "suggests_after": [],
         "warns_if_before": []
@@ -419,16 +585,27 @@
       "description": "Complete hardware isolation",
       "language": "zig",
       "category": "safety",
-      "sources": ["src/tools/safety/isolate.zig"],
+      "sources": [
+        "src/tools/safety/isolate.zig"
+      ],
       "struct_name": "ISOLATE",
       "safety_level": 4,
       "spark_target": true,
       "chain": {
-        "pre_state": ["vessel_claimed"],
-        "post_state": ["isolated"],
-        "side_effects": ["os_access_revoked"],
-        "suggests_after": ["FLOW", "POKE"],
-        "warns_if_before": ["CLAIM"]
+        "pre_state": [
+          "vessel_claimed"
+        ],
+        "post_state": [
+          "isolated"
+        ],
+        "side_effects": [
+          "os_access_revoked"
+        ],
+        "suggests_after": [
+          "FLOW",
+          "POKE"
+        ],
+        "warns_if_before": []
       }
     },
     {
@@ -437,13 +614,17 @@
       "description": "Cryptographic state verification",
       "language": "zig",
       "category": "safety",
-      "sources": ["src/tools/safety/verify.zig"],
+      "sources": [
+        "src/tools/safety/verify.zig"
+      ],
       "struct_name": "VERIFY",
       "safety_level": 3,
       "spark_target": true,
       "chain": {
         "pre_state": [],
-        "post_state": ["state_verified"],
+        "post_state": [
+          "state_verified"
+        ],
         "side_effects": [],
         "suggests_after": [],
         "warns_if_before": []
@@ -455,16 +636,24 @@
       "description": "Pin resource to target (was OSSIFY)",
       "language": "zig",
       "category": "substrate",
-      "sources": ["src/tools/substrate/affinity.zig"],
+      "sources": [
+        "src/tools/substrate/affinity.zig"
+      ],
       "struct_name": "AFFINITY",
       "safety_level": 3,
       "spark_target": true,
       "chain": {
-        "pre_state": ["vessel_claimed"],
-        "post_state": ["resource_pinned"],
-        "side_effects": ["scheduler_bypassed"],
+        "pre_state": [
+          "vessel_claimed"
+        ],
+        "post_state": [
+          "resource_pinned"
+        ],
+        "side_effects": [
+          "scheduler_bypassed"
+        ],
         "suggests_after": [],
-        "warns_if_before": ["CLAIM"]
+        "warns_if_before": []
       }
     },
     {
@@ -473,16 +662,28 @@
       "description": "Direct channel between endpoints (was BOND)",
       "language": "zig",
       "category": "substrate",
-      "sources": ["src/tools/substrate/tunnel.zig"],
+      "sources": [
+        "src/tools/substrate/tunnel.zig"
+      ],
       "struct_name": "TUNNEL",
       "safety_level": 3,
       "spark_target": true,
       "chain": {
-        "pre_state": ["vessel_claimed", "vessel_claimed"],
-        "post_state": ["tunnel_established"],
-        "side_effects": ["iommu_bypassed"],
-        "suggests_after": ["FLOW", "SLICE"],
-        "warns_if_before": ["CLAIM"]
+        "pre_state": [
+          "vessel_claimed",
+          "vessel_claimed"
+        ],
+        "post_state": [
+          "tunnel_established"
+        ],
+        "side_effects": [
+          "iommu_bypassed"
+        ],
+        "suggests_after": [
+          "FLOW",
+          "SLICE"
+        ],
+        "warns_if_before": []
       }
     },
     {
@@ -491,16 +692,27 @@
       "description": "Pause auto-behavior (was STILL)",
       "language": "zig",
       "category": "substrate",
-      "sources": ["src/tools/substrate/suspend.zig"],
+      "sources": [
+        "src/tools/substrate/suspend.zig"
+      ],
       "struct_name": "SUSPEND",
       "safety_level": 3,
       "spark_target": true,
       "chain": {
-        "pre_state": ["vessel_claimed"],
-        "post_state": ["subsystem_suspended"],
-        "side_effects": ["auto_behavior_paused"],
-        "suggests_after": ["FLOW", "POKE"],
-        "warns_if_before": ["CLAIM"]
+        "pre_state": [
+          "vessel_claimed"
+        ],
+        "post_state": [
+          "subsystem_suspended"
+        ],
+        "side_effects": [
+          "auto_behavior_paused"
+        ],
+        "suggests_after": [
+          "FLOW",
+          "POKE"
+        ],
+        "warns_if_before": []
       }
     },
     {
@@ -509,16 +721,28 @@
       "description": "Coordinate devices (merged RESONATE+OSCILLATE)",
       "language": "zig",
       "category": "substrate",
-      "sources": ["src/tools/substrate/coordinate.zig"],
+      "sources": [
+        "src/tools/substrate/coordinate.zig"
+      ],
       "struct_name": "COORDINATE",
       "safety_level": 2,
       "spark_target": true,
       "chain": {
-        "pre_state": ["vessel_claimed", "vessel_claimed"],
-        "post_state": ["devices_coordinated"],
-        "side_effects": ["state_synchronized"],
-        "suggests_after": ["FLOW", "SLICE"],
-        "warns_if_before": ["CLAIM"]
+        "pre_state": [
+          "vessel_claimed",
+          "vessel_claimed"
+        ],
+        "post_state": [
+          "devices_coordinated"
+        ],
+        "side_effects": [
+          "state_synchronized"
+        ],
+        "suggests_after": [
+          "FLOW",
+          "SLICE"
+        ],
+        "warns_if_before": []
       }
     },
     {
@@ -527,16 +751,27 @@
       "description": "Bypass OS, access controller (was IMC_HIJACK)",
       "language": "zig",
       "category": "substrate",
-      "sources": ["src/tools/substrate/direct.zig"],
+      "sources": [
+        "src/tools/substrate/direct.zig"
+      ],
       "struct_name": "DIRECT",
       "safety_level": 4,
       "spark_target": true,
       "chain": {
-        "pre_state": ["vessel_claimed"],
-        "post_state": ["controller_access"],
-        "side_effects": ["os_bypassed"],
-        "suggests_after": ["FLOW", "POKE"],
-        "warns_if_before": ["CLAIM"]
+        "pre_state": [
+          "vessel_claimed"
+        ],
+        "post_state": [
+          "controller_access"
+        ],
+        "side_effects": [
+          "os_bypassed"
+        ],
+        "suggests_after": [
+          "FLOW",
+          "POKE"
+        ],
+        "warns_if_before": []
       }
     },
     {
@@ -545,15 +780,26 @@
       "description": "Bind to device with force (was OCCUPY)",
       "language": "zig",
       "category": "substrate",
-      "sources": ["src/tools/substrate/bind.zig"],
+      "sources": [
+        "src/tools/substrate/bind.zig"
+      ],
       "struct_name": "BIND",
       "safety_level": 4,
       "spark_target": true,
       "chain": {
         "pre_state": [],
-        "post_state": ["device_bound"],
-        "side_effects": ["os_access_revoked"],
-        "suggests_after": ["CLAIM", "LIMIT"],
+        "post_state": [
+          "device_bound",
+          "vessel_claimed"
+        ],
+        "side_effects": [
+          "os_access_revoked"
+        ],
+        "suggests_after": [
+          "SHIFT",
+          "LIMIT",
+          "PIPE"
+        ],
         "warns_if_before": []
       }
     },
@@ -563,16 +809,26 @@
       "description": "Store in memory indefinitely (was FOSSILIZE)",
       "language": "zig",
       "category": "solidification",
-      "sources": ["src/tools/solidification/persist.zig"],
+      "sources": [
+        "src/tools/solidification/persist.zig"
+      ],
       "struct_name": "PERSIST",
       "safety_level": 3,
       "spark_target": true,
       "chain": {
-        "pre_state": ["vessel_claimed"],
-        "post_state": ["data_persisted"],
-        "side_effects": ["memory_pinned"],
-        "suggests_after": ["VERIFY"],
-        "warns_if_before": ["CLAIM"]
+        "pre_state": [
+          "vessel_claimed"
+        ],
+        "post_state": [
+          "data_persisted"
+        ],
+        "side_effects": [
+          "memory_pinned"
+        ],
+        "suggests_after": [
+          "VERIFY"
+        ],
+        "warns_if_before": []
       }
     },
     {
@@ -581,16 +837,29 @@
       "description": "Write pattern to address (was STRIKE)",
       "language": "zig",
       "category": "substrate",
-      "sources": ["src/tools/substrate/poke.zig"],
+      "sources": [
+        "src/tools/substrate/poke.zig"
+      ],
       "struct_name": "POKE",
       "safety_level": 5,
       "spark_target": true,
       "chain": {
-        "pre_state": ["vessel_claimed"],
-        "post_state": ["bits_modified"],
-        "side_effects": ["thermal_increase", "memory_modified", "potential_data_corruption"],
-        "suggests_after": ["AUDIT", "FLUX"],
-        "warns_if_before": ["CLAIM", "GUARD"]
+        "pre_state": [
+          "vessel_claimed"
+        ],
+        "post_state": [
+          "bits_modified"
+        ],
+        "side_effects": [
+          "thermal_increase",
+          "memory_modified",
+          "potential_data_corruption"
+        ],
+        "suggests_after": [
+          "AUDIT",
+          "FLUX"
+        ],
+        "warns_if_before": []
       }
     },
     {
@@ -599,16 +868,27 @@
       "description": "Reset subsystem to known state (was QUENCH)",
       "language": "zig",
       "category": "calcination",
-      "sources": ["src/tools/calcination/reset.zig"],
+      "sources": [
+        "src/tools/calcination/reset.zig"
+      ],
       "struct_name": "RESET",
       "safety_level": 4,
       "spark_target": true,
       "chain": {
-        "pre_state": ["vessel_claimed"],
-        "post_state": ["subsystem_reset"],
-        "side_effects": ["power_state_changed"],
-        "suggests_after": ["REVERT", "CLAIM"],
-        "warns_if_before": ["CLAIM"]
+        "pre_state": [
+          "vessel_claimed"
+        ],
+        "post_state": [
+          "subsystem_reset"
+        ],
+        "side_effects": [
+          "power_state_changed"
+        ],
+        "suggests_after": [
+          "REVERT",
+          "CLAIM"
+        ],
+        "warns_if_before": []
       }
     },
     {
@@ -617,16 +897,27 @@
       "description": "Load firmware/config (was FORGE)",
       "language": "zig",
       "category": "forging",
-      "sources": ["src/tools/forging/inject.zig"],
+      "sources": [
+        "src/tools/forging/inject.zig"
+      ],
       "struct_name": "INJECT",
       "safety_level": 4,
       "spark_target": true,
       "chain": {
-        "pre_state": ["vessel_claimed"],
-        "post_state": ["firmware_loaded"],
-        "side_effects": ["device_reconfigured"],
-        "suggests_after": ["VERIFY", "REVERT"],
-        "warns_if_before": ["CLAIM"]
+        "pre_state": [
+          "vessel_claimed"
+        ],
+        "post_state": [
+          "firmware_loaded"
+        ],
+        "side_effects": [
+          "device_reconfigured"
+        ],
+        "suggests_after": [
+          "VERIFY",
+          "REVERT"
+        ],
+        "warns_if_before": []
       }
     },
     {
@@ -635,16 +926,27 @@
       "description": "Securely erase region (was VOID)",
       "language": "zig",
       "category": "forging",
-      "sources": ["src/tools/forging/wipe.zig"],
+      "sources": [
+        "src/tools/forging/wipe.zig"
+      ],
       "struct_name": "WIPE",
       "safety_level": 5,
       "spark_target": true,
       "chain": {
-        "pre_state": ["vessel_claimed"],
-        "post_state": ["data_erased"],
-        "side_effects": ["memory_zeroed"],
-        "suggests_after": ["AUDIT", "VERIFY"],
-        "warns_if_before": ["CLAIM"]
+        "pre_state": [
+          "vessel_claimed"
+        ],
+        "post_state": [
+          "data_erased"
+        ],
+        "side_effects": [
+          "memory_zeroed"
+        ],
+        "suggests_after": [
+          "AUDIT",
+          "VERIFY"
+        ],
+        "warns_if_before": []
       }
     },
     {
@@ -653,15 +955,22 @@
       "description": "Read a sensor",
       "language": "zig",
       "category": "pulse",
-      "sources": ["src/tools/pulse/sense.zig"],
+      "sources": [
+        "src/tools/pulse/sense.zig"
+      ],
       "struct_name": "SENSE",
       "safety_level": 1,
       "spark_target": false,
       "chain": {
         "pre_state": [],
-        "post_state": ["sensor_read"],
+        "post_state": [
+          "sensor_read"
+        ],
         "side_effects": [],
-        "suggests_after": ["GUARD", "LIMIT"],
+        "suggests_after": [
+          "GUARD",
+          "LIMIT"
+        ],
         "warns_if_before": []
       }
     },
@@ -671,13 +980,17 @@
       "description": "Emit a timing signal",
       "language": "zig",
       "category": "pulse",
-      "sources": ["src/tools/pulse/pulse.zig"],
+      "sources": [
+        "src/tools/pulse/pulse.zig"
+      ],
       "struct_name": "PULSE",
       "safety_level": 2,
       "spark_target": true,
       "chain": {
         "pre_state": [],
-        "post_state": ["signal_emitted"],
+        "post_state": [
+          "signal_emitted"
+        ],
         "side_effects": [],
         "suggests_after": [],
         "warns_if_before": []
@@ -689,16 +1002,26 @@
       "description": "Reconfigure a device",
       "language": "zig",
       "category": "forging",
-      "sources": ["src/tools/forging/recast.zig"],
+      "sources": [
+        "src/tools/forging/recast.zig"
+      ],
       "struct_name": "RECAST",
       "safety_level": 3,
       "spark_target": true,
       "chain": {
-        "pre_state": ["vessel_claimed"],
-        "post_state": ["device_reconfigured"],
-        "side_effects": ["state_changed"],
-        "suggests_after": ["VERIFY"],
-        "warns_if_before": ["CLAIM"]
+        "pre_state": [
+          "vessel_claimed"
+        ],
+        "post_state": [
+          "device_reconfigured"
+        ],
+        "side_effects": [
+          "state_changed"
+        ],
+        "suggests_after": [
+          "VERIFY"
+        ],
+        "warns_if_before": []
       }
     },
     {
@@ -707,16 +1030,24 @@
       "description": "Serialize state (merged with MOLT)",
       "language": "zig",
       "category": "core",
-      "sources": ["src/tools/core/snap.zig"],
+      "sources": [
+        "src/tools/core/snap.zig"
+      ],
       "struct_name": "SNAP",
       "safety_level": 2,
       "spark_target": true,
       "chain": {
-        "pre_state": ["vessel_claimed"],
-        "post_state": ["state_serialized"],
+        "pre_state": [
+          "vessel_claimed"
+        ],
+        "post_state": [
+          "state_serialized"
+        ],
         "side_effects": [],
-        "suggests_after": ["REVERT"],
-        "warns_if_before": ["CLAIM"]
+        "suggests_after": [
+          "REVERT"
+        ],
+        "warns_if_before": []
       }
     },
     {
@@ -725,16 +1056,27 @@
       "description": "Restore state",
       "language": "zig",
       "category": "core",
-      "sources": ["src/tools/core/revert.zig"],
+      "sources": [
+        "src/tools/core/revert.zig"
+      ],
       "struct_name": "REVERT",
       "safety_level": 2,
       "spark_target": true,
       "chain": {
-        "pre_state": ["state_serialized"],
-        "post_state": ["state_restored"],
-        "side_effects": ["memory_restored"],
-        "suggests_after": ["VERIFY", "AUDIT"],
-        "warns_if_before": ["SNAP"]
+        "pre_state": [
+          "state_serialized"
+        ],
+        "post_state": [
+          "state_restored"
+        ],
+        "side_effects": [
+          "memory_restored"
+        ],
+        "suggests_after": [
+          "VERIFY",
+          "AUDIT"
+        ],
+        "warns_if_before": []
       }
     }
   ]

@@ -35,6 +35,20 @@ pub fn build(b: *std.Build) void {
     const run_step = b.step("run", "Run the Alka compiler");
     run_step.dependOn(&run_cmd.step);
 
+    // Generate chain rules from pharmacopia manifest
+    const gen_chain = b.addExecutable(.{
+        .name = "gen_chain_rules",
+        .root_source_file = b.path("build/generate_chain_rules.zig"),
+        .target = target,
+        .optimize = .ReleaseSmall,
+    });
+    const gen_chain_run = b.addRunArtifact(gen_chain);
+    gen_chain_run.addFileArg(b.path("pharmacopia.json"));
+    gen_chain_run.addFileArg(b.path("src/compiler/chain_rules.zig"));
+
+    const chain_step = b.step("chain-rules", "Generate chain rules from pharmacopia.json");
+    chain_step.dependOn(&gen_chain_run.step);
+
     // Generate dispatch table from pharmacopia manifest
     const gen_dispatch = b.addExecutable(.{
         .name = "gen_dispatch",
@@ -69,6 +83,13 @@ pub fn build(b: *std.Build) void {
     pharma_verify.addArg("verify");
     const verify_step = b.step("verify", "Verify SPARK tools with gnatprove");
     verify_step.dependOn(&pharma_verify.step);
+
+    const pharma_suggest = b.addRunArtifact(pharma_exe);
+    pharma_suggest.addFileArg(b.path("pharmacopia.json"));
+    pharma_suggest.addArg("suggest");
+    pharma_suggest.addArg("transfer data");
+    const suggest_step = b.step("suggest", "Show recommended tool chain for a goal (use: zig build suggest -Dgoal=\"...\")");
+    suggest_step.dependOn(&pharma_suggest.step);
 
     // Test step
     const tests = b.addTest(.{
@@ -124,6 +145,32 @@ pub fn build(b: *std.Build) void {
     const run_harness_tests = b.addRunArtifact(harness_tests);
     const harness_test_step = b.step("test-harness", "Run tool harness edge-case tests");
     harness_test_step.dependOn(&run_harness_tests.step);
+
+    // Alka LSP Server — the Gloss
+    const lsp_exe = b.addExecutable(.{
+        .name = "alka-lsp",
+        .root_source_file = b.path("src/lsp.zig"),
+        .target = target,
+        .optimize = optimize,
+    });
+    b.installArtifact(lsp_exe);
+
+    const run_lsp = b.addRunArtifact(lsp_exe);
+    const lsp_step = b.step("lsp", "Run the Alka LSP server (the Gloss)");
+    lsp_step.dependOn(&run_lsp.step);
+
+    // VITRIOL BIND — PCIe Device Seizure (userspace sysfs helper)
+    const bind_exe = b.addExecutable(.{
+        .name = "vitriol-bind",
+        .root_source_file = b.path("src/vitriol_bind.zig"),
+        .target = target,
+        .optimize = optimize,
+    });
+    b.installArtifact(bind_exe);
+
+    const run_bind = b.addRunArtifact(bind_exe);
+    const bind_step = b.step("bind", "Bind/unbind a PCI device via sysfs (requires root)");
+    bind_step.dependOn(&run_bind.step);
 
     // Generate vitriol.h header for kernel module
     const header_step = b.step("header", "Generate vitriol.h IOCTL header");

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PackageManifest Version="2.0.0" xmlns="http://schemas.microsoft.com/developer/vsx-schema/2011">
+  <Metadata>
+    <Identity Language="en-US" Id="alka-gloss" Version="0.1.0" Publisher="alka-lang"/>
+    <DisplayName>Alka Gloss</DisplayName>
+    <Description>Alka LSP server, syntax highlighting, and vial-aware tooltips</Description>
+    <Tags>alka hardware gpu pcie mmio</Tags>
+    <Categories>Programming Languages,Linters</Categories>
+    <Properties>
+      <Property Id="Microsoft.VisualStudio.Code.Engine" Value="^1.80.0"/>
+    </Properties>
+  </Metadata>
+  <Installation>
+    <InstallationTarget Id="Microsoft.VisualStudio.Code"/>
+  </Installation>
+</PackageManifest>

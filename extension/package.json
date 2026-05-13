@@ -1,0 +1,31 @@
+{
+  "name": "alka-gloss",
+  "displayName": "Alka Gloss",
+  "description": "Alka LSP server, syntax highlighting, and vial-aware tooltips",
+  "version": "0.1.0",
+  "publisher": "alka-lang",
+  "license": "Apache-2.0",
+  "engines": { "vscode": "^1.80.0" },
+  "categories": ["Programming Languages", "Linters"],
+  "activationEvents": ["onLanguage:alka", "onLanguage:alkavl"],
+  "main": "./extension.js",
+  "contributes": {
+    "languages": [
+      { "id": "alka", "aliases": ["Alka Recipe"], "extensions": [".alka"], "configuration": "./language-configuration.json" },
+      { "id": "alkavl", "aliases": ["Alka Vial"], "extensions": [".alkavl"], "configuration": "./language-configuration.json" }
+    ],
+    "grammars": [
+      { "language": "alka", "scopeName": "source.alka", "path": "./syntaxes/alka.tmGrammar.json" },
+      { "language": "alkavl", "scopeName": "source.alkavl", "path": "./syntaxes/alkavl.tmGrammar.json" }
+    ],
+    "commands": [
+      { "command": "alka.compile", "title": "Alka: Compile Recipe" },
+      { "command": "alka.suggest", "title": "Alka: Suggest Tool Chain" },
+      { "command": "alka.probe", "title": "Alka: Probe Hardware" },
+      { "command": "alka.restart", "title": "Alka: Restart Language Server" }
+    ]
+  },
+  "dependencies": {
+    "vscode-languageclient": "^9.0.1"
+  }
+}

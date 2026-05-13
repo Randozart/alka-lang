@@ -1,28 +1,23 @@
 // Tool Chain Validator — validates instruction sequences against chain graph
 //
-// CHAIN_VALIDATION_TODO: This is a MINIMAL WORKING VERSION.
-// The full implementation should:
-// 1. Load chain metadata from pharmacopia.json at compile time
-// 2. Build a directed graph of pre/post states
-// 3. Validate all chains, not just the 6 hardcoded below
-// 4. Implement --override flag to suppress warnings
-// 5. Auto-inject suggestions for missing links
-// 6. Track side-effects (thermal, memory) across the chain
+// Loaded from pharmacopia.json via generate_chain_rules.zig at build time.
+// Validates:
+// 1. Pre-state requirements (errors if missing)
+// 2. Post-state transitions (tracks state across chain)
+// 3. Side-effect accumulation (thermal, memory, etc.)
+// 4. Warnings for risky sequences (warns_if_before)
+// 5. Suggestions for missing links (suggests_after)
 //
-// Current implementation validates 6 core chains:
-// 1. FLOW requires CLAIM before it
-// 2. SIGNAL requires FENCE before it
-// 3. SLICE requires CLAIM before it
-// 4. POKE requires CLAIM before it
-// 5. TUNNEL requires CLAIM before it
-// 6. PERSIST requires CLAIM before it
+// Override: --override flag suppresses warnings (not errors)
 
 const std = @import("std");
 const alkac = @import("alkac.zig");
+const chain_rules = @import("chain_rules.zig");
 
 pub const ChainError = error{
     PreStateUnsatisfied,
-    WarnsIfBeforeViolated,
+    ImpossibleSequence,
+    SideEffectOverflow,
 };
 
 pub const ChainResult = struct {
@@ -30,47 +25,107 @@ pub const ChainResult = struct {
     warnings: []const []const u8,
     errors: []const []const u8,
     suggestions: []const []const u8,
+    final_states: []const []const u8,
+    side_effects: []const []const u8,
 };
 
-// CHAIN_VALIDATION_TODO: Replace hardcoded rules with pharmacopia.json metadata
-const ChainRule = struct {
-    name: []const u8,
-    requires_before: []const u8,
-    error_msg: []const u8,
-    suggestion: []const u8,
+pub const ChainConfig = struct {
+    override: bool = false,
+    max_thermal_effects: usize = 10,
+    max_memory_effects: usize = 20,
 };
 
-const chain_rules = [_]ChainRule{
-    .{ .name = "FLOW", .requires_before = "CLAIM", .error_msg = "FLOW requires CLAIM before it (vessel must be owned)", .suggestion = "Insert CLAIM before FLOW" },
-    .{ .name = "SIGNAL", .requires_before = "FENCE", .error_msg = "SIGNAL requires FENCE before it (condition must be met)", .suggestion = "Insert FENCE before SIGNAL" },
-    .{ .name = "SLICE", .requires_before = "CLAIM", .error_msg = "SLICE requires CLAIM before it (vessel must be owned)", .suggestion = "Insert CLAIM before SLICE" },
-    .{ .name = "POKE", .requires_before = "CLAIM", .error_msg = "POKE requires CLAIM before it (vessel must be owned)", .suggestion = "Insert CLAIM before POKE" },
-    .{ .name = "TUNNEL", .requires_before = "CLAIM", .error_msg = "TUNNEL requires CLAIM before it (both endpoints must be owned)", .suggestion = "Insert CLAIM before TUNNEL" },
-    .{ .name = "PERSIST", .requires_before = "CLAIM", .error_msg = "PERSIST requires CLAIM before it (vessel must be owned)", .suggestion = "Insert CLAIM before PERSIST" },
-};
-
-pub fn validateChain(instrs: []const alkac.Instruction, allocator: std.mem.Allocator) !ChainResult {
+pub fn validateChain(instrs: []const alkac.Instruction, allocator: std.mem.Allocator, config: ChainConfig) !ChainResult {
     var warnings = std.ArrayList([]const u8).init(allocator);
     var errors = std.ArrayList([]const u8).init(allocator);
     var suggestions = std.ArrayList([]const u8).init(allocator);
+    var final_states = std.ArrayList([]const u8).init(allocator);
+    var side_effects = std.ArrayList([]const u8).init(allocator);
 
-    // Track which instruction names have been seen
-    var seen = std.StringHashMap(bool).init(allocator);
-    defer seen.deinit();
+    // Track which states have been established
+    var active_states = std.StringHashMap(bool).init(allocator);
+    defer active_states.deinit();
+
+    // Track which instruction names have been seen (for warns_if_before)
+    var seen_instructions = std.StringHashMap(bool).init(allocator);
+    defer seen_instructions.deinit();
+
+    // Track side-effect counts
+    var thermal_count: usize = 0;
+    var memory_count: usize = 0;
 
     for (instrs) |instr| {
-        try seen.put(instr.name, true);
+        // Find the chain rule for this instruction
+        const rule = findRuleByName(instr.name);
+        if (rule == null) {
+            // Unknown instruction — skip chain validation
+            try seen_instructions.put(instr.name, true);
+            continue;
+        }
 
-        // Check chain rules
-        for (chain_rules) |rule| {
-            if (std.mem.eql(u8, instr.name, rule.name)) {
-                const required_seen = seen.get(rule.requires_before) orelse false;
-                if (!required_seen) {
-                    try errors.append(rule.error_msg);
-                    try suggestions.append(rule.suggestion);
+        const r = rule.?;
+
+        // 1. Check pre-state requirements (ERRORS if missing)
+        for (r.pre_state) |required_state| {
+            const state_active = active_states.get(required_state) orelse false;
+            if (!state_active) {
+                const msg = try std.fmt.allocPrint(allocator, "{s} requires state '{s}' (not established)", .{ instr.name, required_state });
+                try errors.append(msg);
+            }
+        }
+
+        // 2. Check warns_if_before (WARNINGS if violated)
+        for (r.warns_if_before) |warn_name| {
+            const was_seen = seen_instructions.get(warn_name) orelse false;
+            if (was_seen) {
+                if (!config.override) {
+                    const msg = try std.fmt.allocPrint(allocator, "{s} after {s} may be risky", .{ instr.name, warn_name });
+                    try warnings.append(msg);
                 }
             }
         }
+
+        // 3. Add post-states to active states
+        for (r.post_state) |state| {
+            try active_states.put(state, true);
+            try final_states.append(state);
+        }
+
+        // 4. Track side-effects
+        for (r.side_effects) |effect| {
+            try side_effects.append(effect);
+
+            if (std.mem.indexOf(u8, effect, "thermal") != null) {
+                thermal_count += 1;
+                if (thermal_count > config.max_thermal_effects) {
+                    const msg = try std.fmt.allocPrint(allocator, "Excessive thermal effects ({}) — consider cooling steps", .{thermal_count});
+                    if (!config.override) {
+                        try warnings.append(msg);
+                    }
+                }
+            }
+            if (std.mem.indexOf(u8, effect, "memory") != null) {
+                memory_count += 1;
+                if (memory_count > config.max_memory_effects) {
+                    const msg = try std.fmt.allocPrint(allocator, "Excessive memory modifications ({}) — verify integrity", .{memory_count});
+                    if (!config.override) {
+                        try warnings.append(msg);
+                    }
+                }
+            }
+        }
+
+        // 5. Add suggestions for next steps
+        for (r.suggests_after) |suggested| {
+            // Only suggest if not already seen
+            const already_seen = seen_instructions.get(suggested) orelse false;
+            if (!already_seen) {
+                const msg = try std.fmt.allocPrint(allocator, "Consider {s} after {s}", .{ suggested, instr.name });
+                try suggestions.append(msg);
+            }
+        }
+
+        try seen_instructions.put(instr.name, true);
     }
 
     const has_errors = errors.items.len > 0;
@@ -80,5 +135,16 @@ pub fn validateChain(instrs: []const alkac.Instruction, allocator: std.mem.Alloc
         .warnings = try warnings.toOwnedSlice(),
         .errors = try errors.toOwnedSlice(),
         .suggestions = try suggestions.toOwnedSlice(),
+        .final_states = try final_states.toOwnedSlice(),
+        .side_effects = try side_effects.toOwnedSlice(),
     };
+}
+
+fn findRuleByName(name: []const u8) ?*const chain_rules.ChainRule {
+    for (&chain_rules.chain_rules) |*rule| {
+        if (std.mem.eql(u8, rule.name, name)) {
+            return rule;
+        }
+    }
+    return null;
 }

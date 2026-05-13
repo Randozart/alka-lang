@@ -57,6 +57,8 @@ pub const Program = struct {
 pub const Instruction = struct {
     name: []const u8,
     operands: std.ArrayList(alka_bin.Operand),
+    force_claim: bool,
+    chain_override: bool,
 };
 
 pub const Vial = struct {
@@ -100,16 +102,23 @@ pub const CompilerError = error{
     OutOfMemory,
 };
 
+pub const CompileConfig = struct {
+    chain_override: bool = false,
+};
+
 pub fn compile(
     program: Program,
     vial: Vial,
     out: *std.ArrayList(u8),
     azoth_out: ?*std.ArrayList(u8),
     allocator: std.mem.Allocator,
+    config: CompileConfig,
 ) CompilerError!void {
-    // Stage 1: Chain validation (NEW in v5.0)
-    // CHAIN_VALIDATION_TODO: Full chain graph from pharmacopia.json metadata
-    const chain_result = try chain_validator.validateChain(program.instructions.items, allocator);
+    // Stage 1: Chain validation (v5.0 — manifest-driven)
+    const chain_config = chain_validator.ChainConfig{
+        .override = config.chain_override,
+    };
+    const chain_result = try chain_validator.validateChain(program.instructions.items, allocator, chain_config);
     if (!chain_result.valid) {
         for (chain_result.errors) |err| {
             std.debug.print("CHAIN ERROR: {s}\n", .{err});
@@ -132,7 +141,14 @@ pub fn compile(
         try validateInstruction(instr, vial, allocator, inst_def);
         try validateWithTools(instr, inst_def, vial, allocator);
 
-        const packet = try emitPacket(inst_def.op_code, instr.operands, vial);
+        var packet = try emitPacket(inst_def.op_code, instr.operands, vial);
+
+        // Set force flag (BIND!, CLAIM!) in flags bit 0
+        if (instr.force_claim) {
+            packet.flags |= 0x01;
+            packet.crc = alka_bin.computeCrc(&packet);
+        }
+
         _ = out.appendSlice(std.mem.asBytes(&packet)) catch return CompilerError.BufferOverflow;
     }
 
@@ -162,6 +178,9 @@ fn validateInstruction(instr: Instruction, vial: Vial, allocator: std.mem.Alloca
 
 fn validateWithTools(instr: Instruction, inst_def: *const instructions.Instruction, vial: Vial, allocator: std.mem.Allocator) !void {
     _ = allocator;
+
+    // Skip tool-level validation if chain override is set (!! bypass)
+    if (instr.chain_override) return;
 
     const op_code = @intFromEnum(inst_def.op_code);
     const tool = tools.getTool(op_code) orelse return;
@@ -277,6 +296,32 @@ fn emitPacket(
         return CompilerError.UnknownVessel;
     }
 
+    if (op_code == .BIND and operands.items.len >= 1) {
+        const name = switch (operands.items[0]) {
+            .identifier => |id| id,
+            else => {
+                packet.src_addr = alka_bin.evalOperand(operands.items[0]);
+                packet.crc = alka_bin.computeCrc(&packet);
+                return packet;
+            },
+        };
+
+        var it = vial.vessels.iterator();
+        while (it.next()) |entry| {
+            if (std.mem.eql(u8, entry.key_ptr.*, name)) {
+                const vessel = entry.value_ptr.*;
+                if (vessel.pci_id) |pci| {
+                    packet.src_addr = (@as(u64, pci.device) << 16) | pci.vendor;
+                    packet.vessel_id = 1;
+                    packet.crc = alka_bin.computeCrc(&packet);
+                    return packet;
+                }
+                break;
+            }
+        }
+        return CompilerError.UnknownVessel;
+    }
+
     if (op_code == .LIMIT and operands.items.len >= 1) {
         const name = switch (operands.items[0]) {
             .identifier => |id| id,
@@ -377,33 +422,106 @@ pub fn parseProgram(source: []const u8, allocator: std.mem.Allocator) !Program {
     };
 
     var lines = std.mem.tokenizeScalar(u8, source, '\n');
+    var pending_override = false;
+
     while (lines.next()) |line| {
-        var trimmed = std.mem.trim(u8, line, " \t");
+        const trimmed = std.mem.trim(u8, line, " \t\r");
+        if (trimmed.len == 0) continue;
 
-        if (trimmed.len == 0 or trimmed[0] == '/') continue;
+        // Split on ; to support multiple instructions per line
+        var stmts = std.mem.tokenizeScalar(u8, trimmed, ';');
+        while (stmts.next()) |stmt_raw| {
+            const stmt = std.mem.trim(u8, stmt_raw, " \t\r");
+            if (stmt.len == 0 or stmt[0] == '/') continue;
 
-        if (std.mem.startsWith(u8, trimmed, "REQUIRE ")) {
-            const path = std.mem.trim(u8, trimmed[8..], " ;");
-            try program.directives.append(try allocator.dupe(u8, path));
-            continue;
-        }
-
-        var parts = std.mem.tokenizeScalar(u8, trimmed, ' ');
-        const raw_name = parts.next() orelse continue;
-        const name = std.mem.trimRight(u8, raw_name, "; \t");
-
-        var instr = Instruction{
-            .name = try allocator.dupe(u8, name),
-            .operands = std.ArrayList(alka_bin.Operand).init(allocator),
-        };
-
-        while (parts.next()) |part| {
-            if (part.len > 0 and !std.mem.eql(u8, part, "->")) {
-                instr.operands.append(alka_bin.parseOperand(part)) catch {};
+            if (std.mem.startsWith(u8, stmt, "REQUIRE ")) {
+                const path = std.mem.trim(u8, stmt[8..], " ");
+                try program.directives.append(try allocator.dupe(u8, path));
+                continue;
             }
-        }
 
-        try program.instructions.append(instr);
+            if (std.mem.eql(u8, stmt, "!!")) {
+                pending_override = true;
+                continue;
+            }
+
+            var parts = std.mem.tokenizeScalar(u8, stmt, ' ');
+            const raw_name = parts.next() orelse continue;
+
+            // Detect inline !! prefix
+            if (std.mem.startsWith(u8, raw_name, "!!")) {
+                pending_override = false;
+                const after_marker = std.mem.trimLeft(u8, raw_name[2..], " \t");
+                if (after_marker.len > 0) {
+                    var instr = Instruction{
+                        .name = try allocator.dupe(u8, after_marker),
+                        .operands = std.ArrayList(alka_bin.Operand).init(allocator),
+                        .force_claim = false,
+                        .chain_override = true,
+                    };
+                    while (parts.next()) |part| {
+                        if (std.mem.startsWith(u8, part, "//")) break;
+                        if (part.len > 0 and !std.mem.eql(u8, part, "->")) {
+                            instr.operands.append(alka_bin.parseOperand(part)) catch {};
+                        }
+                    }
+                    try program.instructions.append(instr);
+                    continue;
+                }
+
+                if (parts.next()) |next_part| {
+                    if (std.mem.startsWith(u8, next_part, "//")) {
+                        pending_override = true;
+                        continue;
+                    }
+                    var instr = Instruction{
+                        .name = try allocator.dupe(u8, next_part),
+                        .operands = std.ArrayList(alka_bin.Operand).init(allocator),
+                        .force_claim = false,
+                        .chain_override = true,
+                    };
+                    while (parts.next()) |part| {
+                        if (std.mem.startsWith(u8, part, "//")) break;
+                        if (part.len > 0 and !std.mem.eql(u8, part, "->")) {
+                            instr.operands.append(alka_bin.parseOperand(part)) catch {};
+                        }
+                    }
+                    try program.instructions.append(instr);
+                    continue;
+                }
+
+                pending_override = true;
+                continue;
+            }
+
+            // Detect ! suffix (CLAIM!, BIND!)
+            var force_flag = false;
+            const name = if (std.mem.endsWith(u8, raw_name, "!"))
+                blk: {
+                    force_flag = true;
+                    break :blk raw_name[0 .. raw_name.len - 1];
+                }
+            else
+                raw_name;
+
+            const use_override = pending_override;
+            pending_override = false;
+
+            var instr = Instruction{
+                .name = try allocator.dupe(u8, name),
+                .operands = std.ArrayList(alka_bin.Operand).init(allocator),
+                .force_claim = force_flag,
+                .chain_override = use_override,
+            };
+
+            while (parts.next()) |part| {
+                if (part.len > 0 and !std.mem.eql(u8, part, "->")) {
+                    instr.operands.append(alka_bin.parseOperand(part)) catch {};
+                }
+            }
+
+            try program.instructions.append(instr);
+        }
     }
 
     return program;
@@ -594,7 +712,7 @@ pub fn analyzeWithTools(
             .SUSPEND => { op_desc = "Pause auto-behavior"; byte_count = 24; },
             .COORDINATE => { op_desc = "Coordinate devices"; byte_count = 48; },
             .DIRECT => { op_desc = "Bypass OS, access controller"; byte_count = 32; },
-            .BIND => { op_desc = "Bind to device with force"; byte_count = 200; },
+            .BIND => { op_desc = "Bind to device with force flag"; byte_count = 200; },
             .PERSIST => { op_desc = "Store in memory indefinitely"; byte_count = 64; },
             .POKE => { op_desc = "Write pattern to address"; byte_count = 16; },
             .RESET => { op_desc = "Reset subsystem to known state"; byte_count = 8; },

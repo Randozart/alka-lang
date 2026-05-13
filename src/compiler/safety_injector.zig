@@ -136,6 +136,8 @@ pub const Injector = struct {
                         var before_instr = alkac.Instruction{
                             .name = try self.allocator.dupe(u8, before_name),
                             .operands = std.ArrayList(alka_bin.Operand).init(self.allocator),
+                            .force_claim = false,
+                            .chain_override = false,
                         };
                         for (rule.inject_operands) |op| {
                             try before_instr.operands.append(.{ .literal = op });
@@ -148,6 +150,8 @@ pub const Injector = struct {
             var cloned = alkac.Instruction{
                 .name = try self.allocator.dupe(u8, instr.name),
                 .operands = std.ArrayList(alka_bin.Operand).init(self.allocator),
+                .force_claim = false,
+                .chain_override = false,
             };
             for (instr.operands.items) |op| {
                 try cloned.operands.append(op);
@@ -160,6 +164,8 @@ pub const Injector = struct {
                         var after_instr = alkac.Instruction{
                             .name = try self.allocator.dupe(u8, after_name),
                             .operands = std.ArrayList(alka_bin.Operand).init(self.allocator),
+                            .force_claim = false,
+                            .chain_override = false,
                         };
                         for (rule.inject_operands) |op| {
                             try after_instr.operands.append(.{ .literal = op });
@@ -187,6 +193,8 @@ pub const Injector = struct {
                     var sense_instr = alkac.Instruction{
                         .name = try self.allocator.dupe(u8, "SENSE"),
                         .operands = std.ArrayList(alka_bin.Operand).init(self.allocator),
+                        .force_claim = false,
+                        .chain_override = false,
                     };
                     try sense_instr.operands.append(.{ .literal = 0x07 });
                     try program.instructions.insert(0, sense_instr);
@@ -194,6 +202,8 @@ pub const Injector = struct {
                     var limit_instr = alkac.Instruction{
                         .name = try self.allocator.dupe(u8, "LIMIT"),
                         .operands = std.ArrayList(alka_bin.Operand).init(self.allocator),
+                        .force_claim = false,
+                        .chain_override = false,
                     };
                     try limit_instr.operands.append(.{ .literal = thermal.throttle_at.? });
                     try program.instructions.insert(1, limit_instr);

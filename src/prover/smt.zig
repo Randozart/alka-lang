@@ -25,6 +25,7 @@ fn evalOperand(op: alka_bin.Operand) u64 {
         .memory_size => |m| m.value,
         .identifier => 0,
         .indexed => |idx| idx.index,
+        .vessel_member => 0,
     };
 }
 
