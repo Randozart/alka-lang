@@ -142,11 +142,11 @@ pub const MockExecutor = struct {
     }
 
     pub fn execute(self: *MockExecutor, alkas: []const u8) !void {
-        const packet_size = @sizeOf(alka_bin.MetrodPacket);
+        const packet_size = @sizeOf(alka_bin.Drop);
         var i: usize = 0;
 
         while (i + packet_size <= alkas.len) : (i += packet_size) {
-            var packet: alka_bin.MetrodPacket = undefined;
+            var packet: alka_bin.Drop = undefined;
             @memcpy(std.mem.asBytes(&packet), alkas[i .. i + packet_size]);
 
             if (packet.flags & 0x80 != 0) continue;
@@ -159,7 +159,7 @@ pub const MockExecutor = struct {
         }
     }
 
-    fn executePacket(self: *MockExecutor, packet: *const alka_bin.MetrodPacket, idx: usize) !void {
+    fn executePacket(self: *MockExecutor, packet: *const alka_bin.Drop, idx: usize) !void {
         const opcode_name = opcodeName(packet.op_code);
         var status: []const u8 = "OK";
         var detail: ?[]const u8 = null;

@@ -28,6 +28,7 @@ const executor = @import("executor/alka_run.zig");
 const mock_executor = @import("executor/mock_executor.zig");
 const gguf_parser = @import("gguf/parser.zig");
 const safety_injector = @import("compiler/safety_injector.zig");
+const prover = @import("prover/mod.zig");
 
 pub fn main() !void {
     var arena = std.heap.ArenaAllocator.init(std.heap.page_allocator);
@@ -50,12 +51,14 @@ pub fn main() !void {
         std.debug.print("  alka --probe <pci_bdf>                    Scan hardware and generate .alkavl\n", .{});
         std.debug.print("  alka --generate-vial <pci_bdf> [name]     Generate .alkavl for specific device\n", .{});
         std.debug.print("  alka --probe-all                          Scan all PCI devices\n", .{});
+        std.debug.print("  alka --prove <source.alka> <vial.alkavl>  Formally verify a Recipe with Z3\n", .{});
         std.debug.print("\n", .{});
         std.debug.print("Examples:\n", .{});
         std.debug.print("  alka moore_stream.alka ivyb_pascal.alkavl\n", .{});
         std.debug.print("  alka --safe purify_1070ti.alkas purify_1070ti.azoth\n", .{});
         std.debug.print("  alka --gguf llama-7b.Q4_K_M.gguf ivyb_pascal.alkavl\n", .{});
         std.debug.print("  alka --probe 0000:01:00.0                 # Scan GPU at BDF 01:00.0\n", .{});
+        std.debug.print("  alka --prove stream_960.alka gtx960_2gb.alkavl  # Verify recipe safety\n", .{});
         return;
     }
 
@@ -163,6 +166,56 @@ pub fn main() !void {
         std.debug.print("\n=== Generated Vial ===\n", .{});
         std.debug.print("{s}\n", .{vial_content});
         std.debug.print("Emitted: {s}\n", .{vial_path});
+        return;
+    }
+
+    if (std.mem.eql(u8, args[1], "--prove")) {
+        if (args.len < 4) {
+            std.debug.print("Usage: alka --prove <source.alka> <vial.alkavl>\n", .{});
+            std.debug.print("Formally verify a Recipe against Vial constraints using Z3\n", .{});
+            std.debug.print("Example: alka --prove stream_960.alka gtx960_2gb.alkavl\n", .{});
+            return;
+        }
+
+        const source_path = args[2];
+        const vial_path = args[3];
+
+        std.debug.print("Proving: {s} <= {s}\n", .{ source_path, vial_path });
+
+        const source = try std.fs.cwd().readFileAlloc(allocator, source_path, std.math.maxInt(usize));
+        defer allocator.free(source);
+
+        const vial_data = try std.fs.cwd().readFileAlloc(allocator, vial_path, std.math.maxInt(usize));
+        defer allocator.free(vial_data);
+
+        const program = try alkac.parseProgram(source, allocator);
+        const vial = try alkac.parseVial(vial_data, allocator);
+
+        const smt = try prover.smt.generateSmtLib(program, vial, allocator);
+        defer allocator.free(smt);
+
+        std.debug.print("\n=== SMT-LIB Proof Constraints ===\n", .{});
+        std.debug.print("{s}\n", .{smt});
+
+        const result = prover.smt.runZ3(smt, allocator) catch |err| {
+            std.debug.print("Z3 execution error: {s}\n", .{@errorName(err)});
+            return;
+        };
+
+        std.debug.print("=== Proof Result ===\n", .{});
+        switch (result) {
+            .proved => {
+                std.debug.print("  PASSED - All safety constraints satisfied\n", .{});
+            },
+            .failed => |f| {
+                std.debug.print("  FAILED - ", .{});
+                std.debug.print("{s}", .{f.counterexample});
+                std.debug.print("\n", .{});
+            },
+            .err_msg => |e| {
+                std.debug.print("  ERROR - {s}\n", .{e});
+            },
+        }
         return;
     }
 
@@ -322,29 +375,30 @@ pub fn main() !void {
         std.debug.print("Emitted: {s} ({} bytes, {} packets)\n", .{
             out_path,
             binary.items.len,
-            binary.items.len / @sizeOf(alka_bin.MetrodPacket),
+            binary.items.len / @sizeOf(alka_bin.Drop),
         });
         std.debug.print("Emitted: {s} ({} bytes, {} rollback packets)\n", .{
             azoth_path,
             azoth.items.len,
-            azoth.items.len / @sizeOf(alka_bin.MetrodPacket),
+            azoth.items.len / @sizeOf(alka_bin.Drop),
         });
         return;
     }
 
     if (std.mem.eql(u8, args[1], "--mock")) {
         if (args.len < 3) {
-            std.debug.print("Usage: alka --mock <source.alka> <vial.alkavl>\n", .{});
+            std.debug.print("Usage: alka --mock <source.alkas> [vram_mb]\n", .{});
             return;
         }
         const source_path = args[2];
+        const vram_mb: u64 = if (args.len >= 4) try std.fmt.parseInt(u64, args[3], 10) else 8192;
 
-        std.debug.print("Mock execution: {s}\n", .{source_path});
+        std.debug.print("Mock execution: {s} (VRAM: {d}MB)\n", .{source_path, vram_mb});
 
         const alkas = try std.fs.cwd().readFileAlloc(allocator, source_path, std.math.maxInt(usize));
         defer allocator.free(alkas);
 
-        var mock = mock_executor.MockExecutor.init(allocator, 256) catch |err| {
+        var mock = mock_executor.MockExecutor.init(allocator, vram_mb) catch |err| {
             std.debug.print("Mock init failed: {s}\n", .{@errorName(err)});
             return;
         };
@@ -397,12 +451,12 @@ pub fn main() !void {
     std.debug.print("Emitted: {s} ({} bytes, {} packets)\n", .{
         out_path,
         binary.items.len,
-        binary.items.len / @sizeOf(alka_bin.MetrodPacket),
+        binary.items.len / @sizeOf(alka_bin.Drop),
     });
     std.debug.print("Emitted: {s} ({} bytes, {} rollback packets)\n", .{
         azoth_path,
         azoth.items.len,
-        azoth.items.len / @sizeOf(alka_bin.MetrodPacket),
+        azoth.items.len / @sizeOf(alka_bin.Drop),
     });
 }
 

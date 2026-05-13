@@ -25,7 +25,7 @@ const posix = std.posix;
 
 pub const DEVICE_PATH = "/dev/vitriol";
 
-pub const MetrodPacket = packed struct {
+pub const Drop = packed struct {
     op_code: u8,
     flags: u8,
     vessel_id: u16,
@@ -164,12 +164,12 @@ pub const Executor = struct {
         self.vial_loaded = true;
     }
 
-    pub fn execute(self: *Executor, packets: []const MetrodPacket) !ExecResult {
+    pub fn execute(self: *Executor, packets: []const Drop) !ExecResult {
         var result: ExecResult = std.mem.zeroInit(ExecResult, .{});
         var req = ExecuteRequest{
             .packets = @ptrCast(packets.ptr),
             .packet_count = @intCast(packets.len),
-            .packet_size = @sizeOf(MetrodPacket),
+            .packet_size = @sizeOf(Drop),
             .result = &result,
         };
         try ioctlReadWrite(self.fd, VITRIOL_IOC_EXECUTE, &req);
@@ -177,12 +177,12 @@ pub const Executor = struct {
         return result;
     }
 
-    pub fn executeSafe(self: *Executor, alkas: []const MetrodPacket, azoth: []const MetrodPacket) !ExecResult {
+    pub fn executeSafe(self: *Executor, alkas: []const Drop, azoth: []const Drop) !ExecResult {
         var result: ExecResult = std.mem.zeroInit(ExecResult, .{});
         var req = ExecuteSafeRequest{
             .packets = @ptrCast(alkas.ptr),
             .packet_count = @intCast(alkas.len),
-            .packet_size = @sizeOf(MetrodPacket),
+            .packet_size = @sizeOf(Drop),
             .azoth_packets = @ptrCast(azoth.ptr),
             .azoth_count = @intCast(azoth.len),
             .result = &result,
@@ -238,17 +238,17 @@ pub const Executor = struct {
     }
 };
 
-pub fn loadAlkasFile(allocator: std.mem.Allocator, path: []const u8) ![]const MetrodPacket {
+pub fn loadAlkasFile(allocator: std.mem.Allocator, path: []const u8) ![]const Drop {
     const data = try std.fs.cwd().readFileAlloc(allocator, path, 1024 * 1024 * 64);
     errdefer allocator.free(data);
 
-    if (data.len % @sizeOf(MetrodPacket) != 0) {
+    if (data.len % @sizeOf(Drop) != 0) {
         return ExecutionError.InvalidBinary;
     }
 
-    const count = data.len / @sizeOf(MetrodPacket);
-    const aligned: [*]align(@alignOf(MetrodPacket)) const u8 = @alignCast(data.ptr);
-    const packets: [*]const MetrodPacket = @ptrCast(aligned);
+    const count = data.len / @sizeOf(Drop);
+    const aligned: [*]align(@alignOf(Drop)) const u8 = @alignCast(data.ptr);
+    const packets: [*]const Drop = @ptrCast(aligned);
     return packets[0..count];
 }
 
@@ -267,11 +267,11 @@ pub fn run(
     }
 
     const alkas = try loadAlkasFile(allocator, alkas_path);
-    defer allocator.free(@as([*]const u8, @ptrCast(alkas.ptr))[0 .. alkas.len * @sizeOf(MetrodPacket)]);
+    defer allocator.free(@as([*]const u8, @ptrCast(alkas.ptr))[0 .. alkas.len * @sizeOf(Drop)]);
 
     if (safe_mode and azoth_path != null) {
         const azoth = try loadAlkasFile(allocator, azoth_path.?);
-        defer allocator.free(@as([*]const u8, @ptrCast(azoth.ptr))[0 .. azoth.len * @sizeOf(MetrodPacket)]);
+        defer allocator.free(@as([*]const u8, @ptrCast(azoth.ptr))[0 .. azoth.len * @sizeOf(Drop)]);
         return try executor.executeSafe(alkas, azoth);
     }
 
