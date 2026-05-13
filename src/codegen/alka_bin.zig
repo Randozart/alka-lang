@@ -22,7 +22,7 @@
 
 const std = @import("std");
 
-pub const MetrodPacket = packed struct {
+pub const Drop = packed struct {
     op_code: u8,
     flags: u8,
     vessel_id: u16,
@@ -33,7 +33,7 @@ pub const MetrodPacket = packed struct {
     crc: u32,
 };
 
-pub const MetrodPacketExt = extern struct {
+pub const DropExt = extern struct {
     op_code: u8,
     intensity: u8,
     safety: u16,
@@ -45,13 +45,13 @@ pub const MetrodPacketExt = extern struct {
     reserved: u4,
 };
 
-pub const PACKET_SIZE = @sizeOf(MetrodPacket);
-pub const PACKET_SIZE_EXT = @sizeOf(MetrodPacketExt);
+pub const DROP_SIZE = @sizeOf(Drop);
+pub const DROP_SIZE_EXT = @sizeOf(DropExt);
 
-pub fn computeCrc(packet: *const MetrodPacket) u32 {
+pub fn computeCrc(packet: *const Drop) u32 {
     var crc: u32 = 0;
     const bytes: [*]const u8 = @ptrCast(packet);
-    const crc_offset = @offsetOf(MetrodPacket, "crc");
+    const crc_offset = @offsetOf(Drop, "crc");
     for (0..crc_offset) |i| {
         crc = (crc << 1) | (crc >> 31);
         crc ^= bytes[i];
@@ -59,10 +59,10 @@ pub fn computeCrc(packet: *const MetrodPacket) u32 {
     return crc;
 }
 
-pub fn computeCrcExt(packet: *const MetrodPacketExt) u32 {
+pub fn computeCrcExt(packet: *const DropExt) u32 {
     var crc: u32 = 0;
     const bytes: [*]const u8 = @ptrCast(packet);
-    const crc_offset = @offsetOf(MetrodPacketExt, "auth_sig");
+    const crc_offset = @offsetOf(DropExt, "auth_sig");
     for (0..crc_offset) |i| {
         crc = (crc << 1) | (crc >> 31);
         crc ^= bytes[i];
@@ -113,9 +113,9 @@ pub fn evalOperand(operand: Operand) u64 {
     };
 }
 
-/// Generate the Azoth (rollback) counterpart for a given MetrodPacket.
+/// Generate the Azoth (rollback) counterpart for a given Drop.
 /// Returns the inverse operation that restores pre-execution state.
-pub fn generateAzothPacket(packet: *const MetrodPacket) MetrodPacket {
+pub fn generateAzothPacket(packet: *const Drop) Drop {
     var azoth = packet.*;
 
     // Set Azoth flag (bit 7)
@@ -156,10 +156,10 @@ pub fn generateAzothBinary(alkas: []const u8, allocator: std.mem.Allocator) ![]u
 
     // Process packets in reverse order (LIFO rollback)
     var i: usize = alkas.len;
-    while (i >= PACKET_SIZE) {
-        i -= PACKET_SIZE;
-        var packet: MetrodPacket = undefined;
-        @memcpy(std.mem.asBytes(&packet), alkas[i .. i + PACKET_SIZE]);
+    while (i >= DROP_SIZE) {
+        i -= DROP_SIZE;
+        var packet: Drop = undefined;
+        @memcpy(std.mem.asBytes(&packet), alkas[i .. i + DROP_SIZE]);
 
         // Skip non-rollbackable instructions (DRY_RUN, MOCK, PROVE)
         if (packet.op_code == 0x2C or packet.op_code == 0x2D or packet.op_code == 0x2E) continue;

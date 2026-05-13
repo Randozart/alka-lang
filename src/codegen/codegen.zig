@@ -23,7 +23,7 @@
 const std = @import("std");
 const parser = @import("../parser/parser.zig");
 
-pub const MetrodPacket = extern struct {
+pub const Drop = extern struct {
     op_code: u8,
     flags: u8,
     vessel_id: u16,
@@ -51,10 +51,10 @@ pub const OpCodes = struct {
     pub const LIMIT: u8 = 0x0E;
 };
 
-fn computeCrc(packet: *const MetrodPacket) u32 {
+fn computeCrc(packet: *const Drop) u32 {
     var crc: u32 = 0;
     const bytes: [*]const u8 = @ptrCast(packet);
-    for (0..@sizeOf(MetrodPacket)) |i| {
+    for (0..@sizeOf(Drop)) |i| {
         crc = (crc << 1) | (crc >> 31);
         crc ^= bytes[i];
     }
@@ -74,8 +74,8 @@ fn evalExpr(expr: parser.Expression) u64 {
     };
 }
 
-pub fn emitMetrod(program: parser.Program, vial: parser.Vial, arena: *std.heap.ArenaAllocator) ![]u8 {
-    var packets = std.ArrayList(MetrodPacket).init(arena.allocator());
+pub fn emitDrops(program: parser.Program, vial: parser.Vial, arena: *std.heap.ArenaAllocator) ![]u8 {
+    var packets = std.ArrayList(Drop).init(arena.allocator());
     var vessel_ids = std.StringArrayHashMap(u16).init(arena.allocator());
 
     var id: u16 = 0;
@@ -87,7 +87,7 @@ pub fn emitMetrod(program: parser.Program, vial: parser.Vial, arena: *std.heap.A
     for (program.instructions.items) |instr| {
         switch (instr) {
             .claim => |c| {
-                var packet = std.mem.zeroInit(MetrodPacket, .{
+                var packet = std.mem.zeroInit(Drop, .{
                     .op_code = OpCodes.CLAIM,
                     .flags = 0,
                     .vessel_id = vessel_ids.get(c.target) orelse 0,
@@ -101,7 +101,7 @@ pub fn emitMetrod(program: parser.Program, vial: parser.Vial, arena: *std.heap.A
                 try packets.append(packet);
             },
             .flow => |f| {
-                var packet = std.mem.zeroInit(MetrodPacket, .{
+                var packet = std.mem.zeroInit(Drop, .{
                     .op_code = OpCodes.FLOW,
                     .flags = 0,
                     .vessel_id = 0,
@@ -115,7 +115,7 @@ pub fn emitMetrod(program: parser.Program, vial: parser.Vial, arena: *std.heap.A
                 try packets.append(packet);
             },
             .shift => |s| {
-                var packet = std.mem.zeroInit(MetrodPacket, .{
+                var packet = std.mem.zeroInit(Drop, .{
                     .op_code = OpCodes.SHIFT,
                     .flags = 0,
                     .vessel_id = vessel_ids.get(s.vessel) orelse 0,
@@ -129,7 +129,7 @@ pub fn emitMetrod(program: parser.Program, vial: parser.Vial, arena: *std.heap.A
                 try packets.append(packet);
             },
             .fence => |fc| {
-                var packet = std.mem.zeroInit(MetrodPacket, .{
+                var packet = std.mem.zeroInit(Drop, .{
                     .op_code = OpCodes.FENCE,
                     .flags = 0,
                     .vessel_id = vessel_ids.get(fc.vessel) orelse 0,
@@ -143,7 +143,7 @@ pub fn emitMetrod(program: parser.Program, vial: parser.Vial, arena: *std.heap.A
                 try packets.append(packet);
             },
             .sync => |sy| {
-                var packet = std.mem.zeroInit(MetrodPacket, .{
+                var packet = std.mem.zeroInit(Drop, .{
                     .op_code = OpCodes.SYNC,
                     .flags = sy.level,
                     .vessel_id = 0,
@@ -157,7 +157,7 @@ pub fn emitMetrod(program: parser.Program, vial: parser.Vial, arena: *std.heap.A
                 try packets.append(packet);
             },
             .pulse => |p| {
-                var packet = std.mem.zeroInit(MetrodPacket, .{
+                var packet = std.mem.zeroInit(Drop, .{
                     .op_code = OpCodes.PULSE,
                     .flags = 0,
                     .vessel_id = vessel_ids.get(p.target) orelse 0,
@@ -171,7 +171,7 @@ pub fn emitMetrod(program: parser.Program, vial: parser.Vial, arena: *std.heap.A
                 try packets.append(packet);
             },
             .stake => |st| {
-                var packet = std.mem.zeroInit(MetrodPacket, .{
+                var packet = std.mem.zeroInit(Drop, .{
                     .op_code = OpCodes.STAKE,
                     .flags = 0,
                     .vessel_id = 0,
@@ -188,7 +188,7 @@ pub fn emitMetrod(program: parser.Program, vial: parser.Vial, arena: *std.heap.A
                 _ = se;
             },
             .yield => |y| {
-                var packet = std.mem.zeroInit(MetrodPacket, .{
+                var packet = std.mem.zeroInit(Drop, .{
                     .op_code = OpCodes.YIELD,
                     .flags = 0,
                     .vessel_id = 0,
@@ -202,7 +202,7 @@ pub fn emitMetrod(program: parser.Program, vial: parser.Vial, arena: *std.heap.A
                 try packets.append(packet);
             },
             .signal => |si| {
-                var packet = std.mem.zeroInit(MetrodPacket, .{
+                var packet = std.mem.zeroInit(Drop, .{
                     .op_code = OpCodes.SIGNAL,
                     .flags = 0,
                     .vessel_id = 0,
@@ -225,7 +225,7 @@ pub fn emitMetrod(program: parser.Program, vial: parser.Vial, arena: *std.heap.A
                 _ = rev;
             },
             .limit => |l| {
-                var packet = std.mem.zeroInit(MetrodPacket, .{
+                var packet = std.mem.zeroInit(Drop, .{
                     .op_code = OpCodes.LIMIT,
                     .flags = 0,
                     .vessel_id = vessel_ids.get(l.vessel) orelse 0,
@@ -242,14 +242,14 @@ pub fn emitMetrod(program: parser.Program, vial: parser.Vial, arena: *std.heap.A
         }
     }
 
-    const total_bytes = packets.items.len * @sizeOf(MetrodPacket);
+    const total_bytes = packets.items.len * @sizeOf(Drop);
     const result = try arena.allocator().alloc(u8, total_bytes);
 
     var offset: usize = 0;
     for (packets.items) |packet| {
         const packet_bytes: [*]u8 = @ptrCast(&packet);
-        std.mem.copyForwards(u8, result[offset..], packet_bytes[0..@sizeOf(MetrodPacket)]);
-        offset += @sizeOf(MetrodPacket);
+        std.mem.copyForwards(u8, result[offset..], packet_bytes[0..@sizeOf(Drop)]);
+        offset += @sizeOf(Drop);
     }
 
     return result;

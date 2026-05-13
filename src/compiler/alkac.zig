@@ -178,8 +178,8 @@ fn emitPacket(
     op_code: instructions.OpCode,
     operands: std.ArrayList(alka_bin.Operand),
     vial: Vial,
-) CompilerError!alka_bin.MetrodPacket {
-    var packet = std.mem.zeroInit(alka_bin.MetrodPacket, .{
+) CompilerError!alka_bin.Drop {
+    var packet = std.mem.zeroInit(alka_bin.Drop, .{
         .op_code = @intFromEnum(op_code),
         .flags = 0,
         .vessel_id = 0,
@@ -354,6 +354,8 @@ pub fn parseVial(source: []const u8, allocator: std.mem.Allocator) !Vial {
     };
 
     var current_name: ?[]const u8 = null;
+    var in_aperture = false;
+    var aperture_name: ?[]const u8 = null;
     var lines = std.mem.tokenizeScalar(u8, source, '\n');
 
     while (lines.next()) |line| {
@@ -374,15 +376,60 @@ pub fn parseVial(source: []const u8, allocator: std.mem.Allocator) !Vial {
             continue;
         }
 
+        if (std.mem.startsWith(u8, trimmed, "Aperture ")) {
+            in_aperture = true;
+            aperture_name = std.mem.trim(u8, trimmed[9..], " {");
+            continue;
+        }
+
         if (std.mem.eql(u8, trimmed, "}")) {
-            current_name = null;
+            if (in_aperture) {
+                in_aperture = false;
+                aperture_name = null;
+            } else {
+                current_name = null;
+            }
             continue;
         }
 
         if (current_name == null) continue;
 
         const v = vial.vessels.getPtr(current_name.?) orelse continue;
-        
+
+        if (in_aperture) {
+            if (std.mem.startsWith(u8, trimmed, "BAR:")) {
+                const bar_val = std.fmt.parseInt(u8, std.mem.trim(u8, trimmed[4..], " ;"), 10) catch 0;
+                const ap = Aperture{
+                    .name = try allocator.dupe(u8, aperture_name.?),
+                    .bar = bar_val,
+                    .max_window = null,
+                    .size = null,
+                    .aperture_type = null,
+                };
+                try v.apertures.append(ap);
+            } else if (v.apertures.items.len > 0) {
+                const ap = &v.apertures.items[v.apertures.items.len - 1];
+                if (std.mem.startsWith(u8, trimmed, "SIZE:")) {
+                    const val = std.mem.trim(u8, trimmed[5..], " ;");
+                    if (std.mem.indexOf(u8, val, "MB") != null) {
+                        const num = std.fmt.parseInt(u64, val[0..val.len-2], 10) catch 0;
+                        ap.size = num * 1024 * 1024;
+                    } else if (std.mem.indexOf(u8, val, "GB") != null) {
+                        const num = std.fmt.parseInt(u64, val[0..val.len-2], 10) catch 0;
+                        ap.size = num * 1024 * 1024 * 1024;
+                    } else {
+                        ap.size = std.fmt.parseInt(u64, val, 10) catch 0;
+                    }
+                } else if (std.mem.startsWith(u8, trimmed, "BASE:")) {
+                    _ = std.mem.trim(u8, trimmed[5..], " ;");
+                } else if (std.mem.startsWith(u8, trimmed, "TYPE:")) {
+                    const type_val = std.mem.trim(u8, trimmed[5..], " ;");
+                    _ = try allocator.dupe(u8, type_val);
+                }
+            }
+            continue;
+        }
+
         if (std.mem.startsWith(u8, trimmed, "PCI_ID:")) {
             const id = std.mem.trim(u8, trimmed[7..], " ;");
             var parts = std.mem.tokenizeScalar(u8, id, ':');
@@ -399,7 +446,8 @@ pub fn parseVial(source: []const u8, allocator: std.mem.Allocator) !Vial {
             const val = std.mem.trim(u8, trimmed[11..], " ;");
             var size: u64 = 0;
             if (std.mem.indexOf(u8, val, "MB") != null) {
-                size = std.fmt.parseInt(u64, val[0..val.len-2], 10) catch 0 * 1024 * 1024;
+                const num = std.fmt.parseInt(u64, val[0..val.len-2], 10) catch 0;
+                size = num * 1024 * 1024;
             } else {
                 size = std.fmt.parseInt(u64, val, 10) catch 0;
             }

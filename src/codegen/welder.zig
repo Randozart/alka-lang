@@ -27,7 +27,7 @@ const instructions = @import("../instructions/mod.zig");
 /// The Welder stitches pre-compiled binary blobs from the Pharmacopeia
 /// into a single contiguous AlkaSol binary stream.
 ///
-/// Each instruction is emitted as a fixed-size MetrodPacket (32 bytes).
+/// Each instruction is emitted as a fixed-size Drop (32 bytes).
 /// Future versions will support variable-length packets and blob inlining.
 pub const Welder = struct {
     pub const WeldError = error{
@@ -51,12 +51,12 @@ pub const Welder = struct {
         }
     }
 
-    /// Emit a single MetrodPacket from opcode + operands.
+    /// Emit a single Drop from opcode + operands.
     fn emitInstruction(
         op_code: instructions.OpCode,
         operands: std.ArrayList(alka_bin.Operand),
-    ) WeldError!alka_bin.MetrodPacket {
-        var packet = std.mem.zeroInit(alka_bin.MetrodPacket, .{
+    ) WeldError!alka_bin.Drop {
+        var packet = std.mem.zeroInit(alka_bin.Drop, .{
             .op_code = @intFromEnum(op_code),
             .flags = 0,
             .vessel_id = 0,
@@ -90,9 +90,9 @@ pub const Welder = struct {
 
         var i: usize = 0;
         var prev_was_sync = false;
-        while (i + @sizeOf(alka_bin.MetrodPacket) <= binary.len) : (i += @sizeOf(alka_bin.MetrodPacket)) {
-            var packet: alka_bin.MetrodPacket = undefined;
-            @memcpy(std.mem.asBytes(&packet), binary[i .. i + @sizeOf(alka_bin.MetrodPacket)]);
+        while (i + @sizeOf(alka_bin.Drop) <= binary.len) : (i += @sizeOf(alka_bin.Drop)) {
+            var packet: alka_bin.Drop = undefined;
+            @memcpy(std.mem.asBytes(&packet), binary[i .. i + @sizeOf(alka_bin.Drop)]);
 
             // CRC verification
             const computed_crc = alka_bin.computeCrc(&packet);
@@ -109,7 +109,7 @@ pub const Welder = struct {
                 prev_was_sync = false;
             }
 
-            try refined.appendSlice(binary[i .. i + @sizeOf(alka_bin.MetrodPacket)]);
+            try refined.appendSlice(binary[i .. i + @sizeOf(alka_bin.Drop)]);
         }
         return refined.toOwnedSlice();
     }
