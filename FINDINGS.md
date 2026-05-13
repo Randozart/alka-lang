@@ -84,3 +84,33 @@
 4. **The Vial must be the source of truth for addresses**: Hardcoding BAR addresses per GPU model is a short-term hack. The Vial already stores these addresses; the compiler must fully resolve them.
 
 5. **Mock execution saves hardware**: The struct layout bug was caught by mock before hitting the kernel. The REFRACT logic was validated by mock before the first hardware test. `--mock` should always be run first.
+
+---
+
+## Phase 0 — Metrod → Drop Rename — 2026-05-13
+
+### Successes
+- **Complete rename across 27 source files**, ~309 occurrences
+- **Zero ABI breakage** — same 32-byte packed struct under a new name
+- **Build passes cleanly** with `zig build` — zero warnings
+- **Proof engine unaffected** — `alka --prove stream_960.alka gtx960_2gb.alkavl` still passes
+- **Version control clean** — 4 incremental commits with clear boundaries
+
+### Failures (None)
+The rename was purely cosmetic with no functional changes. No regressions introduced.
+
+### Struggles
+1. **sed pattern ordering** — The C files required careful pattern ordering to avoid over-matching.
+   - `METROD_PACKET_SIZE` had to be replaced before `METROD_PACKET_EXT_SIZE` to prevent the shorter pattern from matching a substring of the longer one.
+   - `s/METROD/Alka/g` was too aggressive for the last pass (risked renaming unrelated macros), so it was limited to comment-only files.
+
+2. **`error` is a Zig 0.14 keyword** — The `ProofResult` union had a variant named `.error` which is a reserved keyword in Zig 0.14's error set system. Had to rename to `.err_msg`. This was discovered during the proof engine debug, not the rename itself, but it's a related compatibility finding.
+
+3. **C struct name collision** — The kernel's `struct metrod_packet` used `metrod_packet` as both the struct tag and the type name (via typedef). Had to ensure both were caught by separate sed patterns.
+
+### Insights
+1. **Mapping table approach is essential** — For bulk renames, a declarative old→new mapping table is much safer than ad-hoc sed. Protects against over-matching and missing edge cases.
+
+2. **Incremental commits with build verification** — Committing after each logical group of files (Zig core, executor, C kernel, SPARK) with a build test in between caught one issue (test file still used `emitMetrod`) before it became a problem.
+
+3. **The rename surfaced terminology debt** — "Metrod" was never the right name for this concept. The term was inherited from an early prototype where the packet format was borrowed or inspired by the user's separate Metrod project (language cross-communication). The new name "Drop" is theologically consistent with the Alchemical Mirror theme (.alkas = Alka Sol, each packet = a Drop of the Sol).
