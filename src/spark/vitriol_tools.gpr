@@ -1,22 +1,21 @@
 --  vitriol_tools.gpr
 --  GNAT Project file for Alka SPARK tools.
---  Each tool compiles to a C-compatible object file for linking with Zig.
+--  Each tool is a separate, hot-swappable, formally verified Ada package
+--  that compiles to a C-compatible object file for linking with Zig.
 --
 --  Usage:
 --    gprbuild -Pvitriol_tools.gpr                # Build all tools
---    gnatprove -Pvitriol_tools.gpr                # Verify all tools
+--    gnatprove -Pvitriol_tools.gpr --level=2     # Verify all tools
 --
---  The tools are compiled as a library, producing vitriol_tools.a
---  or individual .o files for linking with the Zig compiler.
+--  Output: obj/*.o  (individual object files for Zig linkage)
 
 project Vitriol_Tools is
    for Languages use ("Ada");
    for Source_Dirs use (".");
    for Object_Dir use "obj";
-
-   for Library_Name use "vitriol_tools";
-   for Library_Dir use "lib";
-   for Library_Kind use "static";
+   for Exec_Dir use "bin";
+   for Main use ("tool_shift.adb", "tool_refract.adb",
+                  "tool_flow.adb", "tool_fence.adb", "tool_signal.adb");
 
    package Compiler is
       for Default_Switches ("Ada") use

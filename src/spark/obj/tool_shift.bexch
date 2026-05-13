@@ -1,0 +1,22 @@
+[MAPPING FILE]
+/tmp/GPR.45142/GNAT-TEMP-000005.TMP
+[TOOLCHAIN VERSION]
+ada
+GNAT 13
+[MAIN BASE NAME]
+tool_shift
+[COMPILER PATH]
+/usr/bin/x86_64-linux-gnu-gcc-13
+[COMPILER LEADING SWITCHES]
+-c
+-x
+ada
+-gnatA
+[MAIN DEPENDENCY FILE]
+/home/randozart/Desktop/Projects/alka-lang/src/spark/obj/tool_shift.ali
+[DEPENDENCY FILES]
+[BINDING OPTIONS]
+gnatbind_prefix=x86_64-linux-gnu-
+[PROJECT FILES]
+/home/randozart/Desktop/Projects/alka-lang/src/spark/vitriol_tools.gpr
+20260513083243 0e7b48d20556b9d4d70b61bfa6f5e23e

@@ -1,73 +1,68 @@
-// FLOW — Moore Stream DMA Transfer Tool
+// FLOW — DMA Transfer (SPARK-verified)
 //
-// Purpose:
-//   Executes direct DMA transfers bypassing the CPU entirely. This is the
-//   core of the Moore Stream — streaming data (like AI model weights) from
-//   NVMe to VRAM without CPU overhead or cache pollution.
+// Bridges to SPARK Ada tool_flow.adb via C ABI.
+// SPARK-verified: size > 0, size <= aperture, DMA capable,
+// src + size and dst + size do not overflow.
 //
-// How it works:
-//   1. Validates source, destination, and transfer size against Vial constraints
-//   2. If size exceeds aperture, auto-splits into windowed SHIFT+FLOW sequences
-//   3. Initiates the DMA transfer on the PCIe bus
-//   4. Returns transfer metrics (cycles spent, bytes transferred)
-//
-// VITRIOL relevance:
-//   The Moore Stream is Alka's flagship capability — FLOW moves 5.5GB+ model
-//   weights from NVMe directly to GPU VRAM. The automatic windowing splits
-//   transfers into 256MB chunks when the BAR aperture is smaller than the payload.
-//
-// Op-Code: 0x03
-// Category: CORE
-// Safety: L2 (soft contract — injects safety operations)
+// Op-Code: 0x03  Category: CORE  Safety: L3
 
 const std = @import("std");
 const interface = @import("../interface.zig");
 
 pub const OpCode = interface.ToolInterface.OpCode;
 
+const Drop = extern struct {
+    op_kind: u8, flags: u8, vessel_id: u16,
+    src_addr: u64, dst_addr: u64, size: u32,
+    reserved: u32, crc: u32,
+};
+const VialConstraints = extern struct {
+    aperture_size: u64, aperture_max: u64,
+    thermal_halt: u32, thermal_throttle: u32,
+    dma_capable: bool,
+};
+const ToolResult = extern struct {
+    success: bool, cycles_spent: u64,
+    bytes_transferred: u64, error_message: ?*anyopaque,
+};
+
+extern fn tool_flow__validate(vial: *const VialConstraints, drop: *const Drop) c_int;
+extern fn tool_flow__execute(vial: *const VialConstraints, drop: *const Drop) ToolResult;
+
 pub const FLOW = struct {
     pub const OP = OpCode.FLOW;
     pub const NAME = "FLOW";
-    pub const DESCRIPTION = "The Moore Stream - DMA transfer bypassing the CPU";
+    pub const DESCRIPTION = "DMA transfer (SPARK-verified)";
 
     pub fn validate(
         operands: []const u64,
         ctx: interface.ToolInterface.Context,
     ) interface.ToolInterface.ValidateError!interface.ToolInterface.ValidateResult {
-        if (operands.len < 3) {
-            return interface.ToolInterface.ValidateError.InvalidAlignment;
-        }
+        if (operands.len < 3) return error.InvalidAlignment;
 
-        const src = operands[0];
-        const dst = operands[1];
-        const size = operands[2];
-        _ = src;
-        _ = dst;
+        var vial = VialConstraints{
+            .aperture_size = ctx.aperture_size,
+            .aperture_max = ctx.aperture_size,
+            .thermal_halt = @truncate(ctx.thermal_limit),
+            .thermal_throttle = @truncate(ctx.thermal_limit),
+            .dma_capable = true,
+        };
+        var drop = Drop{
+            .op_kind = 3,
+            .flags = 0,
+            .vessel_id = 0,
+            .src_addr = operands[0],
+            .dst_addr = operands[1],
+            .size = @truncate(operands[2]),
+            .reserved = 0,
+            .crc = 0,
+        };
 
-        if (ctx.aperture_size > 0 and size > ctx.aperture_size) {
-            const windows = (size + ctx.aperture_size - 1) / ctx.aperture_size;
-            _ = windows;
-            var injected: [16][]const u8 = undefined;
-            var count: usize = 0;
-
-            var offset: u64 = 0;
-            while (offset < size) : (offset += ctx.aperture_size) {
-                injected[count] = std.fmt.allocPrintZ(std.heap.page_allocator, "SHIFT @ {d}", .{offset}) catch "SHIFT";
-                count += 1;
-                if (count >= 16) break;
-            }
-
-            return interface.ToolInterface.ValidateResult{
-                .allowed = true,
-                .injected_operations = injected[0..count],
-                .reason = "Automatic windowing: split into multiple operations",
-            };
-        }
-
-        return interface.ToolInterface.ValidateResult{
-            .allowed = true,
+        const result = tool_flow__validate(&vial, &drop);
+        return .{
+            .allowed = result != 0,
             .injected_operations = &.{},
-            .reason = null,
+            .reason = if (result == 0) "SPARK: FLOW rejected (size, bounds, or DMA)" else null,
         };
     }
 
@@ -75,18 +70,29 @@ pub const FLOW = struct {
         operands: []const u64,
         ctx: interface.ToolInterface.Context,
     ) interface.ToolInterface.Result {
-        const size = if (operands.len >= 3) operands[2] else 0;
+        var vial = VialConstraints{
+            .aperture_size = ctx.aperture_size,
+            .aperture_max = ctx.aperture_size,
+            .thermal_halt = @truncate(ctx.thermal_limit),
+            .thermal_throttle = @truncate(ctx.thermal_limit),
+            .dma_capable = true,
+        };
+        var drop = Drop{
+            .op_kind = 3,
+            .flags = 0,
+            .vessel_id = 0,
+            .src_addr = if (operands.len >= 1) operands[0] else 0,
+            .dst_addr = if (operands.len >= 2) operands[1] else 0,
+            .size = if (operands.len >= 3) @truncate(operands[2]) else 0,
+            .reserved = 0,
+            .crc = 0,
+        };
 
-        const cycles_per_beat: u64 = 4;
-        const beats_per_ns: u64 = 8000;
-        const transfer_time_ns = if (size > 0) (size / 64) * cycles_per_beat / beats_per_ns else 0;
-
-        _ = ctx;
-
-        return interface.ToolInterface.Result{
-            .success = true,
-            .cycles_spent = transfer_time_ns,
-            .bytes_transferred = size,
+        const result = tool_flow__execute(&vial, &drop);
+        return .{
+            .success = result.success,
+            .cycles_spent = result.cycles_spent,
+            .bytes_transferred = result.bytes_transferred,
             .error_message = null,
         };
     }

@@ -1,0 +1,88 @@
+V "GNAT Lib v13"
+A -O2
+A -gnatA
+A -gnatwa
+A -gnatyg
+A -gnat2022
+A -gnatn
+A -mtune=generic
+A -march=x86-64
+P ZX
+
+RN
+RV NO_IMPLICIT_CONDITIONALS
+RV NO_DYNAMIC_SIZED_OBJECTS
+RV NO_IMPLEMENTATION_PRAGMAS
+RV NO_IMPLICIT_LOOPS
+
+U vitriol_types%s	vitriol_types.ads	e7435248 NE OO PK
+W interfaces%s		interfac.ads		interfac.ali
+W interfaces.c%s	i-c.adb			i-c.ali
+W interfaces.c.strings%s  i-cstrin.adb		i-cstrin.ali
+
+D ada.ads		20240521074738 76789da1 ada%s
+D a-unccon.ads		20240521074738 0e9b276f ada.unchecked_conversion%s
+D interfac.ads		20240521074738 15f799c2 interfaces%s
+D i-c.ads		20240521074738 5c5a6c17 interfaces.c%s
+D i-cstrin.ads		20240521074738 f40c8db4 interfaces.c.strings%s
+D system.ads		20240521074738 426dafb8 system%s
+D s-exctab.ads		20240521074738 91bef6ef system.exception_table%s
+D s-parame.ads		20251218205951 1f39ba92 system.parameters%s
+D s-stalib.ads		20240521074738 1c9580f6 system.standard_library%s
+D vitriol_types.ads	20260513083113 4f15b3eb vitriol_types%s
+G a e
+G c Z s s [chunk_count vitriol_types 66 13 none]
+G c Z s s [drop_typeIP vitriol_types 31 9 none]
+G c Z s s [vial_constraintsIP vitriol_types 45 9 none]
+G c Z s s [tool_resultIP vitriol_types 56 9 none]
+X 3 interfac.ads
+38K9*Interfaces 232e15 10|5r6 6r6 11r13 12r13 13r13 14r13 34r23 35r23 36r23
+. 37r23 38r23 39r23 40r23 47r29 48r29 49r29 50r29 59r31 60r31 61r31 67r15
+. 68r15 68r46 70r13
+69M9*Unsigned_8 10|11r24 34r34
+72M9*Unsigned_16 10|12r24 35r34
+80M9*Unsigned_32 10|13r24 38r34 39r34 40r34 49r40 50r40
+83M9*Unsigned_64 10|14r24 36r34 37r34 47r40 48r40 59r42 60r42 67r26 68r26
+. 68r57 70r24
+X 4 i-c.ads
+29K20*C 597e17 10|5w17 6r17 61r42
+X 5 i-cstrin.ads
+44K22*Strings 156e25 10|6w19 61r44
+59P9*chars_ptr 10|61r52
+X 10 vitriol_types.ads
+8K9*Vitriol_Types 75l5 75e18
+17E9*Op_Code 28e4 33r23
+18n7*CLAIM{17E9}
+19n7*FLOW{17E9}
+20n7*SHIFT{17E9}
+21n7*FENCE{17E9}
+22n7*SYNC{17E9}
+23n7*SIGNAL{17E9}
+24n7*LIMIT{17E9}
+25n7*REFRACT{17E9}
+26n7*PIPE{17E9}
+27n7*UNKNOWN{17E9}
+31R9*Drop_Type 42e4
+33e10*Op_Kind{17E9}
+34m10*Flags{3|69M9}
+35m10*Vessel_ID{3|72M9}
+36m10*Src_Addr{3|83M9}
+37m10*Dst_Addr{3|83M9}
+38m10*Size{3|80M9}
+39m10*Reserved{3|80M9}
+40m10*CRC{3|80M9}
+45R9*Vial_Constraints 53e4
+47m10*Aperture_Size{3|83M9}
+48m10*Aperture_Max{3|83M9}
+49m10*Thermal_Halt{3|80M9}
+50m10*Thermal_Throttle{3|80M9}
+51b10*DMA_Capable{boolean}
+56R9*Tool_Result 63e4
+58b10*Success{boolean}
+59m10*Cycles_Spent{3|83M9}
+60m10*Bytes_Transferred{3|83M9}
+61p10*Error_Message{5|59P9}
+66V13*Chunk_Count{3|83M9} 67>7 68>7 73r14
+67m7 Total{3|83M9} 69r27 72r33 73r44
+68m7 Chunk{3|83M9} 69r11 69r35 69r48 72r14 73r35
+

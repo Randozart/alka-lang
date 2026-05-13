@@ -1,10 +1,18 @@
 /* vitriol_tool_ffi.h — FFI bridge between Zig compiler and SPARK tools
  *
- * Each SPARK tool exposes two functions via C ABI:
+ * Each SPARK tool is an individual, hot-swappable Ada package that
+ * exposes two functions via C ABI:
  *   int tool_<name>_validate(const VialConstraints *vial, const Drop *drop);
  *   ToolResult tool_<name>_execute(const VialConstraints *vial, const Drop *drop);
  *
  * Zig calls these through @cImport or direct extern declarations.
+ *
+ * Tool packages:
+ *   tool_shift.o   — Tool_Shift    BAR window remapping
+ *   tool_flow.o    — Tool_Flow     DMA transfer
+ *   tool_fence.o   — Tool_Fence    Metapage completion poll
+ *   tool_signal.o  — Tool_Signal   GPU compute trigger
+ *   tool_refract.o — Tool_Refract  Sub-tensor slicer
  */
 
 #ifndef VITRIOL_TOOL_FFI_H
@@ -34,10 +42,10 @@ typedef struct __attribute__((packed)) {
 
 /* Vial constraints passed from compiler to tool */
 typedef struct {
-    uint64_t aperture_size;     /* BAR window size (bytes) */
-    uint64_t aperture_max;      /* Max sliding window */
-    uint32_t thermal_halt;      /* mC */
-    uint32_t thermal_throttle;  /* mC */
+    uint64_t aperture_size;
+    uint64_t aperture_max;
+    uint32_t thermal_halt;
+    uint32_t thermal_throttle;
     bool     dma_capable;
 } VialConstraints;
 
@@ -50,18 +58,24 @@ typedef struct {
 } ToolResult;
 
 /* SPARK tool entry points (compiled from Ada/SPARK) */
+
+/* SHIFT (0x04) — BAR window remapping */
 int      tool_shift_validate(const VialConstraints *vial, const Drop *drop);
 ToolResult tool_shift_execute(const VialConstraints *vial, const Drop *drop);
 
+/* REFRACT (0x3B) — Sub-tensor slicer */
 int      tool_refract_validate(const VialConstraints *vial, const Drop *drop);
 ToolResult tool_refract_execute(const VialConstraints *vial, const Drop *drop);
 
+/* FLOW (0x03) — DMA transfer */
 int      tool_flow_validate(const VialConstraints *vial, const Drop *drop);
 ToolResult tool_flow_execute(const VialConstraints *vial, const Drop *drop);
 
+/* FENCE (0x05) — Metapage completion poll */
 int      tool_fence_validate(const VialConstraints *vial, const Drop *drop);
 ToolResult tool_fence_execute(const VialConstraints *vial, const Drop *drop);
 
+/* SIGNAL (0x09) — GPU compute trigger */
 int      tool_signal_validate(const VialConstraints *vial, const Drop *drop);
 ToolResult tool_signal_execute(const VialConstraints *vial, const Drop *drop);
 

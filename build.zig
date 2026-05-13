@@ -12,6 +12,15 @@ pub fn build(b: *std.Build) void {
         .optimize = optimize,
     });
 
+    // Link SPARK Ada tools (formally verified via gnatprove + Z3)
+    // Built with: gprbuild -P src/spark/vitriol_tools.gpr
+    exe.addObjectFile(b.path("src/spark/obj/vitriol_types.o"));
+    exe.addObjectFile(b.path("src/spark/obj/tool_shift.o"));
+    exe.addObjectFile(b.path("src/spark/obj/tool_refract.o"));
+    exe.addObjectFile(b.path("src/spark/obj/tool_flow.o"));
+    exe.addObjectFile(b.path("src/spark/obj/tool_fence.o"));
+    exe.addObjectFile(b.path("src/spark/obj/tool_signal.o"));
+
     b.installArtifact(exe);
 
     // Run command

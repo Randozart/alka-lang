@@ -1,0 +1,11 @@
+tool_refract.adb:7:06: warning: redundant with clause in body [-gnatwr]
+tool_refract.adb:13:04: warning: "Unsigned_64" is already use-visible through previous use_type_clause at tool_refract.ads:14 [enabled by default]
+tool_refract.adb:13:04: warning: use clause for type "Interfaces.Unsigned_64" has no effect [-gnatwu]
+tool_refract.adb:22:52: (style) space required
+tool_refract.adb:25:20: (style) space required
+tool_refract.adb:53:52: (style) space required
+tool_refract.adb:56:20: (style) space required
+tool_refract.ads:29:24: (style) space required
+tool_refract.ads:30:80: (style) this line is too long
+tool_refract.ads:30:89: (style) space required
+tool_refract.ads:35:28: (style) space required

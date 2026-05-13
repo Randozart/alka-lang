@@ -1,0 +1,76 @@
+V "GNAT Lib v13"
+A -O2
+A -gnatA
+A -gnatwa
+A -gnatyg
+A -gnat2022
+A -gnatn
+A -mtune=generic
+A -march=x86-64
+P ZX
+
+RN
+RV NO_IMPLEMENTATION_ASPECT_SPECIFICATIONS
+RV NO_IMPLEMENTATION_PRAGMAS
+
+U tool_flow%b		tool_flow.adb		32393cc2 NE OO PK
+W interfaces%s		interfac.ads		interfac.ali
+W interfaces.c%s	i-c.adb			i-c.ali
+W interfaces.c.strings%s  i-cstrin.adb		i-cstrin.ali
+
+U tool_flow%s		tool_flow.ads		7b17b979 EE NE OO PK
+W interfaces%s		interfac.ads		interfac.ali
+W vitriol_types%s	vitriol_types.ads	vitriol_types.ali
+
+D ada.ads		20240521074738 76789da1 ada%s
+D a-unccon.ads		20240521074738 0e9b276f ada.unchecked_conversion%s
+D interfac.ads		20240521074738 15f799c2 interfaces%s
+D i-c.ads		20240521074738 5c5a6c17 interfaces.c%s
+D i-cstrin.ads		20240521074738 f40c8db4 interfaces.c.strings%s
+D system.ads		20240521074738 426dafb8 system%s
+D s-exctab.ads		20240521074738 91bef6ef system.exception_table%s
+D s-parame.ads		20251218205951 1f39ba92 system.parameters%s
+D s-stalib.ads		20240521074738 1c9580f6 system.standard_library%s
+D tool_flow.ads		20260513083445 21f59350 tool_flow%s
+D tool_flow.adb		20260513083612 f237bbe4 tool_flow%b
+D vitriol_types.ads	20260513083113 4f15b3eb vitriol_types%s
+G a e
+G c Z s b [validate tool_flow 15 13 none]
+G c Z s b [execute tool_flow 22 14 none]
+X 3 interfac.ads
+38K9*Interfaces 232e15 10|7w6 13r13 29r67 11|6w6 7r6 12r13 13r13 24r10 32r24
+. 36r24 48r32 49r9 52r22 58r31
+80M9*Unsigned_32 11|13r24
+83M9*Unsigned_64 10|13r24 29r78 11|12r24 24r21 32r35 36r35 48r43 49r20 52r33
+X 4 i-c.ads
+29K20*C 597e17 11|7r17 58r42
+X 5 i-cstrin.ads
+44K22*Strings 156e25 11|7w19 58r44
+59P9*chars_ptr
+64p4*Null_Ptr{59P9} 11|58r52
+X 10 tool_flow.ads
+9K9*Tool_Flow 31l5 31e14 11|9b14 61l5 61t14
+15V13*Validate{boolean} 16>7 17>7 20r16 20r35 28s16 11|15b13 41l8 41t16
+16r7 Op{12|31R9} 11|16b7 20r10 24r33 32r10 32r47 32r58 36r10 36r47 36r58
+17r7 Vial{12|45R9} 11|17b7 24r44 28r14
+22U14*Execute 23>7 24>7 25<7 11|43b14 59l8 59t15
+23r7 Op{12|31R9} 28r25 29r90 11|44b7 49r32 51r22 52r45
+24r7 Vial{12|45R9} 28r29 11|45b7 52r57 53r22
+25r7 Result{12|56R9} 29r20 29r40 11|46b7 55m7 56m7 57m7 58m7
+X 11 tool_flow.adb
+48m7 Transfer_Size{3|83M9} 56r30 57r35
+X 12 vitriol_types.ads
+8K9*Vitriol_Types 10|6w6 12r8 12|75e18
+31R9*Drop_Type 10|16r14 23r16 11|16r14 44r16 12|42e4
+36m10*Src_Addr{3|83M9} 11|32r13 32r61
+37m10*Dst_Addr{3|83M9} 11|36r13 36r61
+38m10*Size{3|80M9} 10|29r93 11|20r13 24r36 32r50 36r50 49r35 51r25 52r48
+45R9*Vial_Constraints 10|17r14 24r16 11|17r14 45r16 12|53e4
+48m10*Aperture_Max{3|83M9} 11|24r49 52r62
+51b10*DMA_Capable{boolean} 11|28r19 53r27
+56R9*Tool_Result 10|25r20 11|46r20 12|63e4
+58b10*Success{boolean} 10|29r27 11|55m14
+59m10*Cycles_Spent{3|83M9} 11|56m14
+60m10*Bytes_Transferred{3|83M9} 10|29r47 11|57m14
+61p10*Error_Message{5|59P9} 11|58m14
+

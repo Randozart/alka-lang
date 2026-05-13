@@ -1,0 +1,86 @@
+V "GNAT Lib v13"
+A -O2
+A -gnatA
+A -gnatwa
+A -gnatyg
+A -gnat2022
+A -gnatn
+A -mtune=generic
+A -march=x86-64
+P ZX
+
+RN
+RV NO_IMPLEMENTATION_ASPECT_SPECIFICATIONS
+RV NO_IMPLEMENTATION_PRAGMAS
+
+U tool_refract%b	tool_refract.adb	ed58843e NE OO PK
+W interfaces%s		interfac.ads		interfac.ali
+W interfaces.c%s	i-c.adb			i-c.ali
+W interfaces.c.strings%s  i-cstrin.adb		i-cstrin.ali
+
+U tool_refract%s	tool_refract.ads	ad128a9e EE NE OO PK
+W interfaces%s		interfac.ads		interfac.ali
+W vitriol_types%s	vitriol_types.ads	vitriol_types.ali
+
+D ada.ads		20240521074738 76789da1 ada%s
+D a-unccon.ads		20240521074738 0e9b276f ada.unchecked_conversion%s
+D interfac.ads		20240521074738 15f799c2 interfaces%s
+D i-c.ads		20240521074738 5c5a6c17 interfaces.c%s
+D i-cstrin.ads		20240521074738 f40c8db4 interfaces.c.strings%s
+D system.ads		20240521074738 426dafb8 system%s
+D s-exctab.ads		20240521074738 91bef6ef system.exception_table%s
+D s-parame.ads		20251218205951 1f39ba92 system.parameters%s
+D s-stalib.ads		20240521074738 1c9580f6 system.standard_library%s
+D tool_refract.ads	20260513083437 f7f0a0b7 tool_refract%s
+D tool_refract.adb	20260513083601 fb5330ff tool_refract%b
+D vitriol_types.ads	20260513083113 4f15b3eb vitriol_types%s
+G a e
+G c Z s b [validate tool_refract 16 13 none]
+G c Z s b [execute tool_refract 23 14 none]
+G r c none [validate tool_refract 16 13 none] [chunk_count vitriol_types 66 13 none]
+G r c none [execute tool_refract 23 14 none] [chunk_count vitriol_types 66 13 none]
+X 3 interfac.ads
+38K9*Interfaces 232e15 10|8w6 14r13 30r67 34r28 35r6 11|7w6 8r6 13r13 14r13
+. 20r30 21r30 22r30 24r30 51r29 52r29 53r30 55r29 57r20 58r20 79r31
+80M9*Unsigned_32 11|14r24
+83M9*Unsigned_64 10|14r24 30r78 34r39 35r17 11|13r24 20r41 21r41 22r41 24r41
+. 51r40 52r40 53r41 55r40 57r31 58r31
+X 4 i-c.ads
+29K20*C 597e17 11|8r17 79r42
+X 5 i-cstrin.ads
+44K22*Strings 156e25 11|8w19 79r44
+59P9*chars_ptr
+64p4*Null_Ptr{59P9} 11|79r52
+X 10 tool_refract.ads
+10K9*Tool_Refract 34E4 37l5 37e17 11|10b14 82l5 82t17
+16V13*Validate{boolean} 17>7 18>7 21r16 21r35 29s16 11|16b13 44l8 44t16
+17r7 Op{12|31R9} 11|17b7 20r56 22r13 22r53
+18r7 Vial{12|45R9} 11|18b7 35r23
+23U14*Execute 24>7 25>7 26<7 11|46b14 80l8 80t15
+24r7 Op{12|31R9} 29r25 30r90 11|47b7 51r55 53r13 53r53
+25r7 Vial{12|45R9} 29r29 11|48b7 62r36
+26r7 Result{12|56R9} 30r20 30r40 11|49b7 76m7 77m7 78m7 79m7
+34m4 Max_Aperture{3|83M9} 11|23r15 54r15
+X 11 tool_refract.adb
+20m7 Total{3|83M9} 25r21 27r10 39r31
+21m7 Chunk_Size{3|83M9} 25r28 31r10 35r10 39r18
+24m7 Drops{3|83M9} 39r10
+51m7 Total{3|83M9} 56r21 60r22 74r33 78r35
+52m7 Chunk_Size{3|83M9} 56r28 61r22 62r22 66r47 69r31
+55m7 Drops{3|83M9} 64r17 65r37 73r26 77r35
+57m7 Current{3|83M9} 66r33 69m10 69r21 74r22
+58m7 I{3|83M9} 64r13 65r33 66r43 67r44 70m10 70r15 73r22
+X 12 vitriol_types.ads
+8K9*Vitriol_Types 10|7w6 13r8 12|75e18
+31R9*Drop_Type 10|17r14 24r16 11|17r14 47r16 12|42e4
+37m10*Dst_Addr{3|83M9} 11|20r59 51r58
+38m10*Size{3|80M9} 10|30r93 11|22r16 22r56 53r16 53r56
+45R9*Vial_Constraints 10|18r14 25r16 11|18r14 48r16 12|53e4
+48m10*Aperture_Max{3|83M9} 11|35r28 62r41
+56R9*Tool_Result 10|26r20 11|49r20 12|63e4
+58b10*Success{boolean} 10|30r27 11|76m14
+59m10*Cycles_Spent{3|83M9} 11|77m14
+60m10*Bytes_Transferred{3|83M9} 10|30r47 11|78m14
+61p10*Error_Message{5|59P9} 11|79m14
+66V13*Chunk_Count{3|83M9} 11|25s9 56s9
+
