@@ -1,0 +1,36 @@
+vitriol_tool.adb:20:04: (style) subprogram body has no previous spec
+vitriol_tool.adb:39:04: (style) subprogram body has no previous spec
+vitriol_tool.adb:61:04: (style) subprogram body has no previous spec
+vitriol_tool.adb:67:52: (style) space required
+vitriol_tool.adb:70:20: (style) space required
+vitriol_tool.adb:92:04: (style) subprogram body has no previous spec
+vitriol_tool.adb:99:52: (style) space required
+vitriol_tool.adb:102:20: (style) space required
+vitriol_tool.adb:133:04: (style) subprogram body has no previous spec
+vitriol_tool.adb:142:32: (style) space required
+vitriol_tool.adb:150:46: (style) space required
+vitriol_tool.adb:154:46: (style) space required
+vitriol_tool.adb:162:04: (style) subprogram body has no previous spec
+vitriol_tool.adb:168:31: (style) space required
+vitriol_tool.adb:171:44: (style) space required
+vitriol_tool.adb:185:04: (style) subprogram body has no previous spec
+vitriol_tool.adb:204:04: (style) subprogram body has no previous spec
+vitriol_tool.adb:237:04: (style) subprogram body has no previous spec
+vitriol_tool.adb:256:04: (style) subprogram body has no previous spec
+vitriol_tool.adb:283:47: (style) space required
+vitriol_tool.adb:284:49: (style) space required
+vitriol_tool.adb:285:46: (style) space required
+vitriol_tool.adb:286:47: (style) space required
+vitriol_tool.adb:287:48: (style) space required
+vitriol_tool.adb:299:39: (style) space required
+vitriol_tool.adb:300:41: (style) space required
+vitriol_tool.adb:301:38: (style) space required
+vitriol_tool.adb:302:39: (style) space required
+vitriol_tool.adb:303:40: (style) space required
+vitriol_tool.ads:18:04: warning: use clause for type "Interfaces.Unsigned_8" has no effect [-gnatwu]
+vitriol_tool.ads:19:04: warning: use clause for type "Interfaces.Unsigned_16" has no effect [-gnatwu]
+vitriol_tool.ads:86:24: (style) space required
+vitriol_tool.ads:87:80: (style) this line is too long
+vitriol_tool.ads:87:89: (style) space required
+vitriol_tool.ads:93:28: (style) space required
+vitriol_tool.ads:100:35: (style) space required
