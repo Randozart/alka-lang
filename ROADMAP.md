@@ -1,9 +1,10 @@
-# Alka Roadmap — 2026-05-13
+# Alka Roadmap — 2026-05-13 (Updated)
 
 > Based on SPECv4 for Alka. Extends it with the embed architecture, atomic binary output,
 > declarative syntax, proof automation, and CLI overhaul defined in this document.
 >
 > This roadmap was written on 2026-05-13 against SPECv4 and supersedes any earlier planning.
+> Updated 2026-05-13: Phase 2 redefined as Polyglot Pharmacopia.
 
 ## Overview
 
@@ -12,16 +13,16 @@ complete, inheriting SPARK's determinism, and compiles to atomic 32-byte Drops t
 kernel module executes. Each Drop is a single hardware operation (CLAIM, FLOW, SHIFT, FENCE, REFRACT,
 SIGNAL, etc.) constrained by a `.alkavl` Vial file that encodes the target hardware's limits.
 
-The roadmap has 8 phases. Phases 0–2 are prerequisites. Phases 3–5 can run in parallel.
-Phases 6–7 are polish and distribution.
+The roadmap has 9 phases. Phases 0–2 are prerequisites. Phases 3–6 can run in parallel.
+Phases 7–8 are polish and distribution.
 
 ```
 Phase 0 (Rename Metrod → Drop) ──────────┐
-                                          ├──→ Phase 1 (SPARK tool completion)
+                                          ├──→ Phase 1 (SPARK tool completion) ✅ DONE
                                           │         │
-                                          │         └──→ Phase 6 (Proof automation)
+                                          │         └──→ Phase 7 (Proof automation)
                                           │
-                                          ├──→ Phase 2 (Atomic binary output)
+                                          ├──→ Phase 2 (Polyglot Pharmacopia) ✅ DONE
                                           │         │
                                           │         ├──→ Phase 3 (Embed/.alkar)
                                           │         │         │
@@ -29,7 +30,9 @@ Phase 0 (Rename Metrod → Drop) ──────────┐
                                           │         │
                                           │         └──→ Phase 4 (CLI overhaul)
                                           │
-                                          └──→ Phase 7 (Install target)
+                                          ├──→ Phase 6 (Atomic binary output)
+                                          │
+                                          └──→ Phase 8 (Install target)
 ```
 
 ---
@@ -168,66 +171,56 @@ Output: `src/spark/obj/*.o` ready for linking by Zig compiler.
 
 ---
 
-## Phase 2: Atomic Binary Output
+## Phase 2: Polyglot Pharmacopia ✅ DONE
 
 ### Rationale
 
-Alka recipes compile to `.alkas` (Drop array) + `.azoth` (rollback). But other languages
-cannot call these directly. By emitting shared libraries (`.so`/`.dll`) with a C-ABI surface,
-any language — Python, Rust, C#, Go, Node.js — can invoke Alka hardware operations as if they
-were standard library calls.
+The original architecture had tools hardcoded in `src/tools/mod.zig` — a 128-line switch statement
+mapping opcodes to Zig tool structs. This made it impossible to add tools written in other languages
+without modifying the compiler source code directly.
 
-This is the "Hardware Microservice" pattern: developers get a folder of pre-compiled `.so` files
-(`tensor_stream.so`, `nvme_to_ram.so`, `bvh_accelerator.so`) and call them without understanding
-VFIO, PCIe BARs, or DMA allocation.
+The pharmacopia is a manifest-driven tool registry. `pharmacopia.json` declares all tools with their
+opcode, language, category, safety level, and build configuration. The build system reads this manifest
+and:
+1. Generates `dispatch_table.zig` — the opcode-to-tool mapping
+2. Links the correct object files (Zig `.o`, SPARK `.o` + `libgnat`, C `.o`, etc.)
+3. Provides CLI commands: `zig build list`, `zig build dispatch`, `zig build verify`
 
-### CLI flags
+### How it works
 
 ```
-alka build <recipe>.alka                  # → .alkas + .azoth (current)
-alka build --shared <recipe>.alka         # → + .so (Linux) / .dll (Windows)
-alka build --object <recipe>.alka         # → + .o (static link)
-alka build --static <recipe>.alka         # → + .a (static library)
+pharmacopia.json  →  generate_dispatch.zig  →  dispatch_table.zig
+                       (build step)              (auto-generated)
 ```
 
-### Exported C-ABI surface
+Each tool entry in the manifest declares:
+- `opcode`: hex opcode (e.g., `"0x03"`)
+- `language`: `"zig"`, `"spark"`, `"c"`, `"rust"` (extensible)
+- `category`: subdirectory under `src/tools/`
+- `sources`: source files
+- `wrapper`: for non-Zig tools, the Zig wrapper that implements `ToolInterface`
+- `project`: for SPARK tools, the GPR project file
+- `verified_by`: formal verification tool (e.g., `"gnatprove"`)
 
-```c
-// Each recipe's .so exports these symbols:
+### Adding a new tool
 
-int  drop_init(const char *vial_path);             // CLAIM + LIMIT from Vial
-int  drop_flow(uint64_t src, uint64_t dst,          // single DMA transfer
-               uint32_t size);
-int  drop_fence(uint64_t timeout_ms);               // poll metapage
-int  drop_shift(uint64_t offset);                   // remap BAR window
-int  drop_signal(uint64_t signal_id);               // trigger GPU compute
-void drop_shutdown(void);                           // cleanup + Azoth rollback
-int  drop_execute_recipe(const char *path);          // run a full .alka file
-int  drop_execute_drops(const uint8_t *drops,        // run raw Drops array
-                        uint32_t count);
-```
+1. Write the tool in any language (Zig, SPARK Ada, C, Rust)
+2. If non-Zig, write a Zig wrapper implementing `validate()` and `execute()`
+3. Add an entry to `pharmacopia.json`
+4. Run `zig build dispatch` to regenerate the dispatch table
+5. Run `zig build` to compile
 
-### Consumer examples
+### Current state
 
-**Python:**
-```python
-import ctypes, numpy as np
-dma = ctypes.CDLL("./nvme_to_vram.so")
-dma.drop_init("gtx960_2gb.alkavl")
-dma.drop_flow(ssd_offset, vram_addr, 256_000_000)
-dma.drop_fence(5000)
-dma.drop_shutdown()
-```
+- **43 tools** registered (38 Zig, 5 SPARK Ada)
+- **5 SPARK tools** formally verified by gnatprove: FLOW, SHIFT, FENCE, SIGNAL, REFRACT
+- **12 integration tests** pass for SPARK C ABI bridge
+- **CLI commands**: `zig build list`, `zig build dispatch`, `zig build verify`, `zig build test-spark`
 
-**Rust:**
-```rust
-#[link(name = "nvme_to_vram")]
-extern "C" {
-    fn drop_init(vial: *const c_char) -> i32;
-    fn drop_flow(src: u64, dst: u64, size: u32) -> i32;
-    fn drop_fence(timeout_ms: u64) -> i32;
-    fn drop_shutdown();
-}
+### Atomic Binary Output
+
+Moved to Phase 6. The original Phase 2 goal of emitting `.so`/`.dll`/`.o` from recipes is still
+valid but is now a separate phase after the pharmacopia infrastructure is in place.
 ```
 
 **C#:**

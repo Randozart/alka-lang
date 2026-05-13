@@ -158,3 +158,34 @@ All tools pass Z3 verification. The 3 FAILs in the initial run were test logic e
    - `Post => (if Success then Bytes_Transferred = Op.Size)` is the universal post-condition
 
 3. **C-ABI boundary is simple** — Each tool exports exactly 2 functions (validate + execute) taking `(const VialConstraints *, const Drop *)`. This makes FFI from Zig trivial: `extern fn tool_flow_validate(vial: *const VialConstraints, drop: *const Drop) callconv(.C) c_int`.
+
+## Phase 2: Polyglot Pharmacopia (2026-05-13)
+
+### What Worked
+- **pharmacopia.json manifest**: Single source of truth for all 43 tools across languages. Each entry declares opcode, name, language, category, safety level, and (for SPARK) project file and wrapper path.
+- **Auto-generated dispatch table**: `build/generate_dispatch.zig` reads the manifest and emits `src/tools/dispatch_table.zig` with correct imports. SPARK tools use wrapper paths (`core/spark_flow.zig`), Zig tools use lowercase filenames (`core/flow.zig`).
+- **`zig build list`**: Lists all 43 tools with language and verification status. Shows `[gnatprove]` tag for formally verified tools.
+- **`zig build dispatch`**: Regenerates dispatch table from manifest.
+- **`zig build verify`**: Runs gnatprove on all SPARK tool projects.
+- **SPARK tools wired into pipeline**: `mod.zig` now imports `spark_flow.zig`, `spark_shift.zig`, `spark_fence.zig`, `spark_signal.zig`, `spark_refract.zig` instead of the old pure-Zig implementations. The SPARK tools are formally verified and called through the C ABI bridge.
+- **Detailed HOW IT WORKS comments**: Each SPARK wrapper documents validation checks, SPARK formal proofs, C ABI bridge, and full call flow from compiler to Ada.
+
+### Problems Encountered
+1. **Zig module conflicts**: When creating separate modules for parser/compiler/codegen in tests, the same file (`parser.zig`) was imported both as a top-level module and transitively through compiler/codegen. Fixed by using `src/main.zig` as test root (which already has correct internal imports).
+
+2. **`addArtifactArg` vs `addFileArg`**: Zig 0.13's `addRunArtifact` expects `*Step.Compile` for `addArtifactArg`, but `b.path()` returns `LazyPath`. Fixed by using `addFileArg` instead.
+
+3. **`StringArrayHashMap.has` doesn't exist in Zig 0.13**: Use `get(key) == null` instead.
+
+4. **String comparison with `==`**: Zig requires `std.mem.eql(u8, a, b)` for string comparison, not `==`.
+
+5. **`BufferOverflow` error not in ValidateError set**: `pipe.zig` referenced `ValidateError.BufferOverflow` which doesn't exist. Fixed to `ValidateError.ApertureOverflow`.
+
+6. **SPARK struct layout mismatch (recurring)**: Zig `extern struct` adds padding (40 bytes) vs Ada `Pack` (32 bytes). Fixed by using `packed struct` in Zig. This was discovered in Phase 1 but the fix needed to be applied consistently.
+
+### Insights
+1. **Manifest-driven architecture is the right approach** — Instead of hardcoding 128 lines of switch cases in `mod.zig`, a JSON manifest defines all tools. Adding a new tool (in any language) is now: add entry to `pharmacopia.json`, write the tool + wrapper, run `zig build dispatch`.
+
+2. **SPARK tools are now first-class citizens** — The 5 SPARK-verified tools (FLOW, SHIFT, FENCE, SIGNAL, REFRACT) are called through the same `ToolInterface` as all other tools. The formal verification is transparent to the compiler pipeline.
+
+3. **The pharmacopia can grow to any language** — The manifest format supports `language: "zig"`, `language: "spark"`, and can be extended to `language: "rust"`, `language: "c"`, etc. Each language just needs a wrapper that implements the `ToolInterface` contract.
