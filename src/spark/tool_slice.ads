@@ -1,5 +1,5 @@
---  tool_refract.ads
---  SPARK specification for REFRACT (0x3B) — Sub-tensor slicer.
+--  tool_slice.ads
+--  SPARK specification for SLICE (0x3B) — Sub-tensor slicer.
 --  Slices large tensors into BAR-sized chunks for micro-paging.
 --  Verified: each chunk fits aperture, drops cover full tensor,
 --  loop terminates, no overlaps or gaps.
@@ -8,7 +8,7 @@ with Vitriol_Types;
 with Interfaces;
 with Interfaces.C;
 
-package Tool_Refract with SPARK_Mode
+package Tool_Slice with SPARK_Mode
 is
 
    use Vitriol_Types;
@@ -26,7 +26,7 @@ is
        Global      => null,
        Convention  => C,
        Export      => True,
-       External_Name => "tool_refract__validate",
+       External_Name => "tool_slice__validate",
        Post   => (if Validate'Result /= 0 then
                     Op.Dst_Addr > 0 and then
                     (if Op.Size > 0 then Interfaces.Unsigned_64(Op.Size) else Max_Aperture) <= Vial.Aperture_Max
@@ -39,8 +39,8 @@ is
        Global      => null,
        Convention  => C,
        Export      => True,
-       External_Name => "tool_refract__execute",
+       External_Name => "tool_slice__execute",
        Pre    => Validate(Vial, Op) /= 0,
        Post   => Execute'Result.Success and then Execute'Result.Bytes_Transferred = Op.Dst_Addr;
 
-end Tool_Refract;
+end Tool_Slice;

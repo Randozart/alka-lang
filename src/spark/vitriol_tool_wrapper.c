@@ -12,8 +12,8 @@
 extern int tool_shift__validate(const VialConstraints *vial, const Drop *drop);
 extern ToolResult tool_shift__execute(const VialConstraints *vial, const Drop *drop);
 
-extern int tool_refract__validate(const VialConstraints *vial, const Drop *drop);
-extern ToolResult tool_refract__execute(const VialConstraints *vial, const Drop *drop);
+extern int tool_slice__validate(const VialConstraints *vial, const Drop *drop);
+extern ToolResult tool_slice__execute(const VialConstraints *vial, const Drop *drop);
 
 extern int tool_flow__validate(const VialConstraints *vial, const Drop *drop);
 extern ToolResult tool_flow__execute(const VialConstraints *vial, const Drop *drop);
@@ -34,12 +34,12 @@ ToolResult tool_shift_execute(const VialConstraints *vial, const Drop *drop) {
     return tool_shift__execute(vial, drop);
 }
 
-int tool_refract_validate(const VialConstraints *vial, const Drop *drop) {
-    return tool_refract__validate(vial, drop);
+int tool_slice_validate(const VialConstraints *vial, const Drop *drop) {
+    return tool_slice__validate(vial, drop);
 }
 
-ToolResult tool_refract_execute(const VialConstraints *vial, const Drop *drop) {
-    return tool_refract__execute(vial, drop);
+ToolResult tool_slice_execute(const VialConstraints *vial, const Drop *drop) {
+    return tool_slice__execute(vial, drop);
 }
 
 int tool_flow_validate(const VialConstraints *vial, const Drop *drop) {

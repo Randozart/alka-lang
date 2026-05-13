@@ -16,7 +16,7 @@ pub fn build(b: *std.Build) void {
     // Built with: gprbuild -P src/spark/vitriol_tools.gpr
     exe.addObjectFile(b.path("src/spark/obj/vitriol_types.o"));
     exe.addObjectFile(b.path("src/spark/obj/tool_shift.o"));
-    exe.addObjectFile(b.path("src/spark/obj/tool_refract.o"));
+    exe.addObjectFile(b.path("src/spark/obj/tool_slice.o"));
     exe.addObjectFile(b.path("src/spark/obj/tool_flow.o"));
     exe.addObjectFile(b.path("src/spark/obj/tool_fence.o"));
     exe.addObjectFile(b.path("src/spark/obj/tool_signal.o"));
@@ -92,7 +92,7 @@ pub fn build(b: *std.Build) void {
 
     spark_tests.addObjectFile(b.path("src/spark/obj/vitriol_types.o"));
     spark_tests.addObjectFile(b.path("src/spark/obj/tool_shift.o"));
-    spark_tests.addObjectFile(b.path("src/spark/obj/tool_refract.o"));
+    spark_tests.addObjectFile(b.path("src/spark/obj/tool_slice.o"));
     spark_tests.addObjectFile(b.path("src/spark/obj/tool_flow.o"));
     spark_tests.addObjectFile(b.path("src/spark/obj/tool_fence.o"));
     spark_tests.addObjectFile(b.path("src/spark/obj/tool_signal.o"));
@@ -114,7 +114,7 @@ pub fn build(b: *std.Build) void {
 
     harness_tests.addObjectFile(b.path("src/spark/obj/vitriol_types.o"));
     harness_tests.addObjectFile(b.path("src/spark/obj/tool_shift.o"));
-    harness_tests.addObjectFile(b.path("src/spark/obj/tool_refract.o"));
+    harness_tests.addObjectFile(b.path("src/spark/obj/tool_slice.o"));
     harness_tests.addObjectFile(b.path("src/spark/obj/tool_flow.o"));
     harness_tests.addObjectFile(b.path("src/spark/obj/tool_fence.o"));
     harness_tests.addObjectFile(b.path("src/spark/obj/tool_signal.o"));

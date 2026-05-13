@@ -1,5 +1,5 @@
---  tool_refract.adb
---  SPARK implementation of REFRACT (0x3B) — Sub-tensor slicer.
+--  tool_slice.adb
+--  SPARK implementation of SLICE (0x3B) — Sub-tensor slicer.
 --  Slices large tensors into BAR-sized chunks for micro-paging.
 --  Verified: each chunk fits aperture, drops cover full tensor,
 --  loop terminates, no overlaps or gaps.
@@ -7,7 +7,7 @@
 with Interfaces;
 with Interfaces.C.Strings;
 
-package body Tool_Refract with SPARK_Mode
+package body Tool_Slice with SPARK_Mode
 is
 
    use type Interfaces.Unsigned_64;
@@ -79,4 +79,4 @@ is
                Error_Message      => Interfaces.C.Strings.Null_Ptr);
     end Execute;
 
-end Tool_Refract;
+end Tool_Slice;

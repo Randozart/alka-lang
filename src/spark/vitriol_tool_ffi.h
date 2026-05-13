@@ -12,7 +12,7 @@
  *   tool_flow.o    — Tool_Flow     DMA transfer
  *   tool_fence.o   — Tool_Fence    Metapage completion poll
  *   tool_signal.o  — Tool_Signal   GPU compute trigger
- *   tool_refract.o — Tool_Refract  Sub-tensor slicer
+ *   tool_slice.o — Tool_Slice  Split region into chunks
  */
 
 #ifndef VITRIOL_TOOL_FFI_H
@@ -63,9 +63,9 @@ typedef struct {
 int      tool_shift_validate(const VialConstraints *vial, const Drop *drop);
 ToolResult tool_shift_execute(const VialConstraints *vial, const Drop *drop);
 
-/* REFRACT (0x3B) — Sub-tensor slicer */
-int      tool_refract_validate(const VialConstraints *vial, const Drop *drop);
-ToolResult tool_refract_execute(const VialConstraints *vial, const Drop *drop);
+/* SLICE (0x3B) — Split region into chunks */
+int      tool_slice_validate(const VialConstraints *vial, const Drop *drop);
+ToolResult tool_slice_execute(const VialConstraints *vial, const Drop *drop);
 
 /* FLOW (0x03) — DMA transfer */
 int      tool_flow_validate(const VialConstraints *vial, const Drop *drop);

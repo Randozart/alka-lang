@@ -155,15 +155,15 @@ static const op_handler_t opcode_handlers[256] = {
     [ALKA_OP_SNAP]        = op_snap,
     [ALKA_OP_REVERT]      = op_revert,
     [ALKA_OP_LIMIT]       = op_limit,
-    [ALKA_OP_VEIL]        = op_veil,
-    [ALKA_OP_MOLT]        = op_molt,
+    [ALKA_OP_CLAIM]        = op_veil,
+    [ALKA_OP_SNAP]        = op_molt,
     [ALKA_OP_ECHO]        = op_echo,
     [ALKA_OP_STASIS]      = op_stasis,
-    [ALKA_OP_FOSSILIZE]   = op_fossilize,
-    [ALKA_OP_STRIKE]      = op_strike,
-    [ALKA_OP_QUENCH]      = op_quench,
-    [ALKA_OP_FORGE]       = op_forge,
-    [ALKA_OP_VOID]        = op_void_op,
+    [ALKA_OP_PERSIST]   = op_fossilize,
+    [ALKA_OP_POKE]      = op_strike,
+    [ALKA_OP_RESET]      = op_quench,
+    [ALKA_OP_INJECT]       = op_forge,
+    [ALKA_OP_WIPE]        = op_void_op,
     [ALKA_OP_FLUX]        = op_flux,
     [ALKA_OP_AUDIT]       = op_audit,
     [ALKA_OP_DRY_RUN]     = op_dry_run,
@@ -174,15 +174,15 @@ static const op_handler_t opcode_handlers[256] = {
     [ALKA_OP_GUARD]       = op_guard,
     [ALKA_OP_ISOLATE]     = op_isolate,
     [ALKA_OP_VERIFY]      = op_verify,
-    [ALKA_OP_OSSIFY]      = op_ossify,
-    [ALKA_OP_BOND]        = op_bond,
-    [ALKA_OP_STILL]       = op_still,
-    [ALKA_OP_RESONATE]    = op_resonate,
-    [ALKA_OP_OSCILLATE]   = op_oscillate,
-    [ALKA_OP_IMC_HIJACK]  = op_imc_hijack,
-    [ALKA_OP_OCCUPY]      = op_occupy,
+    [ALKA_OP_AFFINITY]      = op_ossify,
+    [ALKA_OP_TUNNEL]        = op_bond,
+    [ALKA_OP_SUSPEND]       = op_still,
+    [ALKA_OP_COORDINATE]    = op_resonate,
+    [ALKA_OP_COORDINATE]   = op_oscillate,
+    [ALKA_OP_DIRECT]  = op_imc_hijack,
+    [ALKA_OP_BIND]      = op_occupy,
     [ALKA_OP_RHYTHM]      = op_rhythm,
-    [ALKA_OP_REFRACT]     = op_refract,
+    [ALKA_OP_SLICE]     = op_refract,
     [ALKA_OP_PIPE]        = op_pipe,
 };
 
@@ -531,12 +531,12 @@ static int op_limit(struct vitriol_device *vdev, struct alka_drop *pkt)
     return 0;
 }
 
-/* VEIL: Hide device from OS */
+/* CLAIM: Hide device from OS */
 static int op_veil(struct vitriol_device *vdev, struct alka_drop *pkt)
 {
     u16 cmd;
 
-    pr_info("VITRIOL: VEIL vessel=%u\n", pkt->vessel_id);
+    pr_info("VITRIOL: CLAIM vessel=%u\n", pkt->vessel_id);
 
     if (!vdev->pdev)
         return -ENODEV;
@@ -549,12 +549,12 @@ static int op_veil(struct vitriol_device *vdev, struct alka_drop *pkt)
     return 0;
 }
 
-/* QUENCH: Emergency power cut */
+/* RESET: Emergency power cut */
 static int op_quench(struct vitriol_device *vdev, struct alka_drop *pkt)
 {
     u16 pmcsr;
 
-    pr_warn("VITRIOL: QUENCH — cutting power to device\n");
+    pr_warn("VITRIOL: RESET — cutting power to device\n");
 
     if (!vdev->pdev)
         return -ENODEV;
@@ -567,20 +567,20 @@ static int op_quench(struct vitriol_device *vdev, struct alka_drop *pkt)
     return 0;
 }
 
-/* FORGE: FPGA partial reconfiguration */
+/* INJECT: FPGA partial reconfiguration */
 static int op_forge(struct vitriol_device *vdev, struct alka_drop *pkt)
 {
-    pr_info("VITRIOL: FORGE vessel=%u tile=%llu\n", pkt->vessel_id, pkt->dst_addr);
+    pr_info("VITRIOL: INJECT vessel=%u tile=%llu\n", pkt->vessel_id, pkt->dst_addr);
 
     /* In production: load bitstream to KV260 tile */
 
     return 0;
 }
 
-/* VOID: Secure erase */
+/* WIPE: Secure erase */
 static int op_void_op(struct vitriol_device *vdev, struct alka_drop *pkt)
 {
-    pr_info("VITRIOL: VOID addr=%llx size=%u\n", pkt->src_addr, pkt->size);
+    pr_info("VITRIOL: WIPE addr=%llx size=%u\n", pkt->src_addr, pkt->size);
 
     /* Overwrite with zeros */
     /* In production: use secure erase commands */
@@ -685,10 +685,10 @@ static int op_trace(struct vitriol_device *vdev, struct alka_drop *pkt)
     return 0;
 }
 
-/* MOLT: Full state dump */
+/* SNAP: Full state dump */
 static int op_molt(struct vitriol_device *vdev, struct alka_drop *pkt)
 {
-    pr_info("VITRIOL: MOLT vessel=%u blob=%llu\n", pkt->vessel_id, pkt->dst_addr);
+    pr_info("VITRIOL: SNAP vessel=%u blob=%llu\n", pkt->vessel_id, pkt->dst_addr);
 
     if (!vdev->initialized)
         return -ENODEV;
@@ -698,10 +698,10 @@ static int op_molt(struct vitriol_device *vdev, struct alka_drop *pkt)
     return 0;
 }
 
-/* FOSSILIZE: Write to Option ROM */
+/* PERSIST: Write to Option ROM */
 static int op_fossilize(struct vitriol_device *vdev, struct alka_drop *pkt)
 {
-    pr_info("VITRIOL: FOSSILIZE vessel=%u bytecode=%llu\n",
+    pr_info("VITRIOL: PERSIST vessel=%u bytecode=%llu\n",
             pkt->vessel_id, pkt->dst_addr);
 
     /* In production: flash Option ROM */
@@ -795,10 +795,10 @@ static int op_prove(struct vitriol_device *vdev, struct alka_drop *pkt)
     return 0;
 }
 
-/* STRIKE: Rowhammer/bit flipping */
+/* POKE: Rowhammer/bit flipping */
 static int op_strike(struct vitriol_device *vdev, struct alka_drop *pkt)
 {
-    pr_warn("VITRIOL: STRIKE target=%llx pattern=%llu reps=%u\n",
+    pr_warn("VITRIOL: POKE target=%llx pattern=%llu reps=%u\n",
             pkt->src_addr, pkt->dst_addr, pkt->size);
 
     /* CRITICAL: In production, this performs actual rowhammer */
@@ -816,82 +816,82 @@ static int op_flux(struct vitriol_device *vdev, struct alka_drop *pkt)
     return 0;
 }
 
-/* OSSIFY: Pin CPU core */
+/* AFFINITY: Pin CPU core */
 static int op_ossify(struct vitriol_device *vdev, struct alka_drop *pkt)
 {
     u32 core_id = pkt->src_addr & 0xFF;
 
-    pr_info("VITRIOL: OSSIFY core=%u\n", core_id);
+    pr_info("VITRIOL: AFFINITY core=%u\n", core_id);
 
     /* In production: set CPU affinity, disable scheduler */
 
     return 0;
 }
 
-/* BOND: RAM-to-GPU direct tunnel */
+/* TUNNEL: RAM-to-GPU direct tunnel */
 static int op_bond(struct vitriol_device *vdev, struct alka_drop *pkt)
 {
     u64 ram_addr = pkt->src_addr;
     u64 gpu_addr = pkt->dst_addr;
     u32 size = pkt->size;
 
-    pr_info("VITRIOL: BOND ram=%llx gpu=%llx size=%u\n", ram_addr, gpu_addr, size);
+    pr_info("VITRIOL: TUNNEL ram=%llx gpu=%llx size=%u\n", ram_addr, gpu_addr, size);
 
     /* In production: set up IOMMU bypass, direct mapping */
 
     return 0;
 }
 
-/* STILL: Manual DRAM refresh */
+/* SUSPEND: Manual DRAM refresh */
 static int op_still(struct vitriol_device *vdev, struct alka_drop *pkt)
 {
     u32 bank = pkt->src_addr & 0xFF;
 
-    pr_info("VITRIOL: STILL bank=%u\n", bank);
+    pr_info("VITRIOL: SUSPEND bank=%u\n", bank);
 
     /* In production: take over DRAM refresh controller */
 
     return 0;
 }
 
-/* RESONATE: Coordinate reset */
+/* COORDINATE: Coordinate reset */
 static int op_resonate(struct vitriol_device *vdev, struct alka_drop *pkt)
 {
-    pr_info("VITRIOL: RESONATE node_a=%llu node_b=%llu\n",
+    pr_info("VITRIOL: COORDINATE node_a=%llu node_b=%llu\n",
             pkt->src_addr, pkt->dst_addr);
 
     return 0;
 }
 
-/* OSCILLATE: Dual-bank refresh */
+/* COORDINATE: Dual-bank refresh */
 static int op_oscillate(struct vitriol_device *vdev, struct alka_drop *pkt)
 {
-    pr_info("VITRIOL: OSCILLATE bank_a=%llu bank_b=%llu\n",
+    pr_info("VITRIOL: COORDINATE bank_a=%llu bank_b=%llu\n",
             pkt->src_addr, pkt->dst_addr);
 
     return 0;
 }
 
-/* IMC_HIJACK: Direct memory controller access */
+/* DIRECT: Direct memory controller access */
 static int op_imc_hijack(struct vitriol_device *vdev, struct alka_drop *pkt)
 {
     u32 channel = pkt->src_addr & 0xFF;
 
-    pr_info("VITRIOL: IMC_HIJACK channel=%u\n", channel);
+    pr_info("VITRIOL: DIRECT channel=%u\n", channel);
 
     /* In production: access IMC MMIO directly */
 
     return 0;
 }
 
-/* OCCUPY: Seize PCIe device */
+/* BIND: Seize PCIe device */
 static int op_occupy(struct vitriol_device *vdev, struct alka_drop *pkt)
 {
     u32 bus = (pkt->src_addr >> 8) & 0xFF;
     u32 slot = (pkt->src_addr >> 3) & 0x1F;
     u32 func = pkt->src_addr & 0x7;
 
-    pr_warn("VITRIOL: OCCUPY %02x:%02x.%u — severing OS access\n",
+    pr_warn("VITRIOL: BIND %02x:%02x.%u — severing OS access\n",
             bus, slot, func);
 
     /* Disable device from OS perspective */

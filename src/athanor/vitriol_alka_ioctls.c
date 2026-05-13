@@ -34,7 +34,7 @@ static u32 compute_crc(struct alka_drop *pkt)
 }
 
 /* ============================================================================
- * REFRACT (0x3B) — Sub-Tensor Slicer
+ * SLICE (0x3B) — Sub-Tensor Slicer
  * ============================================================================ */
 
 static int op_refract(struct vitriol_device *vdev, struct alka_drop *pkt)
@@ -45,7 +45,7 @@ static int op_refract(struct vitriol_device *vdev, struct alka_drop *pkt)
     u32 drops = chunk > 0 ? (total + chunk - 1) / chunk : 0;
     u32 i;
 
-    pr_info("VITRIOL: REFRACT src=0x%llx total=%lluMB chunk=%uMB drops=%u\n",
+    pr_info("VITRIOL: SLICE src=0x%llx total=%lluMB chunk=%uMB drops=%u\n",
             src, total / (1024 * 1024), chunk / (1024 * 1024), drops);
 
     for (i = 0; i < drops; i++) {
@@ -55,12 +55,12 @@ static int op_refract(struct vitriol_device *vdev, struct alka_drop *pkt)
         shift_bar1_window(vdev, offset);
         vitriol_dma_transfer(vdev, src + offset, 0, this_chunk);
 
-        pr_debug("VITRIOL: REFRACT drop %u/%u: %uMB @ offset 0x%llx\n",
+        pr_debug("VITRIOL: SLICE drop %u/%u: %uMB @ offset 0x%llx\n",
                  i + 1, drops, this_chunk / (1024 * 1024), offset);
     }
 
     vitriol_signal_metapage(vdev, 1);
-    pr_info("VITRIOL: REFRACT complete — %u drops transferred\n", drops);
+    pr_info("VITRIOL: SLICE complete — %u drops transferred\n", drops);
     return 0;
 }
 
@@ -108,15 +108,15 @@ static const op_handler_t opcode_handlers[256] = {
     [ALKA_OP_SNAP]        = op_snap,
     [ALKA_OP_REVERT]      = op_revert,
     [ALKA_OP_LIMIT]       = op_limit,
-    [ALKA_OP_VEIL]        = op_veil,
-    [ALKA_OP_MOLT]        = op_molt,
+    [ALKA_OP_CLAIM]        = op_veil,
+    [ALKA_OP_SNAP]        = op_molt,
     [ALKA_OP_ECHO]        = op_echo,
     [ALKA_OP_STASIS]      = op_stasis,
-    [ALKA_OP_FOSSILIZE]   = op_fossilize,
-    [ALKA_OP_STRIKE]      = op_strike,
-    [ALKA_OP_QUENCH]      = op_quench,
-    [ALKA_OP_FORGE]       = op_forge,
-    [ALKA_OP_VOID]        = op_void_op,
+    [ALKA_OP_PERSIST]   = op_fossilize,
+    [ALKA_OP_POKE]      = op_strike,
+    [ALKA_OP_RESET]      = op_quench,
+    [ALKA_OP_INJECT]       = op_forge,
+    [ALKA_OP_WIPE]        = op_void_op,
     [ALKA_OP_FLUX]        = op_flux,
     [ALKA_OP_AUDIT]       = op_audit,
     [ALKA_OP_DRY_RUN]     = op_dry_run,
@@ -127,15 +127,15 @@ static const op_handler_t opcode_handlers[256] = {
     [ALKA_OP_GUARD]       = op_guard,
     [ALKA_OP_ISOLATE]     = op_isolate,
     [ALKA_OP_VERIFY]      = op_verify,
-    [ALKA_OP_OSSIFY]      = op_ossify,
-    [ALKA_OP_BOND]        = op_bond,
-    [ALKA_OP_STILL]       = op_still,
-    [ALKA_OP_RESONATE]    = op_resonate,
-    [ALKA_OP_OSCILLATE]   = op_oscillate,
-    [ALKA_OP_IMC_HIJACK]  = op_imc_hijack,
-    [ALKA_OP_OCCUPY]      = op_occupy,
+    [ALKA_OP_AFFINITY]      = op_ossify,
+    [ALKA_OP_TUNNEL]        = op_bond,
+    [ALKA_OP_SUSPEND]       = op_still,
+    [ALKA_OP_COORDINATE]    = op_resonate,
+    [ALKA_OP_COORDINATE]   = op_oscillate,
+    [ALKA_OP_DIRECT]  = op_imc_hijack,
+    [ALKA_OP_BIND]      = op_occupy,
     [ALKA_OP_RHYTHM]      = op_rhythm,
-    [ALKA_OP_REFRACT]     = op_refract,
+    [ALKA_OP_SLICE]     = op_refract,
     [ALKA_OP_PIPE]        = op_pipe,
 };
 

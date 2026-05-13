@@ -36,8 +36,8 @@ pub const ToolResult = extern struct {
 extern fn tool_shift_validate(vial: *const VialConstraints, drop: *const Drop) c_int;
 extern fn tool_shift_execute(vial: *const VialConstraints, drop: *const Drop) ToolResult;
 
-extern fn tool_refract_validate(vial: *const VialConstraints, drop: *const Drop) c_int;
-extern fn tool_refract_execute(vial: *const VialConstraints, drop: *const Drop) ToolResult;
+extern fn tool_slice_validate(vial: *const VialConstraints, drop: *const Drop) c_int;
+extern fn tool_slice_execute(vial: *const VialConstraints, drop: *const Drop) ToolResult;
 
 extern fn tool_flow_validate(vial: *const VialConstraints, drop: *const Drop) c_int;
 extern fn tool_flow_execute(vial: *const VialConstraints, drop: *const Drop) ToolResult;
@@ -56,12 +56,12 @@ pub fn executeShift(vial: *const VialConstraints, drop: *const Drop) ToolResult 
     return tool_shift_execute(vial, drop);
 }
 
-pub fn validateRefract(vial: *const VialConstraints, drop: *const Drop) bool {
-    return tool_refract_validate(vial, drop) != 0;
+pub fn validateSlice(vial: *const VialConstraints, drop: *const Drop) bool {
+    return tool_slice_validate(vial, drop) != 0;
 }
 
-pub fn executeRefract(vial: *const VialConstraints, drop: *const Drop) ToolResult {
-    return tool_refract_execute(vial, drop);
+pub fn executeSlice(vial: *const VialConstraints, drop: *const Drop) ToolResult {
+    return tool_slice_execute(vial, drop);
 }
 
 pub fn validateFlow(vial: *const VialConstraints, drop: *const Drop) bool {

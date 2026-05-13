@@ -39,3 +39,6 @@ examples/*.azoth
 GNAT-TEMP-*
 .vscode/
 package-lock.json
+
+# Internal session logs
+SESSION_LOG_*.md

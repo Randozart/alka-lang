@@ -1,6 +1,6 @@
-// SLICE — Sub-tensor Slicer (SPARK-verified)
+// SLICE — Region Chunker (SPARK-verified)
 //
-// Bridges to SPARK Ada tool_refract.adb via C ABI.
+// Bridges to SPARK Ada tool_slice.adb via C ABI.
 //
 // HOW IT WORKS:
 //   SLICE slices large tensors (e.g., 7B-parameter LLM weights = ~14GB)
@@ -34,16 +34,16 @@
 //     avoid overflow when Total + Chunk would exceed 2^64
 //
 //   C ABI BRIDGE:
-//   - Ada function: tool_refract__validate(Vial, Drop) -> int (1=pass, 0=fail)
-//   - Ada function: tool_refract__execute(Vial, Drop) -> Tool_Result
+//   - Ada function: tool_slice__validate(Vial, Drop) -> int (1=pass, 0=fail)
+//   - Ada function: tool_slice__execute(Vial, Drop) -> Tool_Result
 //   - C wrapper: vitriol_tool_wrapper.c translates GNAT mangled names
 //   - Zig wrapper: this file translates ToolInterface -> SPARK Drop/Vial
 //
 //   CALL FLOW:
 //   alkac.zig validateWithTools() -> mod.zig getTool(0x3B) ->
-//   spark_refract.zig SLICE.validate() -> spark_bridge.zig validateRefract() ->
-//   vitriol_tool_wrapper.c tool_refract_validate() ->
-//   tool_refract.adb tool_refract__validate() [SPARK verified]
+//   spark_slice.zig SLICE.validate() -> spark_bridge.zig validateSlice() ->
+//   vitriol_tool_wrapper.c tool_slice_validate() ->
+//   tool_slice.adb tool_slice__validate() [SPARK verified]
 //
 // Op-Code: 0x3B  Category: CORE  Safety: L4
 
@@ -80,7 +80,7 @@ pub const SLICE = struct {
             .crc = 0,
         };
 
-        const ok = spark.validateRefract(&vial, &drop);
+        const ok = spark.validateSlice(&vial, &drop);
         return .{
             .allowed = ok,
             .injected_operations = &.{},
@@ -110,7 +110,7 @@ pub const SLICE = struct {
             .crc = 0,
         };
 
-        const result = spark.executeRefract(&vial, &drop);
+        const result = spark.executeSlice(&vial, &drop);
         return .{
             .success = result.success,
             .cycles_spent = result.cycles_spent,

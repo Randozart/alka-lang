@@ -182,7 +182,7 @@
       "description": "Split region into chunks (SPARK-verified, was REFRACT)",
       "language": "spark",
       "category": "core",
-      "sources": ["src/spark/tool_refract.ads", "src/spark/tool_refract.adb"],
+      "sources": ["src/spark/tool_slice.ads", "src/spark/tool_slice.adb"],
       "project": "src/spark/vitriol_tools.gpr",
       "wrapper": "core/spark_slice.zig",
       "struct_name": "SLICE",
