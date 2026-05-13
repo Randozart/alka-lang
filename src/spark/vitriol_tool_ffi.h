@@ -56,6 +56,15 @@ ToolResult tool_shift_execute(const VialConstraints *vial, const Drop *drop);
 int      tool_refract_validate(const VialConstraints *vial, const Drop *drop);
 ToolResult tool_refract_execute(const VialConstraints *vial, const Drop *drop);
 
+int      tool_flow_validate(const VialConstraints *vial, const Drop *drop);
+ToolResult tool_flow_execute(const VialConstraints *vial, const Drop *drop);
+
+int      tool_fence_validate(const VialConstraints *vial, const Drop *drop);
+ToolResult tool_fence_execute(const VialConstraints *vial, const Drop *drop);
+
+int      tool_signal_validate(const VialConstraints *vial, const Drop *drop);
+ToolResult tool_signal_execute(const VialConstraints *vial, const Drop *drop);
+
 #ifdef __cplusplus
 }
 #endif

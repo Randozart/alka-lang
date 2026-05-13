@@ -11,7 +11,8 @@ project Vitriol_Tools is
    for Source_Dirs use (".");
    for Object_Dir use "obj";
    for Exec_Dir use "bin";
-   for Main use ("tool_shift.adb", "tool_refract.adb");
+   for Main use ("tool_shift.adb", "tool_refract.adb",
+                  "tool_flow.adb", "tool_fence.adb", "tool_signal.adb");
 
    package Compiler is
       for Default_Switches ("Ada") use
