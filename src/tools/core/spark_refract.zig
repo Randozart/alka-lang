@@ -64,7 +64,7 @@ pub const REFRACT = struct {
 
         var vial = spark.VialConstraints{
             .aperture_size = ctx.aperture_size,
-            .aperture_max = ctx.aperture_size,
+            .aperture_max = ctx.aperture_max,
             .thermal_halt = @truncate(ctx.thermal_limit),
             .thermal_throttle = @truncate(ctx.thermal_limit),
             .dma_capable = false,
@@ -94,7 +94,7 @@ pub const REFRACT = struct {
     ) interface.ToolInterface.Result {
         var vial = spark.VialConstraints{
             .aperture_size = ctx.aperture_size,
-            .aperture_max = ctx.aperture_size,
+            .aperture_max = ctx.aperture_max,
             .thermal_halt = @truncate(ctx.thermal_limit),
             .thermal_throttle = @truncate(ctx.thermal_limit),
             .dma_capable = false,

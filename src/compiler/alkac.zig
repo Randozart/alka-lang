@@ -145,7 +145,6 @@ fn validateInstruction(instr: Instruction, vial: Vial, allocator: std.mem.Alloca
 
 fn validateWithTools(instr: Instruction, inst_def: *const instructions.Instruction, vial: Vial, allocator: std.mem.Allocator) !void {
     _ = allocator;
-    _ = vial;
 
     const op_code = @intFromEnum(inst_def.op_code);
     const tool = tools.getTool(op_code) orelse return;
@@ -156,14 +155,59 @@ fn validateWithTools(instr: Instruction, inst_def: *const instructions.Instructi
         operands[i] = alka_bin.evalOperand(op);
     }
 
+    // Extract Vial data for tool validation
+    var aperture_size: u64 = 0;
+    var aperture_max: u64 = 0;
+    var thermal_halt: u64 = 0;
+    var thermal_throttle: u64 = 0;
+    var dma_capable: bool = false;
+
+    var vessel_it = vial.vessels.iterator();
+    while (vessel_it.next()) |entry| {
+        const vessel = entry.value_ptr.*;
+        if (vessel.dma_capable) |dc| dma_capable = dc;
+        if (vessel.thermal) |t| {
+            if (t.halt_at) |h| thermal_halt = h;
+            if (t.throttle_at) |th| thermal_throttle = th;
+        }
+        for (vessel.apertures.items) |ap| {
+            if (ap.size) |s| {
+                if (s > aperture_size) aperture_size = s;
+                // Use largest aperture as max_window if not explicitly set
+                if (ap.max_window == null and s > aperture_max) aperture_max = s;
+            }
+            if (ap.max_window) |mw| {
+                if (mw > aperture_max) aperture_max = mw;
+            }
+        }
+    }
+
+    // Check if any operands are unresolved identifiers (eval to 0)
+    // SPARK tools require concrete values; skip validation at compile time
+    // when operands can't be resolved
+    var has_unresolved = false;
+    for (instr.operands.items) |op| {
+        if (op == .identifier) {
+            has_unresolved = true;
+            break;
+        }
+    }
+
+    if (has_unresolved) {
+        // Compile-time: operands not yet resolved, skip SPARK validation
+        // Runtime executor will perform full SPARK validation
+        return;
+    }
+
     const ctx = tools.Tool.Context{
         .physical_addr = 0,
         .pci_bus = 0,
         .pci_device = 0,
         .pci_function = 0,
         .bar_base = 0,
-        .aperture_size = 0,
-        .thermal_limit = 0,
+        .aperture_size = aperture_size,
+        .aperture_max = aperture_max,
+        .thermal_limit = thermal_halt,
         .current_temp = 0,
     };
 
@@ -356,6 +400,7 @@ pub fn parseVial(source: []const u8, allocator: std.mem.Allocator) !Vial {
     var current_name: ?[]const u8 = null;
     var in_aperture = false;
     var aperture_name: ?[]const u8 = null;
+    var in_thermal = false;
     var lines = std.mem.tokenizeScalar(u8, source, '\n');
 
     while (lines.next()) |line| {
@@ -378,7 +423,14 @@ pub fn parseVial(source: []const u8, allocator: std.mem.Allocator) !Vial {
 
         if (std.mem.startsWith(u8, trimmed, "Aperture ")) {
             in_aperture = true;
+            in_thermal = false;
             aperture_name = std.mem.trim(u8, trimmed[9..], " {");
+            continue;
+        }
+
+        if (std.mem.startsWith(u8, trimmed, "Thermal ")) {
+            in_thermal = true;
+            in_aperture = false;
             continue;
         }
 
@@ -386,6 +438,8 @@ pub fn parseVial(source: []const u8, allocator: std.mem.Allocator) !Vial {
             if (in_aperture) {
                 in_aperture = false;
                 aperture_name = null;
+            } else if (in_thermal) {
+                in_thermal = false;
             } else {
                 current_name = null;
             }
@@ -395,6 +449,20 @@ pub fn parseVial(source: []const u8, allocator: std.mem.Allocator) !Vial {
         if (current_name == null) continue;
 
         const v = vial.vessels.getPtr(current_name.?) orelse continue;
+
+        if (in_thermal) {
+            if (v.thermal == null) {
+                v.thermal = Thermal{ .halt_at = null, .throttle_at = null };
+            }
+            if (std.mem.startsWith(u8, trimmed, "HALT_AT:")) {
+                const val = std.mem.trim(u8, trimmed[8..], " ;");
+                if (v.thermal) |*t| t.halt_at = std.fmt.parseInt(u64, val, 10) catch 0;
+            } else if (std.mem.startsWith(u8, trimmed, "THROTTLE_AT:")) {
+                const val = std.mem.trim(u8, trimmed[12..], " ;");
+                if (v.thermal) |*t| t.throttle_at = std.fmt.parseInt(u64, val, 10) catch 0;
+            }
+            continue;
+        }
 
         if (in_aperture) {
             if (std.mem.startsWith(u8, trimmed, "BAR:")) {

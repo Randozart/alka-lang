@@ -31,6 +31,7 @@ pub const ToolInterface = struct {
         pci_function: u8,
         bar_base: u64,
         aperture_size: u64,
+        aperture_max: u64,
         thermal_limit: u64,
         current_temp: u64,
     };
