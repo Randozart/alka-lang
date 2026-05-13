@@ -1,7 +1,36 @@
 tool_fence.adb:6:06: warning: redundant with clause in body [-gnatwr]
-tool_fence.adb:12:04: warning: "Unsigned_64" is already use-visible through previous use_type_clause at tool_fence.ads:13 [enabled by default]
+tool_fence.adb:12:04: warning: "Unsigned_64" is already use-visible through previous use_type_clause at tool_fence.ads:14 [enabled by default]
 tool_fence.adb:12:04: warning: use clause for type "Interfaces.Unsigned_64" has no effect [-gnatwu]
 tool_fence.adb:13:04: warning: use clause for type "Interfaces.Unsigned_32" has no effect [-gnatwu]
-tool_fence.ads:28:24: (style) space required
-tool_fence.ads:29:80: (style) this line is too long
-tool_fence.ads:29:89: (style) space required
+tool_fence.adb:15:06: (style) bad indentation
+tool_fence.adb:19:08: (style) bad indentation
+tool_fence.adb:20:08: (style) bad indentation
+tool_fence.adb:21:05: (style) bad indentation
+tool_fence.adb:22:08: (style) bad indentation
+tool_fence.adb:23:11: (style) bad indentation
+tool_fence.adb:24:08: (style) bad indentation
+tool_fence.adb:26:08: (style) bad indentation
+tool_fence.adb:27:11: (style) bad indentation
+tool_fence.adb:28:08: (style) bad indentation
+tool_fence.adb:30:08: (style) bad indentation
+tool_fence.adb:31:05: (style) bad indentation
+tool_fence.adb:33:06: (style) bad indentation
+tool_fence.adb:37:08: (style) bad indentation
+tool_fence.adb:38:08: (style) bad indentation
+tool_fence.adb:39:08: (style) bad indentation
+tool_fence.adb:40:08: (style) bad indentation
+tool_fence.adb:41:05: (style) bad indentation
+tool_fence.adb:42:08: (style) bad indentation
+tool_fence.adb:43:08: (style) bad indentation
+tool_fence.adb:45:08: (style) bad indentation
+tool_fence.adb:46:11: (style) bad indentation
+tool_fence.adb:47:11: (style) bad indentation
+tool_fence.adb:49:11: (style) bad indentation
+tool_fence.adb:50:08: (style) bad indentation
+tool_fence.adb:52:08: (style) bad indentation
+tool_fence.adb:54:08: (style) bad indentation
+tool_fence.adb:58:05: (style) bad indentation
+tool_fence.ads:17:06: (style) bad indentation
+tool_fence.ads:29:06: (style) bad indentation
+tool_fence.ads:37:26: (style) space required
+tool_fence.ads:38:80: (style) this line is too long

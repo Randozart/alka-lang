@@ -1,0 +1,57 @@
+[
+{
+  "name": "Tool_Refract.Validate.Total",
+  "location": "tool_refract.adb:20:9",
+  "Size": 64,
+  "Alignment": 8
+}
+,
+{
+  "name": "Tool_Refract.Validate.Chunk_Size",
+  "location": "tool_refract.adb:21:9",
+  "Size": 64,
+  "Alignment": 8
+}
+,
+{
+  "name": "Tool_Refract.Validate.Drops",
+  "location": "tool_refract.adb:22:9",
+  "Size": 64,
+  "Alignment": 8
+}
+,
+{
+  "name": "Tool_Refract.Execute.Total",
+  "location": "tool_refract.adb:52:8",
+  "Size": 64,
+  "Alignment": 8
+}
+,
+{
+  "name": "Tool_Refract.Execute.Chunk_Size",
+  "location": "tool_refract.adb:53:8",
+  "Size": 64,
+  "Alignment": 8
+}
+,
+{
+  "name": "Tool_Refract.Execute.Drops",
+  "location": "tool_refract.adb:56:8",
+  "Size": 64,
+  "Alignment": 8
+}
+,
+{
+  "name": "Tool_Refract.Execute.Current",
+  "location": "tool_refract.adb:58:8",
+  "Size": 64,
+  "Alignment": 8
+}
+,
+{
+  "name": "Tool_Refract.Execute.I",
+  "location": "tool_refract.adb:59:8",
+  "Size": 64,
+  "Alignment": 8
+}
+]

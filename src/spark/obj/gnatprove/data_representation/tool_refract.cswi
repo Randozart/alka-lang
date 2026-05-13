@@ -1,0 +1,14 @@
+              
+-c
+-x
+ada
+-gnatA
+-gnatwa
+-gnatyg
+-gnat2022
+-gnatn
+-O2
+-S
+-gnatR2js
+-gnatws
+-gnatis

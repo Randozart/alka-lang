@@ -12,50 +12,49 @@ is
    use type Interfaces.Unsigned_64;
    use type Interfaces.Unsigned_32;
 
-   function Validate
-     (Op   : Drop_Type;
-      Vial : Vial_Constraints) return Boolean
-   is
-   begin
-      if Op.Size = 0 then
-         return False;
-      end if;
+     function Validate
+       (Vial : not null access constant Vial_Constraints;
+        Op   : not null access constant Drop_Type) return Interfaces.C.int
+    is
+    begin
+       if Op.Size = 0 then
+          return 0;
+       end if;
 
-      if Interfaces.Unsigned_64(Op.Size) > Vial.Aperture_Max then
-         return False;
-      end if;
+       if Interfaces.Unsigned_64(Op.Size) > Vial.Aperture_Max then
+          return 0;
+       end if;
 
-      if not Vial.DMA_Capable then
-         return False;
-      end if;
+       if not Vial.DMA_Capable then
+          return 0;
+       end if;
 
-      if Op.Src_Addr + Interfaces.Unsigned_64(Op.Size) < Op.Src_Addr then
-         return False;
-      end if;
+       if Op.Src_Addr + Interfaces.Unsigned_64(Op.Size) < Op.Src_Addr then
+          return 0;
+       end if;
 
-      if Op.Dst_Addr + Interfaces.Unsigned_64(Op.Size) < Op.Dst_Addr then
-         return False;
-      end if;
+       if Op.Dst_Addr + Interfaces.Unsigned_64(Op.Size) < Op.Dst_Addr then
+          return 0;
+       end if;
 
-      return True;
-   end Validate;
+       return 1;
+    end Validate;
 
-   procedure Execute
-     (Op     : Drop_Type;
-      Vial   : Vial_Constraints;
-      Result : out Tool_Result)
-   is
-      Transfer_Size : constant Interfaces.Unsigned_64 :=
-        Interfaces.Unsigned_64(Op.Size);
-   begin
-      pragma Assert (Op.Size > 0);
-      pragma Assert (Interfaces.Unsigned_64(Op.Size) <= Vial.Aperture_Max);
-      pragma Assert (Vial.DMA_Capable);
+     function Execute
+       (Vial : not null access constant Vial_Constraints;
+        Op   : not null access constant Drop_Type) return Tool_Result
+    is
+       Transfer_Size : constant Interfaces.Unsigned_64 :=
+         Interfaces.Unsigned_64(Op.Size);
+    begin
+       pragma Assert (Op.Size > 0);
+       pragma Assert (Interfaces.Unsigned_64(Op.Size) <= Vial.Aperture_Max);
+       pragma Assert (Vial.DMA_Capable);
 
-      Result.Success := True;
-      Result.Cycles_Spent := Transfer_Size / 1024;
-      Result.Bytes_Transferred := Transfer_Size;
-      Result.Error_Message := Interfaces.C.Strings.Null_Ptr;
-   end Execute;
+       return (Success            => True,
+               Cycles_Spent       => Transfer_Size / 1024,
+               Bytes_Transferred  => Transfer_Size,
+               Error_Message      => Interfaces.C.Strings.Null_Ptr);
+    end Execute;
 
 end Tool_Flow;

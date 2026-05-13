@@ -10,16 +10,18 @@ A -march=x86-64
 P ZX
 
 RN
+RV NO_STANDARD_STORAGE_POOLS
 RV NO_IMPLEMENTATION_ASPECT_SPECIFICATIONS
 RV NO_IMPLEMENTATION_PRAGMAS
 
-U tool_shift%b		tool_shift.adb		aab10918 NE OO PK
+U tool_shift%b		tool_shift.adb		183f7a69 NE OO PK
 W interfaces%s		interfac.ads		interfac.ali
 W interfaces.c%s	i-c.adb			i-c.ali
 W interfaces.c.strings%s  i-cstrin.adb		i-cstrin.ali
 
-U tool_shift%s		tool_shift.ads		694d4ad4 EE NE OO PK
+U tool_shift%s		tool_shift.ads		0280604f EE NE OO PK
 W interfaces%s		interfac.ads		interfac.ali
+W interfaces.c%s	i-c.adb			i-c.ali
 W vitriol_types%s	vitriol_types.ads	vitriol_types.ali
 
 D ada.ads		20240521074738 76789da1 ada%s
@@ -31,45 +33,43 @@ D system.ads		20240521074738 426dafb8 system%s
 D s-exctab.ads		20240521074738 91bef6ef system.exception_table%s
 D s-parame.ads		20251218205951 1f39ba92 system.parameters%s
 D s-stalib.ads		20240521074738 1c9580f6 system.standard_library%s
-D tool_shift.ads	20260513083428 33af60fd tool_shift%s
-D tool_shift.adb	20260513083507 78e57d93 tool_shift%b
-D vitriol_types.ads	20260513083113 4f15b3eb vitriol_types%s
+D tool_shift.ads	20260513103325 bb442986 tool_shift%s
+D tool_shift.adb	20260513103346 42804799 tool_shift%b
+D vitriol_types.ads	20260513095150 f069bc1c vitriol_types%s
 G a e
-G c Z s b [validate tool_shift 15 13 none]
-G c Z s b [execute tool_shift 22 14 none]
+G c Z s b [validate tool_shift 20 14 none]
+G c Z s b [execute tool_shift 32 14 none]
 X 3 interfac.ads
-38K9*Interfaces 232e15 10|7w6 13r13 29r67 33r28 34r6 11|6w6 7r6 12r13 19r29
-. 38r29 46r31
-80M9*Unsigned_32
-83M9*Unsigned_64 10|13r24 29r78 33r39 34r17 11|12r24 19r40 38r40
+38K9*Interfaces 232e15 10|7w6 8r6 14r13 15r13 17r28 18r6 22r58 11|6w6 7r6
+. 12r13 16r58 19r30 37r30 45r38
+83M9*Unsigned_64 10|14r24 17r39 18r17 11|12r24 19r41 37r41
 X 4 i-c.ads
-29K20*C 597e17 11|7r17 46r42
+29K20*C 597e17 10|8w17 15r24 22r69 11|7r17 16r69 45r49
+57I9*int<integer> 10|15r26 22r71 11|16r71
 X 5 i-cstrin.ads
-44K22*Strings 156e25 11|7w19 46r44
+44K22*Strings 156e25 11|7w19 45r51
 59P9*chars_ptr
-64p4*Null_Ptr{59P9} 11|46r52
+64p4*Null_Ptr{59P9} 11|45r59
 X 10 tool_shift.ads
-9K9*Tool_Shift 33E4 36l5 36e15 11|9b14 49l5 49t15
-15V13*Validate{boolean} 16>7 17>7 20r16 20r35 28s16 11|14b13 30l8 30t16
-16r7 Op{12|31R9} 11|15b7 19r55
-17r7 Vial{12|45R9} 11|16b7 18r28
-22U14*Execute 23>7 24>7 25<7 11|32b14 47l8 47t15
-23r7 Op{12|31R9} 28r25 29r90 11|33b7 38r55
-24r7 Vial{12|45R9} 28r29 11|34b7 37r28
-25r7 Result{12|56R9} 29r20 29r40 11|35b7 43m7 44m7 45m7 46m7
-33m4 Max_Aperture{3|83M9} 11|21r23 40r36
+10K9*Tool_Shift 43l5 43e15 11|9b14 48l5 48t15
+17m4*Max_Aperture{3|83M9} 29r35 11|21r24 39r37
+20V14*Validate{4|57I9} 21^8 22^8 28r21 40s17 11|14b14 30l9 30t17
+21p8 Vial(12|45R9) 11|15b8 18r29
+22p8 Op(12|31R9) 29r20 29r58 11|16b8 19r56
+32V14*Execute{12|56R9} 33^8 34^8 41r17 11|32b14 46l9 46t16
+33p8 Vial(12|45R9) 40r26 11|33b8 36r29
+34p8 Op(12|31R9) 40r32 11|34b8 37r56
 X 11 tool_shift.adb
-19m7 New_Offset{3|83M9} 21r10 25r11
-38m7 New_Offset{3|83M9} 40r22 41r23
+19m8 New_Offset{3|83M9} 21r11 25r12
+37m8 New_Offset{3|83M9} 39r23 40r24
 X 12 vitriol_types.ads
-8K9*Vitriol_Types 10|6w6 12r8 12|75e18
-31R9*Drop_Type 10|16r14 23r16 11|15r14 33r16 12|42e4
-36m10*Src_Addr{3|83M9} 11|19r58 38r58
-38m10*Size{3|80M9} 10|29r93
-45R9*Vial_Constraints 10|17r14 24r16 11|16r14 34r16 12|53e4
-56R9*Tool_Result 10|25r20 11|35r20 12|63e4
-58b10*Success{boolean} 10|29r27 11|43m14
-59m10*Cycles_Spent{3|83M9} 11|44m14
-60m10*Bytes_Transferred{3|83M9} 10|29r47 11|45m14
-61p10*Error_Message{5|59P9} 11|46m14
+8K9*Vitriol_Types 10|6w6 13r8 12|75e18
+31R9*Drop_Type 10|22r40 34r40 11|16r40 34r40 12|42e4
+36m10*Src_Addr{3|83M9} 10|29r23 29r61 11|19r59 37r59
+45R9*Vial_Constraints 10|21r40 33r40 11|15r40 33r40 12|53e4
+56R9*Tool_Result 10|34r58 11|34r58 12|63e4
+58b10*Success{boolean} 10|41r32 11|42m16
+59m10*Cycles_Spent{3|83M9} 11|43m16
+60m10*Bytes_Transferred{3|83M9} 11|44m16
+61p10*Error_Message{5|59P9} 11|45m16
 

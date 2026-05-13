@@ -1,0 +1,57 @@
+=========================
+Summary of SPARK analysis
+=========================
+
+--------------------------------------------------------------------------------------------------
+SPARK Analysis results        Total        Flow                     Provers   Justified   Unproved
+--------------------------------------------------------------------------------------------------
+Data Dependencies                10          10                           .           .          .
+Flow Dependencies                 .           .                           .           .          .
+Initialization                    2           2                           .           .          .
+Non-Aliasing                      .           .                           .           .          .
+Run-time Checks                   2           .                      2 (Z3)           .          .
+Assertions                       20           .                     20 (Z3)           .          .
+Functional Contracts             13           .    13 (Trivial 16%, Z3 84%)           .          .
+LSP Verification                  .           .                           .           .          .
+Termination                      13          11                      2 (Z3)           .          .
+Concurrency                       .           .                           .           .          .
+--------------------------------------------------------------------------------------------------
+Total                            60    23 (38%)                    37 (62%)           .          .
+
+
+max steps used for successful proof: 2114
+
+============================
+Most difficult proved checks
+============================
+
+No check found with max time greater than 1 second
+
+========================
+Detailed analysis report
+========================
+
+Analyzed 6 units
+in unit tool_fence, 3 subprograms and packages out of 3 analyzed
+  Tool_Fence at tool_fence.ads:10 flow analyzed (0 errors, 0 checks, 0 warnings and 0 pragma Assume statements) and proved (0 checks)
+  Tool_Fence.Execute at tool_fence.ads:29 flow analyzed (0 errors, 0 checks, 0 warnings and 0 pragma Assume statements) and proved (7 checks)
+  Tool_Fence.Validate at tool_fence.ads:17 flow analyzed (0 errors, 0 checks, 0 warnings and 0 pragma Assume statements) and proved (1 checks)
+in unit tool_flow, 3 subprograms and packages out of 3 analyzed
+  Tool_Flow at tool_flow.ads:10 flow analyzed (0 errors, 0 checks, 0 warnings and 0 pragma Assume statements) and proved (0 checks)
+  Tool_Flow.Execute at tool_flow.ads:34 flow analyzed (0 errors, 0 checks, 0 warnings and 0 pragma Assume statements) and proved (5 checks)
+  Tool_Flow.Validate at tool_flow.ads:18 flow analyzed (0 errors, 0 checks, 0 warnings and 0 pragma Assume statements) and proved (1 checks)
+in unit tool_refract, 3 subprograms and packages out of 3 analyzed
+  Tool_Refract at tool_refract.ads:11 flow analyzed (0 errors, 0 checks, 0 warnings and 0 pragma Assume statements) and proved (0 checks)
+  Tool_Refract.Execute at tool_refract.ads:35 flow analyzed (0 errors, 0 checks, 0 warnings and 0 pragma Assume statements) and proved (11 checks)
+  Tool_Refract.Validate at tool_refract.ads:22 flow analyzed (0 errors, 0 checks, 0 warnings and 0 pragma Assume statements) and proved (2 checks)
+in unit tool_shift, 3 subprograms and packages out of 3 analyzed
+  Tool_Shift at tool_shift.ads:10 flow analyzed (0 errors, 0 checks, 0 warnings and 0 pragma Assume statements) and proved (0 checks)
+  Tool_Shift.Execute at tool_shift.ads:32 flow analyzed (0 errors, 0 checks, 0 warnings and 0 pragma Assume statements) and proved (3 checks)
+  Tool_Shift.Validate at tool_shift.ads:20 flow analyzed (0 errors, 0 checks, 0 warnings and 0 pragma Assume statements) and proved (1 checks)
+in unit tool_signal, 3 subprograms and packages out of 3 analyzed
+  Tool_Signal at tool_signal.ads:10 flow analyzed (0 errors, 0 checks, 0 warnings and 0 pragma Assume statements) and proved (0 checks)
+  Tool_Signal.Execute at tool_signal.ads:29 flow analyzed (0 errors, 0 checks, 0 warnings and 0 pragma Assume statements) and proved (3 checks)
+  Tool_Signal.Validate at tool_signal.ads:17 flow analyzed (0 errors, 0 checks, 0 warnings and 0 pragma Assume statements) and proved (1 checks)
+in unit vitriol_types, 2 subprograms and packages out of 2 analyzed
+  Vitriol_Types at vitriol_types.ads:8 flow analyzed (0 errors, 0 checks, 0 warnings and 0 pragma Assume statements) and proved (0 checks)
+  Vitriol_Types.Chunk_Count at vitriol_types.ads:66 flow analyzed (0 errors, 0 checks, 0 warnings and 0 pragma Assume statements) and proved (2 checks)

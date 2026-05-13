@@ -1,0 +1,12 @@
+20260513101520
+-c
+-x
+ada
+-gnatA
+-gnatwa
+-gnatyg
+-gnat2022
+-gnatn
+-O2
+-gnatc
+-gnates=/home/randozart/Desktop/Projects/alka-lang/src/spark/obj/gnatprove/0ce8eaec.tmp

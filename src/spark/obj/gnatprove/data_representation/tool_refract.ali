@@ -1,0 +1,92 @@
+V "GNAT Lib v15"
+A -O2
+A -gnatA
+A -gnatwa
+A -gnatyg
+A -gnat2022
+A -gnatn
+A -gnatR2js
+A -gnatws
+A -gnatis
+A -mtune=generic
+A -march=x86-64
+P ZX
+
+RN
+RV NO_STANDARD_STORAGE_POOLS
+RV NO_IMPLEMENTATION_ASPECT_SPECIFICATIONS
+RV NO_IMPLEMENTATION_PRAGMAS
+
+U tool_refract%b	tool_refract.adb	c01acbc8 NE OO PK
+W interfaces%s		interfac.ads		interfac.ali
+W interfaces.c%s	i-c.adb			i-c.ali
+W interfaces.c.strings%s  i-cstrin.adb		i-cstrin.ali
+
+U tool_refract%s	tool_refract.ads	65da22f2 EE NE OO PK
+W interfaces%s		interfac.ads		interfac.ali
+W interfaces.c%s	i-c.adb			i-c.ali
+W vitriol_types%s	vitriol_types.ads	vitriol_types.ali
+
+D ada.ads		20250425081800 76789da1 ada%s
+D a-unccon.ads		20250425081800 0e9b276f ada.unchecked_conversion%s
+D interfac.ads		20250425081800 9111f9c1 interfaces%s
+D i-c.ads		20250425081800 e94c966a interfaces.c%s
+D i-cstrin.ads		20250425081800 5409c1a4 interfaces.c.strings%s
+D system.ads		20250425081800 14286b0f system%s
+D s-exctab.ads		20250425081800 91bef6ef system.exception_table%s
+D s-parame.ads		20250425081800 3597fc11 system.parameters%s
+D s-stalib.ads		20250425081800 1c9580f6 system.standard_library%s
+D tool_refract.ads	20260513101702 edeef145 tool_refract%s
+D tool_refract.adb	20260513101731 e8ec02e8 tool_refract%b
+D vitriol_types.ads	20260513095150 f069bc1c vitriol_types%s
+G a e
+G c Z s b [validate tool_refract 22 14 none]
+G c Z s b [execute tool_refract 35 14 none]
+G r c none [validate tool_refract 22 14 none] [chunk_count vitriol_types 66 14 none]
+G r c none [execute tool_refract 35 14 none] [chunk_count vitriol_types 66 14 none]
+X 3 interfac.ads
+47K9*Interfaces 247e15 10|8w6 9r6 15r13 16r13 17r13 19r28 20r6 24r56 32r41
+. 11|7w6 8r6 13r13 14r13 18r57 20r32 21r23 22r23 28r44 52r30 53r30 54r31
+. 56r30 58r21 59r21 79r38
+92M9*Unsigned_32 10|16r24 11|14r24
+95M9*Unsigned_64 10|15r24 19r39 20r17 32r52 11|13r24 20r43 21r34 22r34 28r55
+. 52r41 53r41 54r42 56r41 58r32 59r32
+X 4 i-c.ads
+33K20*C 601e17 10|9w17 17r24 24r67 11|8r17 18r68 79r49
+62I9*int<integer> 10|17r26 24r69 11|18r70
+X 5 i-cstrin.ads
+48K22*Strings 171e25 11|8w19 79r51
+65P9*chars_ptr
+70p4*Null_Ptr{65P9} 11|79r59
+X 10 tool_refract.ads
+11K9*Tool_Refract 46l5 46e17 11|10b14 82l5 82t17
+19m4*Max_Aperture{3|95M9} 32r78 11|29r29 55r16
+22V14*Validate{4|62I9} 23^8 24^8 30r21 43s17 11|16b15 46l10 46t18
+23p8 Op(12|31R9) 31r20 32r24 32r64 11|17b9 20r58 28r27 28r67
+24p8 Vial(12|45R9) 32r95 11|18b9 35r25
+35V14*Execute{12|56R9} 36^8 37^8 44r17 44r49 11|48b14 80l9 80t16
+36p8 Op(12|31R9) 43r26 44r84 11|49b8 52r56 54r14 54r54
+37p8 Vial(12|45R9) 43r30 11|50b8 63r37
+X 11 tool_refract.adb
+20m9 Total{3|95M9} 24r12 39r30 41r33
+21m9 Chunk_Size{3|95M9} 28m9 31r12 35r12 39r37 41r20
+22m9 Drops{3|95M9} 39m9 41r12
+52m8 Total{3|95M9} 57r22 61r23 78r38
+53m8 Chunk_Size{3|95M9} 57r29 62r23 63r23 67r48 70r32
+56m8 Drops{3|95M9} 65r18 66r38 74r27 77r43
+58m8 Current{3|95M9} 67r34 70m11 70r22
+59m8 I{3|95M9} 65r14 66r34 67r44 68r45 71m11 71r16 74r23
+X 12 vitriol_types.ads
+8K9*Vitriol_Types 10|7w6 14r8 12|75e18
+31R9*Drop_Type 10|23r31 36r31 11|17r32 49r31 12|42e4
+37m10*Dst_Addr{3|95M9} 10|31r23 44r87 11|20r61 52r59
+38m10*Size{3|92M9} 10|32r27 32r67 11|28r30 28r70 54r17 54r57
+45R9*Vial_Constraints 10|24r31 37r31 11|18r32 50r31 12|53e4
+48m10*Aperture_Max{3|95M9} 10|32r100 11|35r30 63r42
+56R9*Tool_Result 10|37r56 11|50r56 12|63e4
+58b10*Success{boolean} 10|44r32 11|76m16
+59m10*Cycles_Spent{3|95M9} 11|77m16
+60m10*Bytes_Transferred{3|95M9} 10|44r64 11|78m16
+61p10*Error_Message{5|65P9} 11|79m16
+66V14*Chunk_Count{3|95M9} 11|39s18 57s10
+

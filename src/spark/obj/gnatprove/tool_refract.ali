@@ -1,0 +1,181 @@
+V "GNAT Lib v15"
+A -x
+A ada
+A -gnatA
+A -gnatwa
+A -gnatyg
+A -gnat2022
+A -gnatn
+A -O2
+A -gnatc
+A -gnatis
+P GP
+
+RN
+RV NO_STANDARD_STORAGE_POOLS
+RV NO_IMPLEMENTATION_ASPECT_SPECIFICATIONS
+RV NO_IMPLEMENTATION_PRAGMAS
+RV NO_ELABORATION_CODE
+
+U tool_refract%b	tool_refract.adb	c01acbc8 OO PK
+W interfaces%s		interfac.ads		interfac.ali
+W interfaces.c%s	i-c.adb			i-c.ali
+W interfaces.c.strings%s  i-cstrin.adb		i-cstrin.ali
+
+U tool_refract%s	tool_refract.ads	65da22f2 OO PK
+W interfaces%s		interfac.ads		interfac.ali
+W interfaces.c%s	i-c.adb			i-c.ali
+W vitriol_types%s	vitriol_types.ads	vitriol_types.ali
+
+D interfac.ads		20250425081800 9111f9c1 interfaces%s
+D i-c.ads		20250425081800 e94c966a interfaces.c%s
+D i-cstrin.ads		20250425081800 5409c1a4 interfaces.c.strings%s
+D system.ads		20250425081800 14286b0f system%s
+D s-parame.ads		20250425081800 3597fc11 system.parameters%s
+D tool_refract.ads	20260513101702 edeef145 tool_refract%s
+D tool_refract.adb	20260513101731 e8ec02e8 tool_refract%b
+D vitriol_types.ads	20260513095150 f069bc1c vitriol_types%s
+G a Z
+X 1 interfac.ads
+47K9*Interfaces 247e15 6|8w6 9r6 15r13 16r13 17r13 19r28 20r6 24r56 32r41
+. 7|7w6 8r6 13r13 14r13 18r57 20r32 21r23 22r23 28r44 52r30 53r30 54r31 56r30
+. 58r21 59r21 79r38
+92M9*Unsigned_32 6|16r24 7|14r24
+95M9*Unsigned_64 6|15r24 19r39 20r17 32r52 7|13r24 20r43 21r34 22r34 28r55
+. 52r41 53r41 54r42 56r41 58r32 59r32
+X 2 i-c.ads
+33K20*C 601e17 6|9w17 17r24 24r67 7|8r17 18r68 79r49
+62I9*int<integer> 6|17r26 24r69 7|18r70
+X 3 i-cstrin.ads
+48K22*Strings 171e25 7|8w19 79r51
+65P9*chars_ptr
+70p4*Null_Ptr{65P9} 7|79r59
+X 6 tool_refract.ads
+11K9*Tool_Refract 46l5 46e17 7|10b14 82l5 82t17
+19m4*Max_Aperture{1|95M9} 32r78 7|29r29 55r16
+22V14*Validate{2|62I9} 23^8 24^8 30r21 43s17 7|16b15 46l10 46t18
+23p8 Op(8|31R9) 31r20 32r24 32r64 7|17b9 20r58 28r27 28r67
+24p8 Vial(8|45R9) 32r95 7|18b9 35r25
+35V14*Execute{8|56R9} 36^8 37^8 44r17 44r49 7|48b14 80l9 80t16
+36p8 Op(8|31R9) 43r26 44r84 7|49b8 52r56 54r14 54r54
+37p8 Vial(8|45R9) 43r30 7|50b8 63r37
+X 7 tool_refract.adb
+20m9 Total{1|95M9} 24r12 39r30 41r33
+21m9 Chunk_Size{1|95M9} 28m9 31r12 35r12 39r37 41r20
+22m9 Drops{1|95M9} 39m9 41r12
+52m8 Total{1|95M9} 57r22 61r23 78r38
+53m8 Chunk_Size{1|95M9} 57r29 62r23 63r23 67r48 70r32
+56m8 Drops{1|95M9} 65r18 66r38 74r27 77r43
+58m8 Current{1|95M9} 67r34 70m11 70r22
+59m8 I{1|95M9} 65r14 66r34 67r44 68r45 71m11 71r16 74r23
+X 8 vitriol_types.ads
+8K9*Vitriol_Types 6|7w6 14r8 8|75e18
+31R9*Drop_Type 6|23r31 36r31 7|17r32 49r31 8|42e4
+37m10*Dst_Addr{1|95M9} 6|31r23 44r87 7|20r61 52r59
+38m10*Size{1|92M9} 6|32r27 32r67 7|28r30 28r70 54r17 54r57
+45R9*Vial_Constraints 6|24r31 37r31 7|18r32 50r31 8|53e4
+48m10*Aperture_Max{1|95M9} 6|32r100 7|35r30 63r42
+56R9*Tool_Result 6|37r56 7|50r56 8|63e4
+58b10*Success{boolean} 6|44r32 7|76m16
+59m10*Cycles_Spent{1|95M9} 7|77m16
+60m10*Bytes_Transferred{1|95M9} 6|44r64 7|78m16
+61p10*Error_Message{3|65P9} 7|79m16
+66V14*Chunk_Count{1|95M9} 7|39s18 57s10
+
+QQ SPARKVERSION FSF 15.0
+GG EK_DIRECT_CALLS tool_refract__validate 1 vitriol_types__chunk_count
+GG EK_PROOF_DEPENDENCIES tool_refract__validate 0
+GG EK_GLOBALS tool_refract__validate local FALSE E_FUNCTION FALSE ORIGIN_FLOW 1 tool_refract proper_proof_in 0 proper_input 0 proper_output 0 refined_proof_in 0 refined_input 0 refined_output 0 calls_proof 0 calls 0 calls_conditional 0 TRUE FALSE FALSE FALSE TRUE ENTRY_CALLS 0 SUSPENDS_ON 0 UNSYNCH_ACCESSES 0 LOCKS 0
+GG EK_DIRECT_CALLS tool_refract__execute 2 tool_refract__validate vitriol_types__chunk_count
+GG EK_PROOF_DEPENDENCIES tool_refract__execute 1 vitriol_types__chunk_count
+GG EK_GLOBALS tool_refract__execute local FALSE E_FUNCTION FALSE ORIGIN_FLOW 1 tool_refract proper_proof_in 0 proper_input 0 proper_output 0 refined_proof_in 0 refined_input 0 refined_output 0 calls_proof 0 calls 0 calls_conditional 0 TRUE FALSE FALSE FALSE TRUE ENTRY_CALLS 0 SUSPENDS_ON 0 UNSYNCH_ACCESSES 0 LOCKS 0
+GG EK_DIRECT_CALLS tool_refract 0
+GG EK_PROOF_DEPENDENCIES tool_refract 0
+GG EK_GLOBALS tool_refract local FALSE E_PACKAGE TRUE ORIGIN_FLOW 0 proper_proof_in 0 proper_input 0 proper_output 0 refined_proof_in 0 refined_input 0 refined_output 0 initializes 0 refined_initializes 0 calls_proof 0 calls 0 calls_conditional 0 local_packages 0 local_var 0 TRUE FALSE FALSE FALSE FALSE ENTRY_CALLS 0 SUSPENDS_ON 0 UNSYNCH_ACCESSES 0 LOCKS 0
+GG EK_FLOW_SCOPE interfaces__shift_left__3 FALSE FALSE FALSE FALSE TRUE interfaces VISIBLE_PART
+GG EK_FLOW_SCOPE ada___interfaces__c__to_c__2 FALSE FALSE FALSE FALSE TRUE ada___interfaces__c VISIBLE_PART
+GG EK_FLOW_SCOPE interfaces__shift_left__2 FALSE FALSE FALSE FALSE TRUE interfaces VISIBLE_PART
+GG EK_FLOW_SCOPE ada___ada___interfaces__c__strings__update FALSE FALSE FALSE FALSE TRUE ada___ada___interfaces__c__strings VISIBLE_PART
+GG EK_FLOW_SCOPE ada___ada___interfaces__c__strings__to_chars_ptr FALSE FALSE FALSE FALSE TRUE ada___ada___interfaces__c__strings VISIBLE_PART
+GG EK_FLOW_SCOPE system__Oge FALSE FALSE FALSE FALSE TRUE system VISIBLE_PART
+GG EK_FLOW_SCOPE ada___ada___interfaces__c__strings__value__2 FALSE FALSE FALSE FALSE TRUE ada___ada___interfaces__c__strings VISIBLE_PART
+GG EK_FLOW_SCOPE interfaces__shift_left FALSE FALSE FALSE FALSE TRUE interfaces VISIBLE_PART
+GG EK_FLOW_SCOPE ada___interfaces__c__is_nul_terminated FALSE FALSE FALSE FALSE TRUE ada___interfaces__c VISIBLE_PART
+GG EK_FLOW_SCOPE ada___interfaces__c__to_ada__3 FALSE FALSE FALSE FALSE TRUE ada___interfaces__c VISIBLE_PART
+GG EK_FLOW_SCOPE system__Oeq FALSE FALSE FALSE FALSE TRUE system VISIBLE_PART
+GG EK_FLOW_SCOPE vitriol_types TRUE FALSE FALSE FALSE FALSE __standard
+GG EK_FLOW_SCOPE ada___interfaces__c__to_ada__11 FALSE FALSE FALSE FALSE TRUE ada___interfaces__c VISIBLE_PART
+GG EK_FLOW_SCOPE ada___interfaces__c__to_c__12 FALSE FALSE FALSE FALSE TRUE ada___interfaces__c VISIBLE_PART
+GG EK_FLOW_SCOPE ada___interfaces__c__to_ada__9 FALSE FALSE FALSE FALSE TRUE ada___interfaces__c VISIBLE_PART
+GG EK_FLOW_SCOPE interfaces__shift_right__5 FALSE FALSE FALSE FALSE TRUE interfaces VISIBLE_PART
+GG EK_FLOW_SCOPE ada___interfaces__c__c_length_ghost__2 FALSE FALSE FALSE FALSE TRUE ada___interfaces__c VISIBLE_PART
+GG EK_FLOW_SCOPE ada___interfaces__c__to_c__11 FALSE FALSE FALSE FALSE TRUE ada___interfaces__c VISIBLE_PART
+GG EK_FLOW_SCOPE ada___interfaces__c__is_nul_terminated__4 FALSE FALSE FALSE FALSE TRUE ada___interfaces__c VISIBLE_PART
+GG EK_FLOW_SCOPE interfaces__shift_right__4 FALSE FALSE FALSE FALSE TRUE interfaces VISIBLE_PART
+GG EK_FLOW_SCOPE ada___ada___interfaces__c__strings__new_char_array FALSE FALSE FALSE FALSE TRUE ada___ada___interfaces__c__strings VISIBLE_PART
+GG EK_FLOW_SCOPE interfaces__shift_right__3 FALSE FALSE FALSE FALSE TRUE interfaces VISIBLE_PART
+GG EK_FLOW_SCOPE interfaces__shift_right__2 FALSE FALSE FALSE FALSE TRUE interfaces VISIBLE_PART
+GG EK_FLOW_SCOPE interfaces__shift_right FALSE FALSE FALSE FALSE TRUE interfaces VISIBLE_PART
+GG EK_FLOW_SCOPE ada___interfaces__c__c_length_ghost__3 FALSE FALSE FALSE FALSE TRUE ada___interfaces__c VISIBLE_PART
+GG EK_FLOW_SCOPE ada___system__parameters TRUE FALSE FALSE FALSE FALSE system
+GG EK_FLOW_SCOPE ada___interfaces__c__c_length_ghost FALSE FALSE FALSE FALSE TRUE ada___interfaces__c VISIBLE_PART
+GG EK_FLOW_SCOPE ada___ada___interfaces__c__strings__value__3 FALSE FALSE FALSE FALSE TRUE ada___ada___interfaces__c__strings VISIBLE_PART
+GG EK_FLOW_SCOPE interfaces__shift_right_arithmetic__5 FALSE FALSE FALSE FALSE TRUE interfaces VISIBLE_PART
+GG EK_FLOW_SCOPE ada___interfaces__c__to_ada__12 FALSE FALSE FALSE FALSE TRUE ada___interfaces__c VISIBLE_PART
+GG EK_FLOW_SCOPE interfaces__shift_right_arithmetic__4 FALSE FALSE FALSE FALSE TRUE interfaces VISIBLE_PART
+GG EK_FLOW_SCOPE interfaces__shift_right_arithmetic__3 FALSE FALSE FALSE FALSE TRUE interfaces VISIBLE_PART
+GG EK_FLOW_SCOPE tool_refract TRUE FALSE FALSE FALSE FALSE __standard
+GG EK_FLOW_SCOPE interfaces__shift_right_arithmetic__2 FALSE FALSE FALSE FALSE TRUE interfaces VISIBLE_PART
+GG EK_FLOW_SCOPE ada___interfaces__c__to_c__7 FALSE FALSE FALSE FALSE TRUE ada___interfaces__c VISIBLE_PART
+GG EK_FLOW_SCOPE tool_refract__execute FALSE FALSE FALSE FALSE TRUE tool_refract VISIBLE_PART
+GG EK_FLOW_SCOPE interfaces__shift_right_arithmetic FALSE FALSE FALSE FALSE TRUE interfaces VISIBLE_PART
+GG EK_FLOW_SCOPE ada___ada___interfaces__c__strings__new_string FALSE FALSE FALSE FALSE TRUE ada___ada___interfaces__c__strings VISIBLE_PART
+GG EK_FLOW_SCOPE ada___interfaces__c__c_length_ghost__4 FALSE FALSE FALSE FALSE TRUE ada___interfaces__c VISIBLE_PART
+GG EK_FLOW_SCOPE ada___interfaces__c__to_c FALSE FALSE FALSE FALSE TRUE ada___interfaces__c VISIBLE_PART
+GG EK_FLOW_SCOPE ada___system__parameters__default_stack_size FALSE FALSE FALSE FALSE TRUE ada___system__parameters VISIBLE_PART
+GG EK_FLOW_SCOPE ada___interfaces__c__to_c__4 FALSE FALSE FALSE FALSE TRUE ada___interfaces__c VISIBLE_PART
+GG EK_FLOW_SCOPE interfaces TRUE FALSE FALSE FALSE FALSE __standard
+GG EK_FLOW_SCOPE ada___ada___interfaces__c__strings TRUE FALSE FALSE FALSE FALSE ada___interfaces__c
+GG EK_FLOW_SCOPE ada___ada___interfaces__c__strings__value__4 FALSE FALSE FALSE FALSE TRUE ada___ada___interfaces__c__strings VISIBLE_PART
+GG EK_FLOW_SCOPE ada___system__parameters__minimum_stack_size FALSE FALSE FALSE FALSE TRUE ada___system__parameters VISIBLE_PART
+GG EK_FLOW_SCOPE interfaces__rotate_left__5 FALSE FALSE FALSE FALSE TRUE interfaces VISIBLE_PART
+GG EK_FLOW_SCOPE interfaces__rotate_left__4 FALSE FALSE FALSE FALSE TRUE interfaces VISIBLE_PART
+GG EK_FLOW_SCOPE ada___system__parameters__adjust_storage_size FALSE FALSE FALSE FALSE TRUE ada___system__parameters VISIBLE_PART
+GG EK_FLOW_SCOPE interfaces__rotate_left__3 FALSE FALSE FALSE FALSE TRUE interfaces VISIBLE_PART
+GG EK_FLOW_SCOPE interfaces__rotate_left__2 FALSE FALSE FALSE FALSE TRUE interfaces VISIBLE_PART
+GG EK_FLOW_SCOPE ada___interfaces__c__to_c__10 FALSE FALSE FALSE FALSE TRUE ada___interfaces__c VISIBLE_PART
+GG EK_FLOW_SCOPE ada___interfaces__c TRUE FALSE FALSE FALSE FALSE interfaces
+GG EK_FLOW_SCOPE interfaces__rotate_left FALSE FALSE FALSE FALSE TRUE interfaces VISIBLE_PART
+GG EK_FLOW_SCOPE ada___interfaces__c__to_ada__7 FALSE FALSE FALSE FALSE TRUE ada___interfaces__c VISIBLE_PART
+GG EK_FLOW_SCOPE ada___interfaces__c__to_ada__4 FALSE FALSE FALSE FALSE TRUE ada___interfaces__c VISIBLE_PART
+GG EK_FLOW_SCOPE ada___ada___interfaces__c__strings__update__2 FALSE FALSE FALSE FALSE TRUE ada___ada___interfaces__c__strings VISIBLE_PART
+GG EK_FLOW_SCOPE ada___ada___interfaces__c__strings__free FALSE FALSE FALSE FALSE TRUE ada___ada___interfaces__c__strings VISIBLE_PART
+GG EK_FLOW_SCOPE ada___interfaces__c__to_ada FALSE FALSE FALSE FALSE TRUE ada___interfaces__c VISIBLE_PART
+GG EK_FLOW_SCOPE system TRUE FALSE FALSE FALSE FALSE __standard
+GG EK_FLOW_SCOPE interfaces__rotate_right__5 FALSE FALSE FALSE FALSE TRUE interfaces VISIBLE_PART
+GG EK_FLOW_SCOPE system__Olt FALSE FALSE FALSE FALSE TRUE system VISIBLE_PART
+GG EK_FLOW_SCOPE interfaces__rotate_right__4 FALSE FALSE FALSE FALSE TRUE interfaces VISIBLE_PART
+GG EK_FLOW_SCOPE tool_refract__validate FALSE FALSE FALSE FALSE TRUE tool_refract VISIBLE_PART
+GG EK_FLOW_SCOPE ada___interfaces__c__to_c__6 FALSE FALSE FALSE FALSE TRUE ada___interfaces__c VISIBLE_PART
+GG EK_FLOW_SCOPE interfaces__rotate_right__3 FALSE FALSE FALSE FALSE TRUE interfaces VISIBLE_PART
+GG EK_FLOW_SCOPE interfaces__rotate_right__2 FALSE FALSE FALSE FALSE TRUE interfaces VISIBLE_PART
+GG EK_FLOW_SCOPE ada___interfaces__c__to_ada__5 FALSE FALSE FALSE FALSE TRUE ada___interfaces__c VISIBLE_PART
+GG EK_FLOW_SCOPE ada___ada___interfaces__c__strings__strlen FALSE FALSE FALSE FALSE TRUE ada___ada___interfaces__c__strings VISIBLE_PART
+GG EK_FLOW_SCOPE interfaces__rotate_right FALSE FALSE FALSE FALSE TRUE interfaces VISIBLE_PART
+GG EK_FLOW_SCOPE ada___ada___interfaces__c__strings__value FALSE FALSE FALSE FALSE TRUE ada___ada___interfaces__c__strings VISIBLE_PART
+GG EK_FLOW_SCOPE system__Ole FALSE FALSE FALSE FALSE TRUE system VISIBLE_PART
+GG EK_FLOW_SCOPE ada___interfaces__c__to_ada__10 FALSE FALSE FALSE FALSE TRUE ada___interfaces__c VISIBLE_PART
+GG EK_FLOW_SCOPE vitriol_types__chunk_count FALSE FALSE FALSE FALSE TRUE vitriol_types VISIBLE_PART
+GG EK_FLOW_SCOPE ada___interfaces__c__to_c__5 FALSE FALSE FALSE FALSE TRUE ada___interfaces__c VISIBLE_PART
+GG EK_FLOW_SCOPE ada___interfaces__c__to_c__3 FALSE FALSE FALSE FALSE TRUE ada___interfaces__c VISIBLE_PART
+GG EK_FLOW_SCOPE ada___interfaces__c__is_nul_terminated__2 FALSE FALSE FALSE FALSE TRUE ada___interfaces__c VISIBLE_PART
+GG EK_FLOW_SCOPE system__Ogt FALSE FALSE FALSE FALSE TRUE system VISIBLE_PART
+GG EK_FLOW_SCOPE ada___interfaces__c__to_ada__8 FALSE FALSE FALSE FALSE TRUE ada___interfaces__c VISIBLE_PART
+GG EK_FLOW_SCOPE ada___interfaces__c__to_c__9 FALSE FALSE FALSE FALSE TRUE ada___interfaces__c VISIBLE_PART
+GG EK_FLOW_SCOPE ada___interfaces__c__to_ada__6 FALSE FALSE FALSE FALSE TRUE ada___interfaces__c VISIBLE_PART
+GG EK_FLOW_SCOPE ada___interfaces__c__to_ada__2 FALSE FALSE FALSE FALSE TRUE ada___interfaces__c VISIBLE_PART
+GG EK_FLOW_SCOPE ada___interfaces__c__to_c__8 FALSE FALSE FALSE FALSE TRUE ada___interfaces__c VISIBLE_PART
+GG EK_FLOW_SCOPE interfaces__shift_left__5 FALSE FALSE FALSE FALSE TRUE interfaces VISIBLE_PART
+GG EK_FLOW_SCOPE ada___interfaces__c__is_nul_terminated__3 FALSE FALSE FALSE FALSE TRUE ada___interfaces__c VISIBLE_PART
+GG EK_FLOW_SCOPE interfaces__shift_left__4 FALSE FALSE FALSE FALSE TRUE interfaces VISIBLE_PART
+GG EK_END_MARKER

@@ -1,0 +1,138 @@
+[
+{
+  "name": "Vitriol_Types.Op_Code",
+  "location": "vitriol_types.ads:17:9",
+  "Size": 8,
+  "Alignment": 1
+}
+,
+{
+  "name": "Vitriol_Types.Drop_Type",
+  "location": "vitriol_types.ads:31:9",
+  "Size": 256,
+  "Alignment": 4,
+  "record": [
+    {
+      "name": "Op_Kind",
+      "Position":  0,
+      "First_Bit": 0,
+      "Size": 8
+    },
+    {
+      "name": "Flags",
+      "Position":  1,
+      "First_Bit": 0,
+      "Size": 8
+    },
+    {
+      "name": "Vessel_Id",
+      "Position":  2,
+      "First_Bit": 0,
+      "Size": 16
+    },
+    {
+      "name": "Src_Addr",
+      "Position":  4,
+      "First_Bit": 0,
+      "Size": 64
+    },
+    {
+      "name": "Dst_Addr",
+      "Position": 12,
+      "First_Bit": 0,
+      "Size": 64
+    },
+    {
+      "name": "Size",
+      "Position": 20,
+      "First_Bit": 0,
+      "Size": 32
+    },
+    {
+      "name": "Reserved",
+      "Position": 24,
+      "First_Bit": 0,
+      "Size": 32
+    },
+    {
+      "name": "Crc",
+      "Position": 28,
+      "First_Bit": 0,
+      "Size": 32
+    }
+  ]
+}
+,
+{
+  "name": "Vitriol_Types.Vial_Constraints",
+  "location": "vitriol_types.ads:45:9",
+  "Object_Size": 256,
+  "Value_Size": 200,
+  "Alignment": 8,
+  "record": [
+    {
+      "name": "Aperture_Size",
+      "Position":  0,
+      "First_Bit": 0,
+      "Size": 64
+    },
+    {
+      "name": "Aperture_Max",
+      "Position":  8,
+      "First_Bit": 0,
+      "Size": 64
+    },
+    {
+      "name": "Thermal_Halt",
+      "Position": 16,
+      "First_Bit": 0,
+      "Size": 32
+    },
+    {
+      "name": "Thermal_Throttle",
+      "Position": 20,
+      "First_Bit": 0,
+      "Size": 32
+    },
+    {
+      "name": "Dma_Capable",
+      "Position": 24,
+      "First_Bit": 0,
+      "Size": 8
+    }
+  ]
+}
+,
+{
+  "name": "Vitriol_Types.Tool_Result",
+  "location": "vitriol_types.ads:56:9",
+  "Size": 256,
+  "Alignment": 8,
+  "record": [
+    {
+      "name": "Success",
+      "Position":  0,
+      "First_Bit": 0,
+      "Size": 8
+    },
+    {
+      "name": "Cycles_Spent",
+      "Position":  8,
+      "First_Bit": 0,
+      "Size": 64
+    },
+    {
+      "name": "Bytes_Transferred",
+      "Position": 16,
+      "First_Bit": 0,
+      "Size": 64
+    },
+    {
+      "name": "Error_Message",
+      "Position": 24,
+      "First_Bit": 0,
+      "Size": 64
+    }
+  ]
+}
+]

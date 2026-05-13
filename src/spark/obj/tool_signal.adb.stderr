@@ -1,7 +1,28 @@
 tool_signal.adb:6:06: warning: redundant with clause in body [-gnatwr]
-tool_signal.adb:12:04: warning: "Unsigned_64" is already use-visible through previous use_type_clause at tool_signal.ads:13 [enabled by default]
+tool_signal.adb:12:04: warning: "Unsigned_64" is already use-visible through previous use_type_clause at tool_signal.ads:14 [enabled by default]
 tool_signal.adb:12:04: warning: use clause for type "Interfaces.Unsigned_64" has no effect [-gnatwu]
 tool_signal.adb:13:04: warning: use clause for type "Interfaces.Unsigned_32" has no effect [-gnatwu]
-tool_signal.ads:28:24: (style) space required
-tool_signal.ads:29:80: (style) this line is too long
-tool_signal.ads:29:89: (style) space required
+tool_signal.adb:15:06: (style) bad indentation
+tool_signal.adb:19:08: (style) bad indentation
+tool_signal.adb:20:08: (style) bad indentation
+tool_signal.adb:21:05: (style) bad indentation
+tool_signal.adb:22:08: (style) bad indentation
+tool_signal.adb:23:11: (style) bad indentation
+tool_signal.adb:24:08: (style) bad indentation
+tool_signal.adb:26:08: (style) bad indentation
+tool_signal.adb:27:11: (style) bad indentation
+tool_signal.adb:28:08: (style) bad indentation
+tool_signal.adb:30:08: (style) bad indentation
+tool_signal.adb:31:05: (style) bad indentation
+tool_signal.adb:33:06: (style) bad indentation
+tool_signal.adb:37:08: (style) bad indentation
+tool_signal.adb:38:08: (style) bad indentation
+tool_signal.adb:39:05: (style) bad indentation
+tool_signal.adb:40:08: (style) bad indentation
+tool_signal.adb:41:08: (style) bad indentation
+tool_signal.adb:43:08: (style) bad indentation
+tool_signal.adb:47:05: (style) bad indentation
+tool_signal.ads:17:06: (style) bad indentation
+tool_signal.ads:29:06: (style) bad indentation
+tool_signal.ads:37:26: (style) space required
+tool_signal.ads:38:80: (style) this line is too long

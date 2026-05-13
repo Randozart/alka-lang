@@ -1,11 +1,41 @@
 tool_flow.adb:6:06: warning: redundant with clause in body [-gnatwr]
-tool_flow.adb:12:04: warning: "Unsigned_64" is already use-visible through previous use_type_clause at tool_flow.ads:13 [enabled by default]
+tool_flow.adb:12:04: warning: "Unsigned_64" is already use-visible through previous use_type_clause at tool_flow.ads:14 [enabled by default]
 tool_flow.adb:12:04: warning: use clause for type "Interfaces.Unsigned_64" has no effect [-gnatwu]
-tool_flow.adb:24:32: (style) space required
-tool_flow.adb:32:46: (style) space required
-tool_flow.adb:36:46: (style) space required
-tool_flow.adb:49:31: (style) space required
-tool_flow.adb:52:44: (style) space required
-tool_flow.ads:28:24: (style) space required
-tool_flow.ads:29:80: (style) this line is too long
-tool_flow.ads:29:89: (style) space required
+tool_flow.adb:13:04: warning: "Unsigned_32" is already use-visible through previous use_type_clause at tool_flow.ads:15 [enabled by default]
+tool_flow.adb:13:04: warning: use clause for type "Interfaces.Unsigned_32" has no effect [-gnatwu]
+tool_flow.adb:15:06: (style) bad indentation
+tool_flow.adb:19:05: (style) bad indentation
+tool_flow.adb:20:08: (style) bad indentation
+tool_flow.adb:21:11: (style) bad indentation
+tool_flow.adb:22:08: (style) bad indentation
+tool_flow.adb:24:08: (style) bad indentation
+tool_flow.adb:25:11: (style) bad indentation
+tool_flow.adb:26:08: (style) bad indentation
+tool_flow.adb:28:08: (style) bad indentation
+tool_flow.adb:29:11: (style) bad indentation
+tool_flow.adb:30:08: (style) bad indentation
+tool_flow.adb:32:08: (style) bad indentation
+tool_flow.adb:33:11: (style) bad indentation
+tool_flow.adb:34:08: (style) bad indentation
+tool_flow.adb:36:08: (style) bad indentation
+tool_flow.adb:37:11: (style) bad indentation
+tool_flow.adb:38:08: (style) bad indentation
+tool_flow.adb:40:08: (style) bad indentation
+tool_flow.adb:41:05: (style) bad indentation
+tool_flow.adb:43:06: (style) bad indentation
+tool_flow.adb:47:08: (style) bad indentation
+tool_flow.adb:48:32: (style) space required
+tool_flow.adb:49:05: (style) bad indentation
+tool_flow.adb:50:08: (style) bad indentation
+tool_flow.adb:51:08: (style) bad indentation
+tool_flow.adb:52:08: (style) bad indentation
+tool_flow.adb:54:08: (style) bad indentation
+tool_flow.adb:58:05: (style) bad indentation
+tool_flow.ads:18:06: (style) bad indentation
+tool_flow.ads:28:43: (style) space required
+tool_flow.ads:30:57: (style) space required
+tool_flow.ads:31:57: (style) space required
+tool_flow.ads:34:06: (style) bad indentation
+tool_flow.ads:42:26: (style) space required
+tool_flow.ads:43:80: (style) this line is too long
+tool_flow.ads:43:107: (style) space required

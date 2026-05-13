@@ -1,0 +1,29 @@
+[
+{
+  "name": "Tool_Fence.Validate.Timeout_Us",
+  "location": "tool_fence.adb:20:8",
+  "Size": 64,
+  "Alignment": 8
+}
+,
+{
+  "name": "Tool_Fence.Execute.Timeout_Us",
+  "location": "tool_fence.adb:38:8",
+  "Size": 64,
+  "Alignment": 8
+}
+,
+{
+  "name": "Tool_Fence.Execute.Elapsed",
+  "location": "tool_fence.adb:39:8",
+  "Size": 64,
+  "Alignment": 8
+}
+,
+{
+  "name": "Tool_Fence.Execute.Poll_Step",
+  "location": "tool_fence.adb:40:8",
+  "Size": 64,
+  "Alignment": 8
+}
+]

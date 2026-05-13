@@ -1,7 +1,28 @@
 tool_shift.adb:6:06: warning: redundant with clause in body [-gnatwr]
-tool_shift.adb:12:04: warning: "Unsigned_64" is already use-visible through previous use_type_clause at tool_shift.ads:13 [enabled by default]
+tool_shift.adb:12:04: warning: "Unsigned_64" is already use-visible through previous use_type_clause at tool_shift.ads:14 [enabled by default]
 tool_shift.adb:12:04: warning: use clause for type "Interfaces.Unsigned_64" has no effect [-gnatwu]
-tool_shift.ads:28:24: (style) space required
+tool_shift.adb:14:05: (style) bad indentation
+tool_shift.adb:18:08: (style) bad indentation
+tool_shift.adb:19:08: (style) bad indentation
+tool_shift.adb:20:05: (style) bad indentation
+tool_shift.adb:21:08: (style) bad indentation
+tool_shift.adb:22:11: (style) bad indentation
+tool_shift.adb:23:08: (style) bad indentation
+tool_shift.adb:25:08: (style) bad indentation
+tool_shift.adb:26:11: (style) bad indentation
+tool_shift.adb:27:08: (style) bad indentation
+tool_shift.adb:29:08: (style) bad indentation
+tool_shift.adb:30:05: (style) bad indentation
+tool_shift.adb:32:05: (style) bad indentation
+tool_shift.adb:36:08: (style) bad indentation
+tool_shift.adb:37:08: (style) bad indentation
+tool_shift.adb:38:05: (style) bad indentation
+tool_shift.adb:39:08: (style) bad indentation
+tool_shift.adb:40:08: (style) bad indentation
+tool_shift.adb:42:08: (style) bad indentation
+tool_shift.adb:46:05: (style) bad indentation
+tool_shift.ads:18:28: (style) space required
+tool_shift.ads:20:05: (style) bad indentation
 tool_shift.ads:29:80: (style) this line is too long
-tool_shift.ads:29:89: (style) space required
-tool_shift.ads:34:28: (style) space required
+tool_shift.ads:32:05: (style) bad indentation
+tool_shift.ads:40:25: (style) space required

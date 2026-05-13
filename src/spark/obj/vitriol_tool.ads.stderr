@@ -1,0 +1,6 @@
+cannot generate code for file vitriol_tool.ads (package spec)
+vitriol_tool.ads:86:24: (style) space required
+vitriol_tool.ads:87:80: (style) this line is too long
+vitriol_tool.ads:87:89: (style) space required
+vitriol_tool.ads:93:28: (style) space required
+vitriol_tool.ads:100:35: (style) space required

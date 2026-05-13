@@ -1,0 +1,693 @@
+{
+  "assumptions": [
+    {
+      "assumptions": [
+      ],
+      "claim": {
+        "arg": 2,
+        "predicate": "CLAIM_EFFECTS"
+      }
+    },
+    {
+      "assumptions": [
+      ],
+      "claim": {
+        "arg": 3,
+        "predicate": "CLAIM_AORTE"
+      }
+    },
+    {
+      "assumptions": [
+        {
+          "arg": 2,
+          "predicate": "CLAIM_EFFECTS"
+        }
+      ],
+      "claim": {
+        "arg": 1,
+        "predicate": "CLAIM_EFFECTS"
+      }
+    }
+  ],
+  "entities": {
+    " 1": {
+      "name": "Tool_Fence.Execute",
+      "sloc": [
+        {
+          "file": "tool_fence.ads",
+          "line": 29
+        }
+      ]
+    },
+    " 2": {
+      "name": "Tool_Fence.Validate",
+      "sloc": [
+        {
+          "file": "tool_fence.ads",
+          "line": 17
+        }
+      ]
+    },
+    " 3": {
+      "name": "Tool_Fence",
+      "sloc": [
+        {
+          "file": "tool_fence.ads",
+          "line": 10
+        }
+      ]
+    }
+  },
+  "flow": [
+    {
+      "check_tree": {
+      },
+      "col": 14,
+      "entity": 1,
+      "file": "tool_fence.ads",
+      "how_proved": "flow",
+      "line": 29,
+      "rule": "SUBPROGRAM_TERMINATION",
+      "severity": "info"
+    },
+    {
+      "check_tree": {
+      },
+      "col": 7,
+      "entity": 1,
+      "file": "tool_fence.ads",
+      "how_proved": "flow",
+      "line": 33,
+      "rule": "GLOBAL_WRONG",
+      "severity": "info"
+    },
+    {
+      "check_tree": {
+      },
+      "col": 14,
+      "entity": 2,
+      "file": "tool_fence.ads",
+      "how_proved": "flow",
+      "line": 17,
+      "rule": "SUBPROGRAM_TERMINATION",
+      "severity": "info"
+    },
+    {
+      "check_tree": {
+      },
+      "col": 7,
+      "entity": 2,
+      "file": "tool_fence.ads",
+      "how_proved": "flow",
+      "line": 21,
+      "rule": "GLOBAL_WRONG",
+      "severity": "info"
+    }
+  ],
+  "pragma_assume": [
+  ],
+  "progress": "PROGRESS_PROOF",
+  "proof": [
+    {
+      "check_col": 58,
+      "check_file": "tool_fence.adb",
+      "check_line": 20,
+      "check_tree": [
+        {
+          "proof_attempts": {
+            "CVC5": {
+              "result": "High failure",
+              "steps": 1,
+              "time": 1.00000000000000E-06
+            },
+            "Z3": {
+              "result": "Timeout",
+              "steps": 1,
+              "time": 60
+            },
+            "altergo": {
+              "result": "Timeout",
+              "steps": 1,
+              "time": 60
+            }
+          },
+          "transformations": {
+            "introduce_premises": [
+              {
+                "proof_attempts": {
+                  "CVC5_CE": {
+                    "result": "High failure",
+                    "steps": 1,
+                    "time": 1.00000000000000E-06
+                  }
+                },
+                "transformations": {
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "col": 58,
+      "entity": 2,
+      "file": "tool_fence.adb",
+      "how_proved": "prover",
+      "line": 20,
+      "msg_id": 0,
+      "rule": "VC_NULL_POINTER_DEREFERENCE",
+      "severity": "medium"
+    },
+    {
+      "check_col": 22,
+      "check_file": "tool_fence.ads",
+      "check_line": 26,
+      "check_tree": [
+        {
+          "proof_attempts": {
+            "CVC5": {
+              "result": "High failure",
+              "steps": 1,
+              "time": 8.71000000000000E-04
+            },
+            "Z3": {
+              "result": "Timeout",
+              "steps": 1,
+              "time": 60
+            },
+            "altergo": {
+              "result": "Timeout",
+              "steps": 1,
+              "time": 60
+            }
+          },
+          "transformations": {
+            "introduce_premises": [
+              {
+                "proof_attempts": {
+                  "CVC5_CE": {
+                    "result": "High failure",
+                    "steps": 1,
+                    "time": 1.00000000000000E-06
+                  }
+                },
+                "transformations": {
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "col": 22,
+      "entity": 2,
+      "file": "tool_fence.ads",
+      "how_proved": "prover",
+      "line": 26,
+      "msg_id": 1,
+      "rule": "VC_NULL_POINTER_DEREFERENCE",
+      "severity": "medium"
+    },
+    {
+      "check_col": 47,
+      "check_file": "tool_fence.ads",
+      "check_line": 26,
+      "check_tree": [
+        {
+          "proof_attempts": {
+            "CVC5": {
+              "result": "High failure",
+              "steps": 1,
+              "time": 1.00000000000000E-06
+            },
+            "Z3": {
+              "result": "Timeout",
+              "steps": 1,
+              "time": 60
+            },
+            "altergo": {
+              "result": "Timeout",
+              "steps": 1,
+              "time": 60
+            }
+          },
+          "transformations": {
+            "introduce_premises": [
+              {
+                "proof_attempts": {
+                  "CVC5_CE": {
+                    "result": "High failure",
+                    "steps": 1,
+                    "time": 8.75000000000000E-04
+                  }
+                },
+                "transformations": {
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "col": 47,
+      "entity": 2,
+      "file": "tool_fence.ads",
+      "how_proved": "prover",
+      "line": 26,
+      "msg_id": 2,
+      "rule": "VC_NULL_POINTER_DEREFERENCE",
+      "severity": "medium"
+    },
+    {
+      "check_col": 17,
+      "check_file": "tool_fence.ads",
+      "check_line": 25,
+      "check_tree": [
+        {
+          "proof_attempts": {
+            "Trivial": {
+              "result": "Valid",
+              "steps": 2,
+              "time": 0
+            }
+          },
+          "transformations": {
+          }
+        },
+        {
+          "proof_attempts": {
+            "Z3": {
+              "result": "Valid",
+              "steps": 1,
+              "time": 0
+            }
+          },
+          "transformations": {
+            "introduce_premises": [
+              {
+                "proof_attempts": {
+                },
+                "transformations": {
+                }
+              }
+            ]
+          }
+        },
+        {
+          "proof_attempts": {
+            "Z3": {
+              "result": "Valid",
+              "steps": 1,
+              "time": 0
+            }
+          },
+          "transformations": {
+          }
+        }
+      ],
+      "col": 17,
+      "entity": 2,
+      "file": "tool_fence.ads",
+      "how_proved": "prover",
+      "line": 25,
+      "rule": "VC_POSTCONDITION",
+      "severity": "info",
+      "stats": {
+        "Trivial": {
+          "count": 1,
+          "max_steps": 2,
+          "max_time": 0.00000000000000E+00
+        },
+        "Z3": {
+          "count": 2,
+          "max_steps": 1,
+          "max_time": 0.00000000000000E+00
+        }
+      }
+    },
+    {
+      "check_col": 58,
+      "check_file": "tool_fence.adb",
+      "check_line": 38,
+      "check_tree": [
+        {
+          "proof_attempts": {
+            "CVC5": {
+              "result": "High failure",
+              "steps": 1,
+              "time": 1.00000000000000E-06
+            },
+            "Z3": {
+              "result": "Timeout",
+              "steps": 1,
+              "time": 60
+            },
+            "altergo": {
+              "result": "Timeout",
+              "steps": 1,
+              "time": 60
+            }
+          },
+          "transformations": {
+            "introduce_premises": [
+              {
+                "proof_attempts": {
+                  "CVC5_CE": {
+                    "result": "High failure",
+                    "steps": 1,
+                    "time": 7.34000000000000E-04
+                  }
+                },
+                "transformations": {
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "col": 58,
+      "entity": 1,
+      "file": "tool_fence.adb",
+      "how_proved": "prover",
+      "line": 38,
+      "msg_id": 3,
+      "rule": "VC_NULL_POINTER_DEREFERENCE",
+      "severity": "medium"
+    },
+    {
+      "check_col": 23,
+      "check_file": "tool_fence.adb",
+      "check_line": 42,
+      "check_tree": [
+        {
+          "proof_attempts": {
+            "Z3": {
+              "result": "Valid",
+              "steps": 1,
+              "time": 0
+            }
+          },
+          "transformations": {
+          }
+        }
+      ],
+      "col": 23,
+      "entity": 1,
+      "file": "tool_fence.adb",
+      "how_proved": "prover",
+      "line": 42,
+      "rule": "VC_ASSERT",
+      "severity": "info",
+      "stats": {
+        "Z3": {
+          "count": 1,
+          "max_steps": 1,
+          "max_time": 0.00000000000000E+00
+        }
+      }
+    },
+    {
+      "check_col": 23,
+      "check_file": "tool_fence.adb",
+      "check_line": 43,
+      "check_tree": [
+        {
+          "proof_attempts": {
+            "Z3": {
+              "result": "Valid",
+              "steps": 1,
+              "time": 0
+            }
+          },
+          "transformations": {
+          }
+        }
+      ],
+      "col": 23,
+      "entity": 1,
+      "file": "tool_fence.adb",
+      "how_proved": "prover",
+      "line": 43,
+      "rule": "VC_ASSERT",
+      "severity": "info",
+      "stats": {
+        "Z3": {
+          "count": 1,
+          "max_steps": 1,
+          "max_time": 0.00000000000000E+00
+        }
+      }
+    },
+    {
+      "check_col": 34,
+      "check_file": "tool_fence.adb",
+      "check_line": 46,
+      "check_tree": [
+        {
+          "proof_attempts": {
+            "Z3": {
+              "result": "Valid",
+              "steps": 1,
+              "time": 0
+            }
+          },
+          "transformations": {
+          }
+        }
+      ],
+      "col": 34,
+      "entity": 1,
+      "file": "tool_fence.adb",
+      "how_proved": "prover",
+      "line": 46,
+      "rule": "VC_LOOP_INVARIANT_INIT",
+      "severity": "info",
+      "stats": {
+        "Z3": {
+          "count": 1,
+          "max_steps": 1,
+          "max_time": 0.00000000000000E+00
+        }
+      }
+    },
+    {
+      "check_col": 34,
+      "check_file": "tool_fence.adb",
+      "check_line": 46,
+      "check_tree": [
+        {
+          "proof_attempts": {
+            "Z3": {
+              "result": "Valid",
+              "steps": 1,
+              "time": 0
+            }
+          },
+          "transformations": {
+          }
+        }
+      ],
+      "col": 34,
+      "entity": 1,
+      "file": "tool_fence.adb",
+      "how_proved": "prover",
+      "line": 46,
+      "rule": "VC_LOOP_INVARIANT_PRESERV",
+      "severity": "info",
+      "stats": {
+        "Z3": {
+          "count": 1,
+          "max_steps": 1,
+          "max_time": 0.00000000000000E+00
+        }
+      }
+    },
+    {
+      "check_col": 32,
+      "check_file": "tool_fence.adb",
+      "check_line": 47,
+      "check_tree": [
+        {
+          "proof_attempts": {
+            "Z3": {
+              "result": "Valid",
+              "steps": 1,
+              "time": 0
+            }
+          },
+          "transformations": {
+          }
+        }
+      ],
+      "col": 32,
+      "entity": 1,
+      "file": "tool_fence.adb",
+      "how_proved": "prover",
+      "line": 47,
+      "rule": "VC_LOOP_VARIANT",
+      "severity": "info",
+      "stats": {
+        "Z3": {
+          "count": 1,
+          "max_steps": 1,
+          "max_time": 0.00000000000000E+00
+        }
+      }
+    },
+    {
+      "check_col": 23,
+      "check_file": "tool_fence.adb",
+      "check_line": 52,
+      "check_tree": [
+        {
+          "proof_attempts": {
+            "Z3": {
+              "result": "Valid",
+              "steps": 1,
+              "time": 0
+            }
+          },
+          "transformations": {
+          }
+        }
+      ],
+      "col": 23,
+      "entity": 1,
+      "file": "tool_fence.adb",
+      "how_proved": "prover",
+      "line": 52,
+      "rule": "VC_ASSERT",
+      "severity": "info",
+      "stats": {
+        "Z3": {
+          "count": 1,
+          "max_steps": 1,
+          "max_time": 0.00000000000000E+00
+        }
+      }
+    },
+    {
+      "check_col": 17,
+      "check_file": "tool_fence.ads",
+      "check_line": 38,
+      "check_tree": [
+        {
+          "proof_attempts": {
+            "Z3": {
+              "result": "Valid",
+              "steps": 1,
+              "time": 0
+            }
+          },
+          "transformations": {
+          }
+        },
+        {
+          "proof_attempts": {
+            "Z3": {
+              "result": "Valid",
+              "steps": 1,
+              "time": 0
+            }
+          },
+          "transformations": {
+          }
+        }
+      ],
+      "col": 17,
+      "entity": 1,
+      "file": "tool_fence.ads",
+      "how_proved": "prover",
+      "line": 38,
+      "rule": "VC_POSTCONDITION",
+      "severity": "info",
+      "stats": {
+        "Z3": {
+          "count": 2,
+          "max_steps": 1,
+          "max_time": 0.00000000000000E+00
+        }
+      }
+    }
+  ],
+  "skip_flow_proof": [
+  ],
+  "skip_proof": [
+  ],
+  "spark": {
+    " 1": "all",
+    " 2": "all",
+    " 3": "all"
+  },
+  "stop_reason": "STOP_REASON_NONE",
+  "timings": {
+    " 1": {
+      "gnat2why.vc_generation": 3.49200004711747E-03,
+      "gnatwhy3.init": 6.27830982208252E-01,
+      "gnatwhy3.register_vcs": 4.55000001238659E-04,
+      "gnatwhy3.run_vcs": 2.09989993891213E-05,
+      "gnatwhy3.save_session": 1.12749990075827E-02,
+      "gnatwhy3.schedule_vcs": 2.74928003549576E-01,
+      "gnatwhy3.transformations.counterexamples_dependent_intros": 1.59009993076324E-02,
+      "gnatwhy3.transformations.detect_polymorphism": 2.14700005017221E-03,
+      "gnatwhy3.transformations.discriminate_if_poly": 1.59989995154319E-05,
+      "gnatwhy3.transformations.eliminate_algebraic": 1.22589990496635E-02,
+      "gnatwhy3.transformations.eliminate_algebraic_if_poly": 1.18260001763701E-02,
+      "gnatwhy3.transformations.eliminate_builtin": 5.26290014386177E-02,
+      "gnatwhy3.transformations.eliminate_definition_conditionally": 7.28699890896678E-03,
+      "gnatwhy3.transformations.eliminate_epsilon": 1.07699986547232E-02,
+      "gnatwhy3.transformations.eliminate_gnatprove_guard_epsilon": 6.46100006997585E-03,
+      "gnatwhy3.transformations.eliminate_inductive": 1.20590003207326E-02,
+      "gnatwhy3.transformations.eliminate_literal": 1.29429986700416E-02,
+      "gnatwhy3.transformations.eliminate_projections_sums": 3.35399899631739E-03,
+      "gnatwhy3.transformations.eliminate_recursion": 3.43600008636713E-03,
+      "gnatwhy3.transformations.encoding_smt_if_poly": 7.99900044512469E-06,
+      "gnatwhy3.transformations.inline_trivial": 2.00429007411003E-01,
+      "gnatwhy3.transformations.introduce_premises": 4.15799906477332E-03,
+      "gnatwhy3.transformations.monomorphise_goal": 1.40000001920271E-05,
+      "gnatwhy3.transformations.prepare_for_counterexmp": 1.37600000016391E-03,
+      "gnatwhy3.transformations.remove_unused": 4.95680011808872E-02,
+      "gnatwhy3.transformations.remove_unused_keep_constants": 8.95499903708696E-03,
+      "gnatwhy3.transformations.simplify_formula": 1.24650001525879E-02,
+      "gnatwhy3.transformations.split_goal_wp_conj": 1.74950007349253E-02,
+      "gnatwhy3.transformations.split_premise_right": 5.64899900928140E-03
+    },
+    " 2": {
+      "gnat2why.vc_generation": 3.78299993462861E-03,
+      "gnatwhy3.init": 4.63550001382828E-01,
+      "gnatwhy3.register_vcs": 5.29989993083291E-05,
+      "gnatwhy3.run_vcs": 2.40000008489005E-05,
+      "gnatwhy3.save_session": 6.44699903205037E-03,
+      "gnatwhy3.schedule_vcs": 1.25646993517876E-01,
+      "gnatwhy3.transformations.counterexamples_dependent_intros": 1.20689989998937E-02,
+      "gnatwhy3.transformations.detect_polymorphism": 1.79899903014302E-03,
+      "gnatwhy3.transformations.discriminate_if_poly": 1.59989995154319E-05,
+      "gnatwhy3.transformations.eliminate_algebraic": 1.80600006133318E-02,
+      "gnatwhy3.transformations.eliminate_algebraic_if_poly": 1.03169986978173E-02,
+      "gnatwhy3.transformations.eliminate_builtin": 4.68759983778000E-02,
+      "gnatwhy3.transformations.eliminate_definition_conditionally": 9.51700005680323E-03,
+      "gnatwhy3.transformations.eliminate_epsilon": 1.41049986705184E-02,
+      "gnatwhy3.transformations.eliminate_gnatprove_guard_epsilon": 9.34400036931038E-03,
+      "gnatwhy3.transformations.eliminate_inductive": 1.20750004425645E-02,
+      "gnatwhy3.transformations.eliminate_literal": 1.47890001535416E-02,
+      "gnatwhy3.transformations.eliminate_projections_sums": 7.39799905568361E-03,
+      "gnatwhy3.transformations.eliminate_recursion": 4.35800012201071E-03,
+      "gnatwhy3.transformations.encoding_smt_if_poly": 1.10000000859145E-05,
+      "gnatwhy3.transformations.inline_trivial": 2.12102994322777E-01,
+      "gnatwhy3.transformations.introduce_premises": 4.19900007545948E-03,
+      "gnatwhy3.transformations.monomorphise_goal": 2.37999003729783E-04,
+      "gnatwhy3.transformations.prepare_for_counterexmp": 9.62300039827824E-03,
+      "gnatwhy3.transformations.remove_unused": 5.52890002727509E-02,
+      "gnatwhy3.transformations.remove_unused_keep_constants": 2.54689995199442E-02,
+      "gnatwhy3.transformations.simplify_formula": 1.81159991770983E-02,
+      "gnatwhy3.transformations.split_goal_wp_conj": 9.32000018656254E-03,
+      "gnatwhy3.transformations.split_premise_right": 1.13519988954067E-02
+    },
+    "global": {
+      "flow analysis": 2.36900011077523E-03,
+      "globals (advanced)": 3.25899990275502E-03,
+      "globals (basic)": 1.34100001305342E-02,
+      "init_why_sections": 6.45999971311539E-04,
+      "marking": 4.15999995311722E-04,
+      "properties (advanced)": 2.49999993684469E-05,
+      "translation of standard": 2.42300005629659E-03
+    }
+  }
+}

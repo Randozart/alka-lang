@@ -1,0 +1,824 @@
+{
+  "assumptions": [
+    {
+      "assumptions": [
+        {
+          "arg": 4,
+          "predicate": "CLAIM_POST"
+        },
+        {
+          "arg": 4,
+          "predicate": "CLAIM_EFFECTS"
+        },
+        {
+          "arg": 4,
+          "predicate": "CLAIM_AORTE"
+        }
+      ],
+      "claim": {
+        "arg": 1,
+        "predicate": "CLAIM_POST"
+      }
+    },
+    {
+      "assumptions": [
+        {
+          "arg": 4,
+          "predicate": "CLAIM_EFFECTS"
+        }
+      ],
+      "claim": {
+        "arg": 1,
+        "predicate": "CLAIM_EFFECTS"
+      }
+    },
+    {
+      "assumptions": [
+        {
+          "arg": 4,
+          "predicate": "CLAIM_POST"
+        },
+        {
+          "arg": 4,
+          "predicate": "CLAIM_EFFECTS"
+        },
+        {
+          "arg": 4,
+          "predicate": "CLAIM_AORTE"
+        }
+      ],
+      "claim": {
+        "arg": 1,
+        "predicate": "CLAIM_AORTE"
+      }
+    },
+    {
+      "assumptions": [
+      ],
+      "claim": {
+        "arg": 3,
+        "predicate": "CLAIM_AORTE"
+      }
+    },
+    {
+      "assumptions": [
+        {
+          "arg": 1,
+          "predicate": "CLAIM_POST"
+        },
+        {
+          "arg": 4,
+          "predicate": "CLAIM_POST"
+        },
+        {
+          "arg": 1,
+          "predicate": "CLAIM_EFFECTS"
+        },
+        {
+          "arg": 4,
+          "predicate": "CLAIM_EFFECTS"
+        },
+        {
+          "arg": 1,
+          "predicate": "CLAIM_AORTE"
+        },
+        {
+          "arg": 4,
+          "predicate": "CLAIM_AORTE"
+        }
+      ],
+      "claim": {
+        "arg": 2,
+        "predicate": "CLAIM_POST"
+      }
+    },
+    {
+      "assumptions": [
+        {
+          "arg": 1,
+          "predicate": "CLAIM_EFFECTS"
+        },
+        {
+          "arg": 4,
+          "predicate": "CLAIM_EFFECTS"
+        }
+      ],
+      "claim": {
+        "arg": 2,
+        "predicate": "CLAIM_EFFECTS"
+      }
+    },
+    {
+      "assumptions": [
+        {
+          "arg": 1,
+          "predicate": "CLAIM_POST"
+        },
+        {
+          "arg": 4,
+          "predicate": "CLAIM_POST"
+        },
+        {
+          "arg": 1,
+          "predicate": "CLAIM_EFFECTS"
+        },
+        {
+          "arg": 4,
+          "predicate": "CLAIM_EFFECTS"
+        },
+        {
+          "arg": 1,
+          "predicate": "CLAIM_AORTE"
+        },
+        {
+          "arg": 4,
+          "predicate": "CLAIM_AORTE"
+        }
+      ],
+      "claim": {
+        "arg": 2,
+        "predicate": "CLAIM_AORTE"
+      }
+    }
+  ],
+  "entities": {
+    " 1": {
+      "name": "Tool_Refract.Validate",
+      "sloc": [
+        {
+          "file": "tool_refract.ads",
+          "line": 22
+        }
+      ]
+    },
+    " 2": {
+      "name": "Tool_Refract.Execute",
+      "sloc": [
+        {
+          "file": "tool_refract.ads",
+          "line": 35
+        }
+      ]
+    },
+    " 3": {
+      "name": "Tool_Refract",
+      "sloc": [
+        {
+          "file": "tool_refract.ads",
+          "line": 11
+        }
+      ]
+    },
+    " 4": {
+      "name": "Vitriol_Types.Chunk_Count",
+      "sloc": [
+        {
+          "file": "vitriol_types.ads",
+          "line": 66
+        }
+      ]
+    }
+  },
+  "flow": [
+    {
+      "check_tree": {
+      },
+      "col": 9,
+      "entity": 1,
+      "file": "tool_refract.adb",
+      "how_proved": "flow",
+      "line": 21,
+      "rule": "UNINITIALIZED",
+      "severity": "info"
+    },
+    {
+      "check_tree": {
+      },
+      "col": 9,
+      "entity": 1,
+      "file": "tool_refract.adb",
+      "how_proved": "flow",
+      "line": 22,
+      "rule": "UNINITIALIZED",
+      "severity": "info"
+    },
+    {
+      "check_tree": {
+      },
+      "col": 14,
+      "entity": 1,
+      "file": "tool_refract.ads",
+      "how_proved": "flow",
+      "line": 22,
+      "rule": "SUBPROGRAM_TERMINATION",
+      "severity": "info"
+    },
+    {
+      "check_tree": {
+      },
+      "col": 7,
+      "entity": 1,
+      "file": "tool_refract.ads",
+      "how_proved": "flow",
+      "line": 26,
+      "rule": "GLOBAL_WRONG",
+      "severity": "info"
+    },
+    {
+      "check_tree": {
+      },
+      "col": 14,
+      "entity": 2,
+      "file": "tool_refract.ads",
+      "how_proved": "flow",
+      "line": 35,
+      "rule": "SUBPROGRAM_TERMINATION",
+      "severity": "info"
+    },
+    {
+      "check_tree": {
+      },
+      "col": 7,
+      "entity": 2,
+      "file": "tool_refract.ads",
+      "how_proved": "flow",
+      "line": 39,
+      "rule": "GLOBAL_WRONG",
+      "severity": "info"
+    }
+  ],
+  "pragma_assume": [
+  ],
+  "progress": "PROGRESS_PROOF",
+  "proof": [
+    {
+      "check_col": 18,
+      "check_file": "tool_refract.adb",
+      "check_line": 39,
+      "check_tree": [
+        {
+          "proof_attempts": {
+            "Z3": {
+              "result": "Valid",
+              "steps": 1,
+              "time": 0
+            }
+          },
+          "transformations": {
+          }
+        },
+        {
+          "proof_attempts": {
+            "Z3": {
+              "result": "Valid",
+              "steps": 1,
+              "time": 0
+            }
+          },
+          "transformations": {
+            "introduce_premises": [
+              {
+                "proof_attempts": {
+                },
+                "transformations": {
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "col": 18,
+      "entity": 1,
+      "file": "tool_refract.adb",
+      "how_proved": "prover",
+      "line": 39,
+      "rule": "VC_PRECONDITION",
+      "severity": "info",
+      "stats": {
+        "Z3": {
+          "count": 2,
+          "max_steps": 1,
+          "max_time": 0.00000000000000E+00
+        }
+      }
+    },
+    {
+      "check_col": 17,
+      "check_file": "tool_refract.ads",
+      "check_line": 30,
+      "check_tree": [
+        {
+          "proof_attempts": {
+            "Trivial": {
+              "result": "Valid",
+              "steps": 2,
+              "time": 0
+            }
+          },
+          "transformations": {
+          }
+        },
+        {
+          "proof_attempts": {
+            "Z3": {
+              "result": "Valid",
+              "steps": 2114,
+              "time": 0
+            }
+          },
+          "transformations": {
+            "introduce_premises": [
+              {
+                "proof_attempts": {
+                },
+                "transformations": {
+                }
+              }
+            ]
+          }
+        },
+        {
+          "proof_attempts": {
+            "Z3": {
+              "result": "Valid",
+              "steps": 1,
+              "time": 0
+            }
+          },
+          "transformations": {
+          }
+        }
+      ],
+      "col": 17,
+      "entity": 1,
+      "file": "tool_refract.ads",
+      "how_proved": "prover",
+      "line": 30,
+      "rule": "VC_POSTCONDITION",
+      "severity": "info",
+      "stats": {
+        "Trivial": {
+          "count": 1,
+          "max_steps": 2,
+          "max_time": 0.00000000000000E+00
+        },
+        "Z3": {
+          "count": 2,
+          "max_steps": 2114,
+          "max_time": 0.00000000000000E+00
+        }
+      }
+    },
+    {
+      "check_col": 10,
+      "check_file": "tool_refract.adb",
+      "check_line": 57,
+      "check_tree": [
+        {
+          "proof_attempts": {
+            "Z3": {
+              "result": "Valid",
+              "steps": 1,
+              "time": 0
+            }
+          },
+          "transformations": {
+          }
+        },
+        {
+          "proof_attempts": {
+            "Z3": {
+              "result": "Valid",
+              "steps": 1,
+              "time": 0
+            }
+          },
+          "transformations": {
+            "introduce_premises": [
+              {
+                "proof_attempts": {
+                },
+                "transformations": {
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "col": 10,
+      "entity": 2,
+      "file": "tool_refract.adb",
+      "how_proved": "prover",
+      "line": 57,
+      "rule": "VC_PRECONDITION",
+      "severity": "info",
+      "stats": {
+        "Z3": {
+          "count": 2,
+          "max_steps": 1,
+          "max_time": 0.00000000000000E+00
+        }
+      }
+    },
+    {
+      "check_col": 23,
+      "check_file": "tool_refract.adb",
+      "check_line": 61,
+      "check_tree": [
+        {
+          "proof_attempts": {
+            "Z3": {
+              "result": "Valid",
+              "steps": 1,
+              "time": 0
+            }
+          },
+          "transformations": {
+          }
+        }
+      ],
+      "col": 23,
+      "entity": 2,
+      "file": "tool_refract.adb",
+      "how_proved": "prover",
+      "line": 61,
+      "rule": "VC_ASSERT",
+      "severity": "info",
+      "stats": {
+        "Z3": {
+          "count": 1,
+          "max_steps": 1,
+          "max_time": 0.00000000000000E+00
+        }
+      }
+    },
+    {
+      "check_col": 23,
+      "check_file": "tool_refract.adb",
+      "check_line": 62,
+      "check_tree": [
+        {
+          "proof_attempts": {
+            "Z3": {
+              "result": "Valid",
+              "steps": 1,
+              "time": 0
+            }
+          },
+          "transformations": {
+          }
+        }
+      ],
+      "col": 23,
+      "entity": 2,
+      "file": "tool_refract.adb",
+      "how_proved": "prover",
+      "line": 62,
+      "rule": "VC_ASSERT",
+      "severity": "info",
+      "stats": {
+        "Z3": {
+          "count": 1,
+          "max_steps": 1,
+          "max_time": 0.00000000000000E+00
+        }
+      }
+    },
+    {
+      "check_col": 23,
+      "check_file": "tool_refract.adb",
+      "check_line": 63,
+      "check_tree": [
+        {
+          "proof_attempts": {
+            "Z3": {
+              "result": "Valid",
+              "steps": 1,
+              "time": 1.78850000000000E-01
+            }
+          },
+          "transformations": {
+            "introduce_premises": [
+              {
+                "proof_attempts": {
+                },
+                "transformations": {
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "col": 23,
+      "entity": 2,
+      "file": "tool_refract.adb",
+      "how_proved": "prover",
+      "line": 63,
+      "rule": "VC_ASSERT",
+      "severity": "info",
+      "stats": {
+        "Z3": {
+          "count": 1,
+          "max_steps": 1,
+          "max_time": 1.78849995136261E-01
+        }
+      }
+    },
+    {
+      "check_col": 34,
+      "check_file": "tool_refract.adb",
+      "check_line": 67,
+      "check_tree": [
+        {
+          "proof_attempts": {
+            "Z3": {
+              "result": "Valid",
+              "steps": 1,
+              "time": 0
+            }
+          },
+          "transformations": {
+          }
+        }
+      ],
+      "col": 34,
+      "entity": 2,
+      "file": "tool_refract.adb",
+      "how_proved": "prover",
+      "line": 67,
+      "rule": "VC_LOOP_INVARIANT_PRESERV",
+      "severity": "info",
+      "stats": {
+        "Z3": {
+          "count": 1,
+          "max_steps": 1,
+          "max_time": 0.00000000000000E+00
+        }
+      }
+    },
+    {
+      "check_col": 34,
+      "check_file": "tool_refract.adb",
+      "check_line": 67,
+      "check_tree": [
+        {
+          "proof_attempts": {
+            "Z3": {
+              "result": "Valid",
+              "steps": 1,
+              "time": 0
+            }
+          },
+          "transformations": {
+          }
+        }
+      ],
+      "col": 34,
+      "entity": 2,
+      "file": "tool_refract.adb",
+      "how_proved": "prover",
+      "line": 67,
+      "rule": "VC_LOOP_INVARIANT_INIT",
+      "severity": "info",
+      "stats": {
+        "Z3": {
+          "count": 1,
+          "max_steps": 1,
+          "max_time": 0.00000000000000E+00
+        }
+      }
+    },
+    {
+      "check_col": 34,
+      "check_file": "tool_refract.adb",
+      "check_line": 66,
+      "check_tree": [
+        {
+          "proof_attempts": {
+            "Z3": {
+              "result": "Valid",
+              "steps": 1,
+              "time": 0
+            }
+          },
+          "transformations": {
+          }
+        }
+      ],
+      "col": 34,
+      "entity": 2,
+      "file": "tool_refract.adb",
+      "how_proved": "prover",
+      "line": 66,
+      "rule": "VC_LOOP_INVARIANT_INIT",
+      "severity": "info",
+      "stats": {
+        "Z3": {
+          "count": 1,
+          "max_steps": 1,
+          "max_time": 0.00000000000000E+00
+        }
+      }
+    },
+    {
+      "check_col": 34,
+      "check_file": "tool_refract.adb",
+      "check_line": 66,
+      "check_tree": [
+        {
+          "proof_attempts": {
+            "Z3": {
+              "result": "Valid",
+              "steps": 1,
+              "time": 0
+            }
+          },
+          "transformations": {
+          }
+        }
+      ],
+      "col": 34,
+      "entity": 2,
+      "file": "tool_refract.adb",
+      "how_proved": "prover",
+      "line": 66,
+      "rule": "VC_LOOP_INVARIANT_PRESERV",
+      "severity": "info",
+      "stats": {
+        "Z3": {
+          "count": 1,
+          "max_steps": 1,
+          "max_time": 0.00000000000000E+00
+        }
+      }
+    },
+    {
+      "check_col": 32,
+      "check_file": "tool_refract.adb",
+      "check_line": 68,
+      "check_tree": [
+        {
+          "proof_attempts": {
+            "Z3": {
+              "result": "Valid",
+              "steps": 1,
+              "time": 0
+            }
+          },
+          "transformations": {
+          }
+        }
+      ],
+      "col": 32,
+      "entity": 2,
+      "file": "tool_refract.adb",
+      "how_proved": "prover",
+      "line": 68,
+      "rule": "VC_LOOP_VARIANT",
+      "severity": "info",
+      "stats": {
+        "Z3": {
+          "count": 1,
+          "max_steps": 1,
+          "max_time": 0.00000000000000E+00
+        }
+      }
+    },
+    {
+      "check_col": 23,
+      "check_file": "tool_refract.adb",
+      "check_line": 74,
+      "check_tree": [
+        {
+          "proof_attempts": {
+            "Z3": {
+              "result": "Valid",
+              "steps": 1141,
+              "time": 4.41175000000000E-01
+            }
+          },
+          "transformations": {
+          }
+        }
+      ],
+      "col": 23,
+      "entity": 2,
+      "file": "tool_refract.adb",
+      "how_proved": "prover",
+      "line": 74,
+      "rule": "VC_ASSERT",
+      "severity": "info",
+      "stats": {
+        "Z3": {
+          "count": 1,
+          "max_steps": 1141,
+          "max_time": 4.41175013780594E-01
+        }
+      }
+    },
+    {
+      "check_col": 17,
+      "check_file": "tool_refract.ads",
+      "check_line": 44,
+      "check_tree": [
+        {
+          "proof_attempts": {
+            "Z3": {
+              "result": "Valid",
+              "steps": 1,
+              "time": 0
+            }
+          },
+          "transformations": {
+            "introduce_premises": [
+              {
+                "proof_attempts": {
+                },
+                "transformations": {
+                }
+              }
+            ]
+          }
+        },
+        {
+          "proof_attempts": {
+            "Z3": {
+              "result": "Valid",
+              "steps": 1,
+              "time": 0
+            }
+          },
+          "transformations": {
+          }
+        }
+      ],
+      "col": 17,
+      "entity": 2,
+      "file": "tool_refract.ads",
+      "how_proved": "prover",
+      "line": 44,
+      "rule": "VC_POSTCONDITION",
+      "severity": "info",
+      "stats": {
+        "Z3": {
+          "count": 2,
+          "max_steps": 1,
+          "max_time": 0.00000000000000E+00
+        }
+      }
+    }
+  ],
+  "skip_flow_proof": [
+  ],
+  "skip_proof": [
+  ],
+  "spark": {
+    " 1": "all",
+    " 2": "all",
+    " 3": "all"
+  },
+  "stop_reason": "STOP_REASON_NONE",
+  "timings": {
+    " 1": {
+      "gnat2why.vc_generation": 4.61699999868870E-03,
+      "gnatwhy3.init": 4.67727988958359E-01,
+      "gnatwhy3.register_vcs": 1.46000005770475E-04,
+      "gnatwhy3.run_vcs": 3.99900000047637E-06,
+      "gnatwhy3.save_session": 3.09000001288950E-03,
+      "gnatwhy3.schedule_vcs": 1.99900000552589E-06,
+      "gnatwhy3.transformations.introduce_premises": 1.38200004585087E-03,
+      "gnatwhy3.transformations.split_goal_wp_conj": 9.49400011450052E-03
+    },
+    " 2": {
+      "gnat2why.vc_generation": 4.21500019729137E-03,
+      "gnatwhy3.init": 5.16029000282288E-01,
+      "gnatwhy3.register_vcs": 1.24999904073775E-03,
+      "gnatwhy3.run_vcs": 3.70000016118865E-05,
+      "gnatwhy3.save_session": 3.02029997110367E-02,
+      "gnatwhy3.schedule_vcs": 2.80187010765076E-01,
+      "gnatwhy3.transformations.detect_polymorphism": 1.39500002842396E-03,
+      "gnatwhy3.transformations.discriminate_if_poly": 1.59989995154319E-05,
+      "gnatwhy3.transformations.eliminate_algebraic_if_poly": 1.34230004623532E-02,
+      "gnatwhy3.transformations.eliminate_builtin": 1.23110003769398E-02,
+      "gnatwhy3.transformations.eliminate_epsilon": 5.10999886319041E-03,
+      "gnatwhy3.transformations.eliminate_gnatprove_guard_epsilon": 4.39199898391962E-03,
+      "gnatwhy3.transformations.eliminate_inductive": 6.03100005537271E-03,
+      "gnatwhy3.transformations.eliminate_literal": 6.49099890142679E-03,
+      "gnatwhy3.transformations.encoding_smt_if_poly": 1.99900000552589E-06,
+      "gnatwhy3.transformations.inline_trivial": 1.87667995691299E-01,
+      "gnatwhy3.transformations.introduce_premises": 1.07930004596710E-02,
+      "gnatwhy3.transformations.remove_unused": 4.99610006809235E-02,
+      "gnatwhy3.transformations.simplify_formula": 7.42499902844429E-03,
+      "gnatwhy3.transformations.split_goal_wp_conj": 2.47319992631674E-02
+    },
+    "global": {
+      "flow analysis": 6.08999980613589E-03,
+      "globals (advanced)": 2.96900002285838E-03,
+      "globals (basic)": 1.15970000624657E-02,
+      "init_why_sections": 6.93999987561256E-04,
+      "marking": 4.68999991426244E-04,
+      "properties (advanced)": 3.19999999192078E-05,
+      "translation of standard": 2.06699990667403E-03
+    }
+  }
+}

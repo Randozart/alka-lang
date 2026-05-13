@@ -1,0 +1,15 @@
+[
+{
+  "name": "Tool_Shift.Validate.New_Offset",
+  "location": "tool_shift.adb:19:8",
+  "Size": 64,
+  "Alignment": 8
+}
+,
+{
+  "name": "Tool_Shift.Execute.New_Offset",
+  "location": "tool_shift.adb:37:8",
+  "Size": 64,
+  "Alignment": 8
+}
+]

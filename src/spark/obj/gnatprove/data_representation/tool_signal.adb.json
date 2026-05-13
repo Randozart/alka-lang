@@ -1,0 +1,15 @@
+[
+{
+  "name": "Tool_Signal.Validate.Signal_Id",
+  "location": "tool_signal.adb:20:8",
+  "Size": 64,
+  "Alignment": 8
+}
+,
+{
+  "name": "Tool_Signal.Execute.Signal_Id",
+  "location": "tool_signal.adb:38:8",
+  "Size": 64,
+  "Alignment": 8
+}
+]

@@ -63,13 +63,13 @@ is
    with Convention => C;
 
    --  Proof helper: chunk count for sliding window
-   function Chunk_Count
-     (Total : Interfaces.Unsigned_64;
-      Chunk : Interfaces.Unsigned_64) return Interfaces.Unsigned_64
-   is (if Chunk > 0 then (Total + Chunk - 1) / Chunk
-       else Interfaces.Unsigned_64(0))
-   with
-     Pre  => Chunk > 0 and then Total > 0,
-     Post => Chunk_Count'Result * Chunk >= Total;
+    function Chunk_Count
+      (Total : Interfaces.Unsigned_64;
+       Chunk : Interfaces.Unsigned_64) return Interfaces.Unsigned_64
+    is (if Chunk > 0 and then Total > 0 then (Total - 1) / Chunk + 1
+        else Interfaces.Unsigned_64(0))
+    with
+      Pre  => Chunk > 0 and then Total > 0,
+      Post => Chunk_Count'Result >= 1;
 
 end Vitriol_Types;

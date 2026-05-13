@@ -13,70 +13,70 @@ is
    use type Interfaces.Unsigned_64;
    use type Interfaces.Unsigned_32;
 
-   function Validate
-     (Op   : Drop_Type;
-      Vial : Vial_Constraints) return Boolean
-   is
-      Total       : constant Interfaces.Unsigned_64 := Op.Dst_Addr;
-      Chunk_Size  : constant Interfaces.Unsigned_64 :=
-        (if Op.Size > 0 then Interfaces.Unsigned_64(Op.Size)
-         else Max_Aperture);
-      Drops       : constant Interfaces.Unsigned_64 :=
-        Chunk_Count(Total, Chunk_Size);
-   begin
-      if Total = 0 then
-         return False;
-      end if;
+      function Validate
+        (Vial : not null access constant Vial_Constraints;
+         Op   : not null access constant Drop_Type) return Interfaces.C.int
+     is
+        Total       : constant Interfaces.Unsigned_64 := Op.Dst_Addr;
+        Chunk_Size  : Interfaces.Unsigned_64;
+        Drops       : Interfaces.Unsigned_64;
+     begin
+        if Total = 0 then
+           return 0;
+        end if;
 
-      if Chunk_Size = 0 then
-         return False;
-      end if;
+        Chunk_Size := (if Op.Size > 0 then Interfaces.Unsigned_64(Op.Size)
+                       else Max_Aperture);
 
-      if Chunk_Size > Vial.Aperture_Max then
-         return False;
-      end if;
+        if Chunk_Size = 0 then
+           return 0;
+        end if;
 
-      if Drops * Chunk_Size < Total then
-         return False;
-      end if;
+        if Chunk_Size > Vial.Aperture_Max then
+           return 0;
+        end if;
 
-      return True;
-   end Validate;
+        Drops := Chunk_Count(Total, Chunk_Size);
 
-   procedure Execute
-     (Op     : Drop_Type;
-      Vial   : Vial_Constraints;
-      Result : out Tool_Result)
-   is
-      Total      : constant Interfaces.Unsigned_64 := Op.Dst_Addr;
-      Chunk_Size : constant Interfaces.Unsigned_64 :=
-        (if Op.Size > 0 then Interfaces.Unsigned_64(Op.Size)
-         else Max_Aperture);
-      Drops      : constant Interfaces.Unsigned_64 :=
-        Chunk_Count(Total, Chunk_Size);
-      Current    : Interfaces.Unsigned_64 := 0;
-      I          : Interfaces.Unsigned_64 := 0;
-   begin
-      pragma Assert (Total > 0);
-      pragma Assert (Chunk_Size > 0);
-      pragma Assert (Chunk_Size <= Vial.Aperture_Max);
+        if Drops * Chunk_Size < Total then
+           return 0;
+        end if;
 
-      while I < Drops loop
-         pragma Loop_Invariant (I < Drops);
-         pragma Loop_Invariant (Current = I * Chunk_Size);
-         pragma Loop_Variant (Increases => I);
+        return 1;
+     end Validate;
 
-         Current := Current + Chunk_Size;
-         I := I + 1;
-      end loop;
+     function Execute
+       (Vial : not null access constant Vial_Constraints;
+        Op   : not null access constant Drop_Type) return Tool_Result
+    is
+       Total      : constant Interfaces.Unsigned_64 := Op.Dst_Addr;
+       Chunk_Size : constant Interfaces.Unsigned_64 :=
+         (if Op.Size > 0 then Interfaces.Unsigned_64(Op.Size)
+          else Max_Aperture);
+       Drops      : constant Interfaces.Unsigned_64 :=
+         Chunk_Count(Total, Chunk_Size);
+       Current    : Interfaces.Unsigned_64 := 0;
+       I          : Interfaces.Unsigned_64 := 0;
+    begin
+       pragma Assert (Total > 0);
+       pragma Assert (Chunk_Size > 0);
+       pragma Assert (Chunk_Size <= Vial.Aperture_Max);
 
-      pragma Assert (I = Drops);
-      pragma Assert (Current >= Total);
+       while I < Drops loop
+          pragma Loop_Invariant (I < Drops);
+          pragma Loop_Invariant (Current = I * Chunk_Size);
+          pragma Loop_Variant (Increases => I);
 
-      Result.Success := True;
-      Result.Cycles_Spent := 50 * Drops;
-      Result.Bytes_Transferred := Total;
-      Result.Error_Message := Interfaces.C.Strings.Null_Ptr;
-   end Execute;
+          Current := Current + Chunk_Size;
+          I := I + 1;
+       end loop;
+
+       pragma Assert (I = Drops);
+
+       return (Success            => True,
+               Cycles_Spent       => 50 * Drops,
+               Bytes_Transferred  => Total,
+               Error_Message      => Interfaces.C.Strings.Null_Ptr);
+    end Execute;
 
 end Tool_Refract;

@@ -1,11 +1,53 @@
 tool_refract.adb:7:06: warning: redundant with clause in body [-gnatwr]
-tool_refract.adb:13:04: warning: "Unsigned_64" is already use-visible through previous use_type_clause at tool_refract.ads:14 [enabled by default]
+tool_refract.adb:13:04: warning: "Unsigned_64" is already use-visible through previous use_type_clause at tool_refract.ads:15 [enabled by default]
 tool_refract.adb:13:04: warning: use clause for type "Interfaces.Unsigned_64" has no effect [-gnatwu]
-tool_refract.adb:22:52: (style) space required
-tool_refract.adb:25:20: (style) space required
-tool_refract.adb:53:52: (style) space required
-tool_refract.adb:56:20: (style) space required
-tool_refract.ads:29:24: (style) space required
-tool_refract.ads:30:80: (style) this line is too long
-tool_refract.ads:30:89: (style) space required
-tool_refract.ads:35:28: (style) space required
+tool_refract.adb:14:04: warning: "Unsigned_32" is already use-visible through previous use_type_clause at tool_refract.ads:16 [enabled by default]
+tool_refract.adb:14:04: warning: use clause for type "Interfaces.Unsigned_32" has no effect [-gnatwu]
+tool_refract.adb:20:09: (style) bad indentation
+tool_refract.adb:21:09: (style) bad indentation
+tool_refract.adb:22:09: (style) bad indentation
+tool_refract.adb:23:06: (style) bad indentation
+tool_refract.adb:24:09: (style) bad indentation
+tool_refract.adb:25:12: (style) bad indentation
+tool_refract.adb:26:09: (style) bad indentation
+tool_refract.adb:28:09: (style) bad indentation
+tool_refract.adb:31:09: (style) bad indentation
+tool_refract.adb:32:12: (style) bad indentation
+tool_refract.adb:33:09: (style) bad indentation
+tool_refract.adb:35:09: (style) bad indentation
+tool_refract.adb:36:12: (style) bad indentation
+tool_refract.adb:37:09: (style) bad indentation
+tool_refract.adb:39:09: (style) bad indentation
+tool_refract.adb:41:09: (style) bad indentation
+tool_refract.adb:42:12: (style) bad indentation
+tool_refract.adb:43:09: (style) bad indentation
+tool_refract.adb:45:09: (style) bad indentation
+tool_refract.adb:46:06: (style) bad indentation
+tool_refract.adb:48:06: (style) bad indentation
+tool_refract.adb:52:08: (style) bad indentation
+tool_refract.adb:53:08: (style) bad indentation
+tool_refract.adb:54:53: (style) space required
+tool_refract.adb:56:08: (style) bad indentation
+tool_refract.adb:57:21: (style) space required
+tool_refract.adb:58:08: (style) bad indentation
+tool_refract.adb:59:08: (style) bad indentation
+tool_refract.adb:60:05: (style) bad indentation
+tool_refract.adb:61:08: (style) bad indentation
+tool_refract.adb:62:08: (style) bad indentation
+tool_refract.adb:63:08: (style) bad indentation
+tool_refract.adb:65:08: (style) bad indentation
+tool_refract.adb:66:11: (style) bad indentation
+tool_refract.adb:67:11: (style) bad indentation
+tool_refract.adb:68:11: (style) bad indentation
+tool_refract.adb:70:11: (style) bad indentation
+tool_refract.adb:71:11: (style) bad indentation
+tool_refract.adb:72:08: (style) bad indentation
+tool_refract.adb:74:08: (style) bad indentation
+tool_refract.adb:76:08: (style) bad indentation
+tool_refract.adb:80:05: (style) bad indentation
+tool_refract.ads:20:28: (style) space required
+tool_refract.ads:22:06: (style) bad indentation
+tool_refract.ads:32:64: (style) space required
+tool_refract.ads:35:06: (style) bad indentation
+tool_refract.ads:43:26: (style) space required
+tool_refract.ads:44:80: (style) this line is too long
